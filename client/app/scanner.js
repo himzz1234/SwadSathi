@@ -2,8 +2,11 @@ import { useEffect, useRef, useState } from "react";
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { BarCodeScanner } from "expo-barcode-scanner";
 import { router } from "expo-router";
+import Icon from "react-native-vector-icons/FontAwesome5";
+import ScannerFrame from "../components/ScannerFrame";
 
 export default function Scanner() {
+  const [stopAnimatio, setStopAnimation] = useState();
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
 
@@ -23,75 +26,43 @@ export default function Scanner() {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={() => router.replace("/")}>
-        <Text>fefe</Text>
-      </TouchableOpacity>
-      <BarCodeScanner
-        onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
-        style={[StyleSheet.absoluteFillObject, { height: 500, marginTop: 100 }]}
-      />
       <View
         style={{
-          backgroundColor: "black",
-          paddingVertical: 20,
-          alignSelf: "center",
-          marginTop: 100,
-          position: "relative",
+          display: "flex",
+          flexDirection: "row",
+          paddingHorizontal: 10,
+          alignItems: "center",
         }}
       >
-        {/* 
-        <View
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 20,
-            borderLeftColor: "black",
-            borderLeftWidth: 5,
-            borderTopColor: "black",
-            borderTopWidth: 5,
-            height: 30,
-            width: 30,
+        <TouchableOpacity
+          style={{ width: "20%" }}
+          onPress={() => {
+            router.replace("/");
+            setStopAnimation(true);
           }}
-        ></View>
-        <View
+        >
+          <Icon name="arrow-left" size={15} color="black" />
+        </TouchableOpacity>
+        <Text
           style={{
-            position: "absolute",
-            bottom: 0,
-            right: 20,
-            borderRightColor: "black",
-            borderRightWidth: 5,
-            borderBottomColor: "black",
-            borderBottomWidth: 5,
-            height: 30,
-            width: 30,
+            textAlign: "center",
+            width: "60%",
+            fontSize: 20,
+            fontWeight: 600,
           }}
-        ></View>
-        <View
-          style={{
-            position: "absolute",
-            top: 0,
-            right: 20,
-            borderRightColor: "black",
-            borderRightWidth: 5,
-            borderTopColor: "black",
-            borderTopWidth: 5,
-            height: 30,
-            width: 30,
-          }}
-        ></View>
-        <View
-          style={{
-            position: "absolute",
-            bottom: 0,
-            left: 20,
-            borderLeftColor: "black",
-            borderLeftWidth: 5,
-            borderBottomColor: "black",
-            borderBottomWidth: 5,
-            height: 30,
-            width: 30,
-          }}
-        ></View> */}
+        >
+          Scan QR code
+        </Text>
+      </View>
+      <View style={{ position: "relative", marginTop: 40 }}>
+        <ScannerFrame {...stopAnimatio} />
+        <BarCodeScanner
+          onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
+          style={[
+            StyleSheet.absoluteFillObject,
+            { height: 500, borderRadius: 20 },
+          ]}
+        />
       </View>
     </View>
   );

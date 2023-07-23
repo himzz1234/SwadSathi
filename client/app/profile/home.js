@@ -63,11 +63,9 @@ const styles = StyleSheet.create({
   itemContainer: {
     height: 80,
     position: "relative",
-    borderWidth: 2,
-    borderStyle: "solid",
-    borderColor: "lightgray",
-    borderRadius: 10,
     marginBottom: 10,
+    backgroundColor: "#efeeea",
+    borderRadius: 10,
   },
   item: {
     fontSize: 20,

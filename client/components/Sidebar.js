@@ -1,17 +1,8 @@
-import {
-  SafeAreaView,
-  View,
-  StyleSheet,
-  Image,
-  Text,
-  Linking,
-  TouchableOpacity,
-} from "react-native";
+import { SafeAreaView, View, Image, Text } from "react-native";
 
 import {
   DrawerContentScrollView,
   DrawerItemList,
-  DrawerItem,
 } from "@react-navigation/drawer";
 
 export default function Sidebar(props) {
