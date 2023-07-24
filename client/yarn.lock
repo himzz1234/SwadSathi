@@ -1931,7 +1931,7 @@
     "react-is" "^16.13.0"
     "use-latest-callback" "^0.1.5"
 
-"@react-navigation/drawer@^6.5.8", "@react-navigation/drawer@^6.6.3":
+"@react-navigation/drawer@^6.5.8":
   "integrity" "sha512-oQzHqH6svtSIun6+rikQtku6ye2CyyxT4xf3RQLVsBvK7+g4tDdKKLcjgoJmuT1zBZC3SSu3wNeqp8cg4cr2PQ=="
   "resolved" "https://registry.npmjs.org/@react-navigation/drawer/-/drawer-6.6.3.tgz"
   "version" "6.6.3"
