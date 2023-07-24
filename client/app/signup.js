@@ -1,11 +1,14 @@
 import axios from "axios";
 import { useState } from "react";
+import { useRouter } from "expo-router";
 import { View, Text, StyleSheet, TextInput, Pressable } from "react-native";
 
 export default function Signup() {
   const [username, setUsername] = useState("");
   const [emailId, setEmailId] = useState("");
   const [password, setPassword] = useState("");
+
+  const router = useRouter();
 
   const register = async () => {
     const newData = {
@@ -16,12 +19,13 @@ export default function Signup() {
 
     try {
       const res = await axios.post(
-        "http://localhost:3000/api/auth/user/signup",
+        "http://192.168.1.133:3000/api/auth/user/signup",
         newData
       );
 
-      console.log(res);
-      j;
+      if (res.status == 200) {
+        router.push("/login");
+      }
     } catch (error) {
       console.log(error);
     }
