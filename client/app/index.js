@@ -10,7 +10,6 @@ export default function Page() {
   useEffect(() => {
     const fetchUser = async () => {
       const token = await AsyncStorage.getItem("auth-token");
-      console.log(token);
 
       if (token) {
         try {
@@ -18,10 +17,12 @@ export default function Page() {
             "http://192.168.1.133:3000/api/auth/user/getdetails",
             {
               headers: {
-                "auth-token": JSON.parse(token),
+                "auth-token": token,
               },
             }
           );
+
+          console.log(res.data);
 
           if (res.data) {
             setUser(res.data);
@@ -35,5 +36,5 @@ export default function Page() {
     fetchUser();
   }, []);
 
-  return <View>{user && <Redirect href="/profile/home" />}</View>;
+  return <Redirect href={user ? "/profile/home" : "/signup"} />;
 }

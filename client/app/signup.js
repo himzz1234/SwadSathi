@@ -26,7 +26,7 @@ export default function Signup() {
 
       if (res.status == 200) {
         await AsyncStorage.setItem("auth-token", res.data.authtoken);
-        router.push("/login");
+        router.push("/profile/home");
       }
     } catch (error) {
       console.log(error);
