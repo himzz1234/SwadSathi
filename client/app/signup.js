@@ -1,7 +1,8 @@
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "expo-router";
 import { View, Text, StyleSheet, TextInput, Pressable } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function Signup() {
   const [username, setUsername] = useState("");
@@ -24,6 +25,7 @@ export default function Signup() {
       );
 
       if (res.status == 200) {
+        await AsyncStorage.setItem("auth-token", res.data.authtoken);
         router.push("/login");
       }
     } catch (error) {
