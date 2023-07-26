@@ -25,7 +25,7 @@ export default function Layout() {
           },
           headerRight: () => (
             <TouchableOpacity onPress={() => navigation.navigate("scanner")}>
-              <Icon name="barcode" size={30} color="black" />
+              <Icon name="scan1" size={30} color="black" />
             </TouchableOpacity>
           ),
         })}
