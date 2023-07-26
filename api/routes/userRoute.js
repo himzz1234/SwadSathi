@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const express = require('express')
 const router = express.Router();
 const User = require('../models/User');
+const Canteen = require('../models/Canteen');
 const {body, validationResult} = require('express-validator');
 const fetchuser = require('../middleware/fetchuser');
 const dotenv = require('dotenv');
@@ -86,7 +87,7 @@ router.post('/signin', [
 
         const authtoken = jwt.sign(data, process.env.JWT_secret, {expiresIn: '10d'});
         success = true;
-        res.json({success, authtoken});
+        res.json({success, authtoken, user});
 
     }
     catch(error){
@@ -115,9 +116,33 @@ router.post('/saveCanteens/:canteenId', fetchuser, async (req, res)=>{
         const userId = req.user.id;
         const canteenId = req.params.canteenId;
         const user = await User.findById(userId).select("-password");
-        user.savedCanteens.push(canteenId);
-        user.save();
-        res.json({success: true});
+        //const findcanteen = await Canteen.findById(canteenId).select("-password");
+        // let canteen = await User.findOne({savedCanteens:[{canteenId}]})
+        // console.log(canteen)
+        // if(!canteen){
+        //     user.savedCanteens.push(canteenId);
+        //     user.save();
+        //     res.send("Canteen saved successfully")
+        // }
+        // else{
+        //     res.json({success: true, message: "Canteen already saved in your profile!", findcanteen });
+        // }
+        const findcanteen = await Canteen.findById(canteenId).select("-password");
+        if(findcanteen){
+            if (user.savedCanteens.includes(canteenId)){
+                res.status(200).json({message: "This canteen already exists in the [Saved Canteens].", findcanteen});
+            }
+            else{
+                user.savedCanteens.push(canteenId);
+                user.save();
+                res.status(200).json({message: "Canteen saved in the profile!", findcanteen});
+            }
+        }
+        else{
+            res.send("Some error occured!");
+        }
+        
+        
 
     }
     catch(error){
