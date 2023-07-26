@@ -1,14 +1,16 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
-import { useRouter } from "expo-router";
+import { useContext, useEffect, useState } from "react";
+import { Link, useRouter } from "expo-router";
 import { View, Text, StyleSheet, TextInput, Pressable } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { AuthContext } from "../context/AuthContext";
 
 export default function Signup() {
   const [username, setUsername] = useState("");
   const [emailId, setEmailId] = useState("");
   const [password, setPassword] = useState("");
 
+  const { dispatch } = useContext(AuthContext);
   const router = useRouter();
 
   const register = async () => {
@@ -25,7 +27,9 @@ export default function Signup() {
       );
 
       if (res.status == 200) {
-        await AsyncStorage.setItem("auth-token", res.data.authtoken);
+        await AsyncStorage.setItem("auth-token", res.data.token);
+
+        dispatch({ type: "LOGIN_SUCCESS", payload: res.data.user });
         router.push("/profile/home");
       }
     } catch (error) {
@@ -64,6 +68,13 @@ export default function Signup() {
           Continue
         </Text>
       </Pressable>
+
+      <Text style={{ textAlign: "center", marginTop: 15, fontSize: 16 }}>
+        Already have an account?{" "}
+        <Link href="/login" style={{ color: "#0065ff" }}>
+          Login
+        </Link>
+      </Text>
     </View>
   );
 }

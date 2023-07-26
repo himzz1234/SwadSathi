@@ -1,24 +1,69 @@
+import { useContext, useState } from "react";
 import { View, Text, StyleSheet, TextInput, Pressable } from "react-native";
+import { AuthContext } from "../context/AuthContext";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
+import { Link, useRouter } from "expo-router";
 
 export default function Login() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const { dispatch } = useContext(AuthContext);
+  const router = useRouter();
+
+  const login = async () => {
+    const credentials = {
+      email,
+      password,
+    };
+
+    const res = await axios.post(
+      "http://192.168.1.133:3000/api/auth/user/signin",
+      credentials
+    );
+
+    if (res.status == 200) {
+      await AsyncStorage.setItem("auth-token", res.data.token);
+
+      dispatch({ type: "LOGIN_SUCCESS", payload: res.data.user });
+      router.replace("/profile/home");
+    } else {
+      console.log("Something went wrong!");
+    }
+  };
   return (
     <View style={styles.container}>
       <Text style={{ fontSize: 30, fontWeight: 600 }}>Login</Text>
 
       <View style={{ display: "flex", gap: 10, marginVertical: 32 }}>
-        <TextInput placeholder="Email ID" style={styles.inputContainer} />
         <TextInput
+          value={email}
+          onChangeText={(text) => setEmail(text)}
+          placeholder="Email ID"
+          style={styles.inputContainer}
+        />
+        <TextInput
+          value={password}
+          onChangeText={(text) => setPassword(text)}
           secureTextEntry={true}
           placeholder="Password"
           style={styles.inputContainer}
         />
       </View>
 
-      <Pressable style={styles.button}>
+      <Pressable style={styles.button} onPress={login}>
         <Text style={{ color: "white", textAlign: "center", fontSize: 16 }}>
           Login
         </Text>
       </Pressable>
+
+      <Text style={{ textAlign: "center", marginTop: 15, fontSize: 16 }}>
+        Don't have an account?{" "}
+        <Link href="/signup" style={{ color: "#0065ff" }}>
+          Signup
+        </Link>
+      </Text>
     </View>
   );
 }

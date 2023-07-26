@@ -22,7 +22,6 @@ router.post(
     body("email", "Enter a valid email").isEmail(),
   ],
   async (req, res) => {
-    console.log(req.body);
     let success = false;
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -52,7 +51,7 @@ router.post(
 
       const authtoken = jwt.sign(data, process.env.JWT_secret);
       success = true;
-      res.json({ success, authtoken });
+      res.json({ success, token: authtoken, user: user });
     } catch (error) {
       console.log(error.message);
       res.status(500).send("Some error occured!");
@@ -76,6 +75,7 @@ router.post(
     }
 
     const { email, password } = req.body;
+    console.log(email, password);
     try {
       let user = await User.findOne({ email });
       if (!user) {
@@ -102,7 +102,7 @@ router.post(
         expiresIn: "10d",
       });
       success = true;
-      res.json({ success, authtoken });
+      res.json({ success, token: authtoken, user: user });
     } catch (error) {
       console.log(error.message);
       res.status(500).send("Some error occured!");

@@ -1,14 +1,18 @@
 import axios from "axios";
-import { View } from "react-native";
-import { Redirect } from "expo-router";
-import { useEffect, useState } from "react";
+import { View, ActivityIndicator, StyleSheet } from "react-native";
+import { useContext, useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { AuthContext } from "../context/AuthContext";
+import { useRouter } from "expo-router";
+import { ceil } from "react-native-reanimated";
 
 export default function Page() {
-  const [user, setUser] = useState(null);
+  const router = useRouter();
+  const { user, dispatch } = useContext(AuthContext);
 
   useEffect(() => {
     const fetchUser = async () => {
+      dispatch({ type: "LOGIN_START" });
       const token = await AsyncStorage.getItem("auth-token");
 
       if (token) {
@@ -22,19 +26,39 @@ export default function Page() {
             }
           );
 
-          console.log(res.data);
-
           if (res.data) {
-            setUser(res.data);
-          } else console.log("There was an error!");
+            dispatch({ type: "LOGIN_SUCCESS", payload: res.data });
+            router.replace("/profile/home");
+
+            return;
+          } else {
+            dispatch({ type: "LOGIN_FAILURE" });
+          }
         } catch (error) {
-          console.log("There was an error!");
+          dispatch({ type: "LOGIN_FAILURE" });
         }
-      } else console.log("There was an error!");
+      } else {
+        dispatch({ type: "LOGIN_FAILURE" });
+      }
+
+      router.replace("/signup");
     };
 
     fetchUser();
   }, []);
 
-  return <Redirect href={user ? "/profile/home" : "/signup"} />;
+  return (
+    <View style={styles.container}>
+      <ActivityIndicator size={80} />
+    </View>
+  );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+});

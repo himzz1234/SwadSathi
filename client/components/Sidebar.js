@@ -12,12 +12,15 @@ import {
 } from "@react-navigation/drawer";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
+import { useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
 
 export default function Sidebar(props) {
+  const { user } = useContext(AuthContext);
   const router = useRouter();
+
   const logout = async () => {
     await AsyncStorage.setItem("auth-token", "");
-
     router.push("/login");
   };
 
@@ -38,7 +41,7 @@ export default function Sidebar(props) {
             style={{ width: 40, height: 40 }}
             source={require("../assets/images/default.png")}
           />
-          <Text style={{ fontSize: 18, fontWeight: 600 }}>Himanshu</Text>
+          <Text style={{ fontSize: 18, fontWeight: 600 }}>{user.name}</Text>
         </View>
 
         <DrawerItemList {...props} />
@@ -50,7 +53,7 @@ export default function Sidebar(props) {
           marginHorizontal: 10,
           marginVertical: 20,
           paddingVertical: 10,
-          borderRadius: 2,
+          borderRadius: 4,
           backgroundColor: "hsl(1,83%,85%)",
         }}
       >
