@@ -2,18 +2,11 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const express = require("express");
 const router = express.Router();
-<<<<<<< HEAD
 const User = require('../models/User');
 const Canteen = require('../models/Canteen');
 const {body, validationResult} = require('express-validator');
 const fetchuser = require('../middleware/fetchuser');
 const dotenv = require('dotenv');
-=======
-const User = require("../models/User");
-const { body, validationResult } = require("express-validator");
-const fetchuser = require("../middleware/fetchuser");
-const dotenv = require("dotenv");
->>>>>>> origin/main
 dotenv.config();
 
 //const JWT_secret = 'akshay@123'
@@ -83,7 +76,7 @@ router.post(
     }
 
     const { email, password } = req.body;
-    console.log(email, password);
+    //console.log(email, password);
     try {
       let user = await User.findOne({ email });
       if (!user) {
@@ -100,23 +93,11 @@ router.post(
           .json({ error: "Please try to log in with correct credentials." });
       }
 
-<<<<<<< HEAD
-        const data = {
-            user: {
-                id: user.id
-            }
-        }
-
-        const authtoken = jwt.sign(data, process.env.JWT_secret, {expiresIn: '10d'});
-        success = true;
-        res.json({success, authtoken, user});
-=======
       const data = {
         user: {
           id: user.id,
         },
       };
->>>>>>> origin/main
 
       const authtoken = jwt.sign(data, process.env.JWT_secret, {
         expiresIn: "10d",
@@ -145,29 +126,19 @@ router.get("/getdetails", fetchuser, async (req, res) => {
   }
 });
 
-module.exports = router;
+
 // Push scanned canteens into the SavedCanteens array:
-<<<<<<< HEAD
+
 router.post('/saveCanteens/:canteenId', fetchuser, async (req, res)=>{
     try{
         const userId = req.user.id;
         const canteenId = req.params.canteenId;
         const user = await User.findById(userId).select("-password");
-        //const findcanteen = await Canteen.findById(canteenId).select("-password");
-        // let canteen = await User.findOne({savedCanteens:[{canteenId}]})
-        // console.log(canteen)
-        // if(!canteen){
-        //     user.savedCanteens.push(canteenId);
-        //     user.save();
-        //     res.send("Canteen saved successfully")
-        // }
-        // else{
-        //     res.json({success: true, message: "Canteen already saved in your profile!", findcanteen });
-        // }
+        
         const findcanteen = await Canteen.findById(canteenId).select("-password");
         if(findcanteen){
             if (user.savedCanteens.includes(canteenId)){
-                res.status(200).json({message: "This canteen already exists in the [Saved Canteens].", findcanteen});
+                res.status(200).json({message: "This canteen already exists in the [Saved Canteens] page.", findcanteen});
             }
             else{
                 user.savedCanteens.push(canteenId);
@@ -189,21 +160,21 @@ router.post('/saveCanteens/:canteenId', fetchuser, async (req, res)=>{
 })
 
 
-=======
-router.post("/saveCanteens/:canteenId", fetchuser, async (req, res) => {
-  try {
-    const userId = req.user.id;
-    const canteenId = req.params.canteenId;
-    const user = await User.findById(userId).select("-password");
-    user.savedCanteens.push(canteenId);
-    user.save();
-    res.json({ success: true });
-  } catch (error) {
-    console.log(error.message);
-    return res.status(500).send("Some error occured!");
-  }
-});
->>>>>>> origin/main
+
+// router.post("/saveCanteens/:canteenId", fetchuser, async (req, res) => {
+//   try {
+//     const userId = req.user.id;
+//     const canteenId = req.params.canteenId;
+//     const user = await User.findById(userId).select("-password");
+//     user.savedCanteens.push(canteenId);
+//     user.save();
+//     res.json({ success: true });
+//   } catch (error) {
+//     console.log(error.message);
+//     return res.status(500).send("Some error occured!");
+//   }
+// });
+
 
 // const data = {
 //     canteenname: 'SRM Goods',
@@ -211,3 +182,4 @@ router.post("/saveCanteens/:canteenId", fetchuser, async (req, res) => {
 // }
 
 // const addCanteen = async()
+module.exports = router;
