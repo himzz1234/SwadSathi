@@ -1,3 +1,4 @@
+import { useContext } from "react";
 import {
   StyleSheet,
   Text,
@@ -6,6 +7,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import Icon from "react-native-vector-icons/AntDesign";
+import { AuthContext } from "../../context/AuthContext";
 
 const data = [
   {
@@ -23,6 +25,9 @@ const data = [
 ];
 
 export default function Home() {
+  const { user } = useContext(AuthContext);
+
+  console.log(user);
   return (
     <View style={styles.container}>
       <Text style={{ fontSize: 20, marginTop: 10, fontWeight: 600 }}>
@@ -30,20 +35,23 @@ export default function Home() {
       </Text>
 
       <FlatList
-        data={data}
+        data={user.savedCanteens}
         style={{ marginTop: 20 }}
         renderItem={({ item }) => {
           return (
             <TouchableOpacity
-              disabled={!item.status}
-              style={[styles.itemContainer, { opacity: item.status ? 1 : 0.5 }]}
+              disabled={!item.workingStatus}
+              style={[
+                styles.itemContainer,
+                { opacity: item.workingStatus ? 1 : 0.5 },
+              ]}
             >
               <Text style={styles.item}>{item.name}</Text>
 
-              <View style={styles.itemRating}>
+              {/* <View style={styles.itemRating}>
                 <Icon name="star" size={10} color="#f5c71a" />
-                <Text>{item.rating}</Text>
-              </View>
+                <Text>3.6</Text>
+              </View> */}
             </TouchableOpacity>
           );
         }}
