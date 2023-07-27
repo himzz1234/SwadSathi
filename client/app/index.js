@@ -1,14 +1,13 @@
-import axios from "axios";
+import axios from "../axios";
 import { View, ActivityIndicator, StyleSheet } from "react-native";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AuthContext } from "../context/AuthContext";
 import { useRouter } from "expo-router";
-import { ceil } from "react-native-reanimated";
 
 export default function Page() {
   const router = useRouter();
-  const { user, dispatch } = useContext(AuthContext);
+  const { dispatch } = useContext(AuthContext);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -17,14 +16,11 @@ export default function Page() {
 
       if (token) {
         try {
-          const res = await axios.get(
-            "http://192.168.1.133:3000/api/auth/user/getdetails",
-            {
-              headers: {
-                "auth-token": token,
-              },
-            }
-          );
+          const res = await axios.get("/auth/user/getdetails", {
+            headers: {
+              "auth-token": token,
+            },
+          });
 
           if (res.data) {
             dispatch({ type: "LOGIN_SUCCESS", payload: res.data });

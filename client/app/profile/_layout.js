@@ -1,6 +1,6 @@
 import { Image, TouchableOpacity } from "react-native";
 import { Drawer } from "expo-router/drawer";
-import Icon from "react-native-vector-icons/AntDesign";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import Sidebar from "../../components/Sidebar";
 
 export default function Layout() {
@@ -25,7 +25,7 @@ export default function Layout() {
           },
           headerRight: () => (
             <TouchableOpacity onPress={() => navigation.navigate("scanner")}>
-              <Icon name="scan1" size={30} color="black" />
+              <Icon name="qrcode-scan" size={30} color="black" />
             </TouchableOpacity>
           ),
         })}

@@ -2,7 +2,7 @@ import { useContext, useState } from "react";
 import { View, Text, StyleSheet, TextInput, Pressable } from "react-native";
 import { AuthContext } from "../context/AuthContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import axios from "axios";
+import axios from "../axios";
 import { Link, useRouter } from "expo-router";
 
 export default function Login() {
@@ -18,10 +18,7 @@ export default function Login() {
       password,
     };
 
-    const res = await axios.post(
-      "http://192.168.1.133:3000/api/auth/user/signin",
-      credentials
-    );
+    const res = await axios.post("/auth/user/signin", credentials);
 
     if (res.status == 200) {
       await AsyncStorage.setItem("auth-token", res.data.token);
