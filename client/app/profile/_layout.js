@@ -30,6 +30,22 @@ export default function Layout() {
           ),
         })}
       ></Drawer.Screen>
+      <Drawer.Screen
+        name="settings"
+        options={({ navigation }) => ({
+          headerTitle: "",
+          drawerLabel: "Settings",
+          headerLeftContainerStyle: { paddingHorizontal: 20 },
+          headerLeft: () => (
+            <TouchableOpacity onPress={() => navigation.openDrawer()}>
+              <Image
+                style={{ width: 40, height: 40 }}
+                source={require("../../assets/images/default.png")}
+              />
+            </TouchableOpacity>
+          ),
+        })}
+      ></Drawer.Screen>
     </Drawer>
   );
 }

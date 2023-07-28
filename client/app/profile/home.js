@@ -8,6 +8,7 @@ import {
 } from "react-native";
 import Icon from "react-native-vector-icons/AntDesign";
 import { AuthContext } from "../../context/AuthContext";
+import { useRouter } from "expo-router";
 
 const data = [
   {
@@ -26,8 +27,8 @@ const data = [
 
 export default function Home() {
   const { user } = useContext(AuthContext);
+  const router = useRouter();
 
-  console.log(user);
   return (
     <View style={styles.container}>
       <Text style={{ fontSize: 20, marginTop: 10, fontWeight: 600 }}>
@@ -40,7 +41,8 @@ export default function Home() {
         renderItem={({ item }) => {
           return (
             <TouchableOpacity
-              disabled={!item.workingStatus}
+              // disabled={!item.workingStatus}
+              onPress={() => router.replace(`/canteen/${item._id}`)}
               style={[
                 styles.itemContainer,
                 { opacity: item.workingStatus ? 1 : 0.5 },

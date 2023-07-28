@@ -5,15 +5,19 @@ const Navbar = () => {
   const { canteenId } = useLocalSearchParams();
 
   return (
-    <View style={styles.navbar}>
+    <View style={styles.container}>
       <Text style={{ color: "black" }}>ID: {canteenId}</Text>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  navbar: {
+  container: {
     flex: 1,
+    backgroundColor: "white",
+    paddingTop: 10,
+    paddingHorizontal: 20,
+    color: "blue",
   },
 });
 
