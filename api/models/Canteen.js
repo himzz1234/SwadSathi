@@ -35,7 +35,13 @@ const CanteenSchema = new Schema(
             type: String,
             required: true,
             unique: true,
-        }
+        },
+        menu: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'fooditem'
+            }
+        ]
     }
 );
 

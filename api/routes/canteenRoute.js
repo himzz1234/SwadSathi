@@ -101,7 +101,7 @@ router.post(
 
       const authtoken = jwt.sign(data, process.env.JWT_secret);
       success = true;
-      res.json({ success, authtoken });
+      res.json({ success, authtoken, admin});
     } catch (error) {
       console.error(error.message);
       res.status(500).send("Some error occured.");
@@ -118,13 +118,16 @@ router.get("/getcanteendetails/:id", async (req, res) => {
       "-password",
       "-email",
       "-dateCreated",
-    ]);
+    ]).populate({path: 'menu', select: ['itemName','itemImage','itemPrice','availability']}).exec();
+    //const canteen = await Canteen.findById(id).select()
     res.send(canteen);
   } catch (error) {
     console.error(error.message);
     res.status(500).send("Some error occured.");
   }
 });
+
+
 
 //add food items:
 router.post("/itemadd", fetchCanteen, async (req, res) => {
@@ -139,7 +142,23 @@ router.post("/itemadd", fetchCanteen, async (req, res) => {
       availability,
     });
     await newItem.save();
-    return res.status(200).json({ message: "Item added successfully!" });
+    const mycanteen = await Canteen.findById(canteenId);
+    // if(mycanteen.menu.includes(newItem.id)){
+    //   res.status(200).json({
+    //     message: "Food Item already exists in the menu.",
+    //     newItem
+    //   });
+    // }
+    // else{
+    //   mycanteen.menu.push(newItem.id);
+    //   mycanteen.save();
+    //   return res.status(200).json({ message: "Item added successfully!", newItem, mycanteen });
+      
+    // }
+    mycanteen.menu.push(newItem.id);
+    mycanteen.save();
+    res.status(200).json({ message: "Item added successfully!", newItem, mycanteen });
+    
   } catch (error) {
     return res.status(500).json({ error: "Internal server error!" });
   }

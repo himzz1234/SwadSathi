@@ -10,7 +10,7 @@ import {
 
 const Navbar = () => {
   const canteen = useLocalSearchParams();
-
+  console.log(canteen)
   const menuItems = [
     {
       itemName: "Rajma Chawal",
