@@ -128,37 +128,27 @@ router.get("/getdetails", fetchuser, async (req, res) => {
   }
 });
 
-module.exports = router;
-// Push scanned canteens into the SavedCanteens array:
-router.post("/saveCanteens/:canteenId", fetchuser, async (req, res) => {
+router.post("/saveCanteens/:canteenId", async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.body.userId;
     const canteenId = req.params.canteenId;
-    const user = await User.findById(userId).select("-password");
-    //const findcanteen = await Canteen.findById(canteenId).select("-password");
-    // let canteen = await User.findOne({savedCanteens:[{canteenId}]})
-    // console.log(canteen)
-    // if(!canteen){
-    //     user.savedCanteens.push(canteenId);
-    //     user.save();
-    //     res.send("Canteen saved successfully")
-    // }
-    // else{
-    //     res.json({success: true, message: "Canteen already saved in your profile!", findcanteen });
-    // }
+
+    const user = await User.findById(userId);
     const findcanteen = await Canteen.findById(canteenId).select("-password");
-    if (findcanteen) {
+
+    if (findcanteen && user) {
       if (user.savedCanteens.includes(canteenId)) {
         res.status(200).json({
           message: "This canteen already exists in the [Saved Canteens].",
-          findcanteen,
+          canteen: findcanteen,
         });
       } else {
         user.savedCanteens.push(canteenId);
         user.save();
-        res
-          .status(200)
-          .json({ message: "Canteen saved in the profile!", findcanteen });
+        res.status(200).json({
+          message: "Canteen saved in the profile!",
+          canteen: findcanteen,
+        });
       }
     } else {
       res.send("Some error occured!");
@@ -169,9 +159,4 @@ router.post("/saveCanteens/:canteenId", fetchuser, async (req, res) => {
   }
 });
 
-// const data = {
-//     canteenname: 'SRM Goods',
-//     canteenId: '56758995'
-// }
-
-// const addCanteen = async()
+module.exports = router;

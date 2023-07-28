@@ -9,25 +9,16 @@ import {
 import Icon from "react-native-vector-icons/AntDesign";
 import { AuthContext } from "../../context/AuthContext";
 import { useRouter } from "expo-router";
-
-const data = [
-  {
-    id: "83183182818281",
-    name: "SRM Foods",
-    status: true,
-    rating: 3.5,
-  },
-  {
-    id: "831dwdw",
-    name: "Andhra Mess",
-    status: false,
-    rating: 3.6,
-  },
-];
+import axios from "../../axios";
 
 export default function Home() {
   const { user } = useContext(AuthContext);
   const router = useRouter();
+
+  const navigateCanteen = async (canteenId) => {
+    const res = await axios.get(`/auth/admin/getcanteendetails/${canteenId}`);
+    router.push({ pathname: `/canteen/${canteenId}`, params: res.data });
+  };
 
   return (
     <View style={styles.container}>
@@ -42,7 +33,7 @@ export default function Home() {
           return (
             <TouchableOpacity
               // disabled={!item.workingStatus}
-              onPress={() => router.replace(`/canteen/${item._id}`)}
+              onPress={() => navigateCanteen(item._id)}
               style={[
                 styles.itemContainer,
                 { opacity: item.workingStatus ? 1 : 0.5 },

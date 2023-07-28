@@ -3,7 +3,7 @@ const cookieParser = require("cookie-parser");
 const connectToMongo = require("./database");
 const cors = require("cors");
 const app = express();
-const port = 3000;
+const port = 8800;
 
 connectToMongo();
 app.use(cors());
