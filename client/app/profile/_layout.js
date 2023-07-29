@@ -1,6 +1,7 @@
-import { Image, TouchableOpacity } from "react-native";
+import { View, Image, TouchableOpacity } from "react-native";
 import { Drawer } from "expo-router/drawer";
-import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import Icon from "react-native-vector-icons/MaterialIcons";
+
 import Sidebar from "../../components/Sidebar";
 
 export default function Layout() {
@@ -24,9 +25,33 @@ export default function Layout() {
             paddingHorizontal: 20,
           },
           headerRight: () => (
-            <TouchableOpacity onPress={() => navigation.navigate("scanner")}>
-              <Icon name="qrcode-scan" size={30} color="black" />
-            </TouchableOpacity>
+            <View
+              style={{
+                display: "flex",
+                alignItems: "center",
+                flexDirection: "row",
+                gap: 10,
+              }}
+            >
+              <TouchableOpacity style={{ position: "relative" }}>
+                <Icon name="notifications-none" size={30} color="black" />
+                {/* <View
+                  style={{
+                    position: "absolute",
+                    backgroundColor: "red",
+                    width: 12,
+                    height: 12,
+                    top: 0,
+                    right: 5,
+                    borderRadius: 999,
+                  }}
+                ></View> */}
+              </TouchableOpacity>
+
+              <TouchableOpacity onPress={() => navigation.navigate("scanner")}>
+                <Icon name="qr-code-scanner" size={30} color="black" />
+              </TouchableOpacity>
+            </View>
           ),
         })}
       ></Drawer.Screen>
