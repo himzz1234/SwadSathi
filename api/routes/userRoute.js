@@ -114,65 +114,59 @@ router.post(
   }
 );
 
-router.put('/update',fetchuser, 
-[
-  // body("old_password", "Password must be 8 characters").isLength({min: 8}),
-  // body("new_password", "Password must be 8 characters").isLength({min: 8}),
-  //body("name","Enter a valid name").isLength({min: 3})
-], 
-async (req, res)=>{
-  //let success = false;
-  //const errors = validationResult(req);
-  // let userId = req.user.id
-  // const userdata = await User.findById(userId)
-  // res.send(userdata.password)
-  // let success = false;
-  // const errors = validationResult(req);
-  // if(!errors.isEmpty()){
-  //   return res.status(500).json({error: errors.array()});
-  // }
-  const {name, old_password, new_password} = req.body
-  try{
-    let userId = req.user.id;
-    let userdata = await User.findById(userId);
-    let hashedPassword = ''
+router.put(
+  "/update",
+  fetchuser,
+  [
+    // body("old_password", "Password must be 8 characters").isLength({ min: 8 }),
+    // body("new_password", "Password must be 8 characters").isLength({ min: 8 }),
+    // body("name", "Enter a valid name").isLength({ min: 3 }),
+  ],
+  async (req, res) => {
+    //let success = false;
+    //const errors = validationResult(req);
+    // let userId = req.user.id
+    // const userdata = await User.findById(userId)
+    // res.send(userdata.password)
+    // let success = false;
+    // const errors = validationResult(req);
+    // if(!errors.isEmpty()){
+    //   return res.status(500).json({error: errors.array()});
+    // }
+    const { name, old_password, new_password } = req.body;
+    try {
+      let userId = req.user.id;
+      let userdata = await User.findById(userId);
+      let hashedPassword = "";
 
-    if(old_password && new_password){
-      const passwordCompare = await bcrypt.compare(old_password, userdata.password);
-      if(passwordCompare){
-        const salt = await bcrypt.genSalt(10);
-        hashedPassword = await bcrypt.hash(new_password, salt);
+      if (old_password && new_password) {
+        const passwordCompare = await bcrypt.compare(
+          old_password,
+          userdata.password
+        );
+        if (passwordCompare) {
+          const salt = await bcrypt.genSalt(10);
+          hashedPassword = await bcrypt.hash(new_password, salt);
+        }
       }
+
+      let newUserdata = await User.updateOne(
+        { _id: userId },
+        {
+          $set: {
+            ...req.body,
+            password: !hashedPassword ? userdata.password : hashedPassword,
+          },
+        }
+      );
+
+      success = true;
+      res.status(200).json({ message: "Updated successfully!", newUserdata });
+    } catch (error) {
+      res.send("Some error occcured!", error);
     }
-
-    let newUserdata = await User.updateOne({_id: userId},{$set: {
-       ...req.body, password: !hashedPassword ? userdata.password : hashedPassword
-    }})
-
-    success = true;
-    res.status(200).json({ message: 'Updated successfully!', newUserdata})
-    // else{
-    //   let newUserdata = await User.updateOne({_id: userId},{$set: {...req.body}})
-    //   success = true;
-    //   res.status(200).json({success, message: 'Name updated successfully!', newUserdata})
-    // }
-    // const passwordCompare = await bcrypt.compare(old_password, userdata.password);
-    // if(passwordCompare){
-      // const salt = await bcrypt.genSalt(10);
-      // const hashedPassword = await bcrypt.hash(new_password, salt);
-       //let newUserdata = await User.updateOne({_id: userId},{$set: {...req.body, password: has}})
-      // success = true;
-      //res.status(200).json({success, message: 'User updated successfully!', newUserdata})
-    // }
-    //const salt = await bcrypt.genSalt(10);
-    //const hashedPassword = await bcrypt.hash(req.body.password, salt);
-    //let userdata = await User.findByIdAndUpdate(userId, {name: req.body.name, password: hashedPassword})
-    
   }
-  catch(error){
-    res.send("Some error occcured!", error);
-  }
-})
+);
 
 //Logged in user details
 router.get("/getdetails", fetchuser, async (req, res) => {
@@ -195,7 +189,10 @@ router.post("/saveCanteens/:canteenId", async (req, res) => {
     const canteenId = req.params.canteenId;
 
     const user = await User.findById(userId);
-    const findcanteen = await Canteen.findById(canteenId).select("-password").populate('menu').exec();
+    const findcanteen = await Canteen.findById(canteenId)
+      .select("-password")
+      .populate("menu")
+      .exec();
 
     if (findcanteen && user) {
       if (user.savedCanteens.includes(canteenId)) {
