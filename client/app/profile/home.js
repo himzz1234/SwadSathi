@@ -1,52 +1,66 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import {
   StyleSheet,
   Text,
   View,
   FlatList,
   TouchableOpacity,
+  TextInput,
 } from "react-native";
-import Icon from "react-native-vector-icons/AntDesign";
 import { AuthContext } from "../../context/AuthContext";
 import { useRouter } from "expo-router";
-import axios from "../../axios";
 
 export default function Home() {
+  const [input, setInput] = useState("");
   const { user } = useContext(AuthContext);
   const router = useRouter();
 
   const navigateCanteen = async (canteenId) => {
-    const res = await axios.get(`/auth/admin/getcanteendetails/${canteenId}`);
-    router.push({ pathname: `/canteen/${canteenId}`, params: res.data });
+    router.push({
+      pathname: `/canteen/${canteenId}`,
+      params: { canteenId },
+    });
   };
 
   return (
     <View style={styles.container}>
-      <Text style={{ fontSize: 20, marginTop: 10, fontWeight: 600 }}>
-        Recently Scanned
+      <TextInput
+        value={input}
+        placeholder="Search in scanned canteens"
+        onChangeText={(text) => setInput(text)}
+        style={{
+          backgroundColor: "#f6f6f6",
+          borderRadius: 5,
+          height: 50,
+          paddingHorizontal: 10,
+          fontSize: 16,
+        }}
+      />
+
+      <Text style={{ fontSize: 20, marginTop: 20, fontWeight: 600 }}>
+        Recently Scanned ({user.savedCanteens.length})
       </Text>
 
       <FlatList
-        data={user.savedCanteens}
+        data={user.savedCanteens.sort(
+          (a, b) => b.workingStatus - a.workingStatus
+        )}
         style={{ marginTop: 20 }}
         renderItem={({ item }) => {
-          return (
-            <TouchableOpacity
-              // disabled={!item.workingStatus}
-              onPress={() => navigateCanteen(item._id)}
-              style={[
-                styles.itemContainer,
-                { opacity: item.workingStatus ? 1 : 0.5 },
-              ]}
-            >
-              <Text style={styles.item}>{item.name}</Text>
-
-              {/* <View style={styles.itemRating}>
-                <Icon name="star" size={10} color="#f5c71a" />
-                <Text>3.6</Text>
-              </View> */}
-            </TouchableOpacity>
-          );
+          if (item.name.toUpperCase().includes(input.toUpperCase())) {
+            return (
+              <TouchableOpacity
+                disabled={!item.workingStatus}
+                onPress={() => navigateCanteen(item._id)}
+                style={[
+                  styles.itemContainer,
+                  { opacity: item.workingStatus ? 1 : 0.3 },
+                ]}
+              >
+                <Text style={styles.item}>{item.name}</Text>
+              </TouchableOpacity>
+            );
+          }
         }}
       />
     </View>
@@ -62,10 +76,10 @@ const styles = StyleSheet.create({
     color: "blue",
   },
   itemContainer: {
-    height: 80,
+    height: 120,
     position: "relative",
     marginBottom: 10,
-    backgroundColor: "#efeeea",
+    backgroundColor: "#d1d1d1",
     borderRadius: 10,
   },
   item: {
