@@ -193,7 +193,10 @@ router.post("/saveCanteens/:canteenId", async (req, res) => {
     const canteenId = req.params.canteenId;
 
     const user = await User.findById(userId);
-    const findcanteen = await Canteen.findById(canteenId).select("-password").populate('menu').exec();
+    const findcanteen = await Canteen.findById(canteenId)
+      .select("-password")
+      .populate("menu")
+      .exec();
 
     if (findcanteen && user) {
       if (user.savedCanteens.includes(canteenId)) {
