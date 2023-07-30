@@ -10,10 +10,9 @@ const FoodItem = require("../models/FoodItem");
 const dotenv = require("dotenv");
 dotenv.config();
 
-//const JWT_secret = 'akshay@123'
+
 
 //Creating a user:
-
 router.post(
   "/signup",
   [
@@ -62,7 +61,6 @@ router.post(
 );
 
 // Login:
-
 router.post(
   "/signin",
   [
@@ -77,7 +75,6 @@ router.post(
     }
 
     const { email, password } = req.body;
-    //console.log(email, password);
     try {
       let user = await User.findOne({ email })
         .populate({ path: "savedCanteens", select: ["name", "workingStatus"] })
@@ -114,65 +111,65 @@ router.post(
   }
 );
 
-router.put('/update',fetchuser, 
+//Update Profile
+router.put('/updateprofile',fetchuser, 
 [
-  // body("old_password", "Password must be 8 characters").isLength({min: 8}),
-  // body("new_password", "Password must be 8 characters").isLength({min: 8}),
-  //body("name","Enter a valid name").isLength({min: 3})
+  body("name","Enter a valid name").isLength({min: 3}),
+  body("email","Email should be valid").isEmail()
 ], 
 async (req, res)=>{
-  //let success = false;
-  //const errors = validationResult(req);
-  // let userId = req.user.id
-  // const userdata = await User.findById(userId)
-  // res.send(userdata.password)
-  // let success = false;
-  // const errors = validationResult(req);
-  // if(!errors.isEmpty()){
-  //   return res.status(500).json({error: errors.array()});
-  // }
-  const {name, old_password, new_password} = req.body
+  const newdata = req.body;
+  const errors = validationResult(req);
+  if(!errors.isEmpty()){
+    return res.status(500).json({error: errors.array()});
+  }
   try{
     let userId = req.user.id;
-    let userdata = await User.findById(userId);
-    let hashedPassword = ''
-
-    if(old_password && new_password){
-      const passwordCompare = await bcrypt.compare(old_password, userdata.password);
-      if(passwordCompare){
-        const salt = await bcrypt.genSalt(10);
-        hashedPassword = await bcrypt.hash(new_password, salt);
-      }
+    let userdata = await User.findByIdAndUpdate(userId, newdata);
+    if(!userdata){
+      return res.status(404).json({error: "User not found."})
     }
-
-    let newUserdata = await User.updateOne({_id: userId},{$set: {
-       ...req.body, password: !hashedPassword ? userdata.password : hashedPassword
-    }})
-
-    success = true;
-    res.status(200).json({ message: 'Updated successfully!', newUserdata})
-    // else{
-    //   let newUserdata = await User.updateOne({_id: userId},{$set: {...req.body}})
-    //   success = true;
-    //   res.status(200).json({success, message: 'Name updated successfully!', newUserdata})
-    // }
-    // const passwordCompare = await bcrypt.compare(old_password, userdata.password);
-    // if(passwordCompare){
-      // const salt = await bcrypt.genSalt(10);
-      // const hashedPassword = await bcrypt.hash(new_password, salt);
-       //let newUserdata = await User.updateOne({_id: userId},{$set: {...req.body, password: has}})
-      // success = true;
-      //res.status(200).json({success, message: 'User updated successfully!', newUserdata})
-    // }
-    //const salt = await bcrypt.genSalt(10);
-    //const hashedPassword = await bcrypt.hash(req.body.password, salt);
-    //let userdata = await User.findByIdAndUpdate(userId, {name: req.body.name, password: hashedPassword})
-    
+    return res.status(200).json({ message: 'Updated successfully!', newdata})
   }
   catch(error){
-    res.send("Some error occcured!", error);
+    res.status(500).json({error: "Failed to update profile."});
   }
 })
+
+
+//Update Password
+router.put('/updatepassword',fetchuser,[
+  body("newpassword","Passsword should be atleast 8 characters.").isLength({min: 8})
+],async (req, res)=>{
+  const errors = validationResult(req);
+  if(!errors.isEmpty()){
+    return res.status(500).json({error: errors.array()});
+  }
+  let success = false;
+  const {oldpassword, newpassword} = req.body;
+  try{
+    let userId = req.user.id;
+    const userdata = await User.findById(userId);
+    if(oldpassword && newpassword){
+      const passwordCompare = await bcrypt.compare(oldpassword, userdata.password);
+      if(!passwordCompare){
+        return res.send("Invalid old password!")
+      }
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(newpassword, salt);
+      let newdata = await User.updateOne({_id: userId},{$set: {password: hashedPassword}});
+      if(!newdata){
+        return res.send("Password could not be updated");
+      }
+      success = true;
+      return res.status(200).json({success, message: "Password updated successfully!", newdata})
+    }
+  }
+  catch(error){
+    return res.status(500).json({message: "Internal Server Error!"});
+  }
+})
+
 
 //Logged in user details
 router.get("/getdetails", fetchuser, async (req, res) => {
@@ -189,6 +186,7 @@ router.get("/getdetails", fetchuser, async (req, res) => {
   }
 });
 
+//Update recently saved canteens
 router.post("/saveCanteens/:canteenId", async (req, res) => {
   try {
     const userId = req.body.userId;
