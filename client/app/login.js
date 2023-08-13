@@ -1,5 +1,12 @@
 import { useContext, useState } from "react";
-import { View, Text, StyleSheet, TextInput, Pressable } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TextInput,
+  Pressable,
+  TouchableOpacity,
+} from "react-native";
 import { AuthContext } from "../context/AuthContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "../axios";
@@ -49,11 +56,11 @@ export default function Login() {
         />
       </View>
 
-      <Pressable style={styles.button} onPress={login}>
+      <TouchableOpacity style={styles.button} onPress={login}>
         <Text style={{ color: "white", textAlign: "center", fontSize: 16 }}>
           Login
         </Text>
-      </Pressable>
+      </TouchableOpacity>
 
       <Text style={{ textAlign: "center", marginTop: 15, fontSize: 16 }}>
         Don't have an account?{" "}

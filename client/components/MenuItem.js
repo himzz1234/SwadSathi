@@ -1,7 +1,38 @@
+import { useContext, useState } from "react";
 import { View, Image, Text } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import { CartContext } from "../context/CartContext";
 
 export default function MenuItem({ item }) {
+  const { cart, dispatch } = useContext(CartContext);
+  const [quantity, setQuantity] = useState(
+    cart.findIndex((citem) => citem.id == item._id) > -1
+      ? cart.find((citem) => citem.id == item._id).qty
+      : 0
+  );
+
+  const addItem = () => {
+    setQuantity((prev) => prev + 1);
+
+    dispatch({
+      type: "ADD_ITEM",
+      payload: {
+        id: item._id,
+        name: item.itemName,
+        price: item.itemPrice,
+        image: item.itemImage,
+        qty: 1,
+      },
+    });
+  };
+
+  const removeItem = () => {
+    if (!quantity) return;
+
+    setQuantity((prev) => prev - 1);
+    dispatch({ type: "REMOVE_ITEM", payload: item._id });
+  };
+
   return (
     <View
       style={{
@@ -44,6 +75,7 @@ export default function MenuItem({ item }) {
             }}
           >
             <TouchableOpacity
+              onPress={removeItem}
               style={{
                 borderRightWidth: 1,
                 paddingHorizontal: 10,
@@ -52,8 +84,9 @@ export default function MenuItem({ item }) {
             >
               <Text style={{ fontSize: 20 }}>-</Text>
             </TouchableOpacity>
-            <Text style={{ fontSize: 18, fontWeight: 600 }}>2</Text>
+            <Text style={{ fontSize: 18, fontWeight: 600 }}>{quantity}</Text>
             <TouchableOpacity
+              onPress={addItem}
               style={{
                 borderLeftWidth: 1,
                 paddingHorizontal: 10,

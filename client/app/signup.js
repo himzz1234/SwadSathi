@@ -1,7 +1,14 @@
 import axios from "../axios";
 import { useContext, useState } from "react";
 import { Link, useRouter } from "expo-router";
-import { View, Text, StyleSheet, TextInput, Pressable } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TextInput,
+  Pressable,
+  TouchableOpacity,
+} from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AuthContext } from "../context/AuthContext";
 
@@ -60,11 +67,11 @@ export default function Signup() {
         />
       </View>
 
-      <Pressable style={styles.button} onPress={register}>
+      <TouchableOpacity style={styles.button} onPress={register}>
         <Text style={{ color: "white", textAlign: "center", fontSize: 16 }}>
           Continue
         </Text>
-      </Pressable>
+      </TouchableOpacity>
 
       <Text style={{ textAlign: "center", marginTop: 15, fontSize: 16 }}>
         Already have an account?{" "}

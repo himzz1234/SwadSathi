@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
     height: 120,
     position: "relative",
     marginBottom: 10,
-    backgroundColor: "#d1d1d1",
+    backgroundColor: "#F5F5F5",
     borderRadius: 10,
   },
   item: {
