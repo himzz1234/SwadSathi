@@ -1,11 +1,14 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { BarCodeScanner } from "expo-barcode-scanner";
 import { router } from "expo-router";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import ScannerFrame from "../components/ScannerFrame";
+import axios from "../axios";
+import { AuthContext } from "../context/AuthContext";
 
 export default function Scanner() {
+  const { user } = useContext(AuthContext);
   const [stopAnimation, setStopAnimation] = useState();
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
@@ -23,6 +26,10 @@ export default function Scanner() {
     setScanned(true);
 
     const { canteenId, secret } = JSON.parse(data);
+    await axios.post(`/auth/user/saveCanteens/${canteenId}`, {
+      userId: user._id,
+    });
+
     if (secret == "my-canteen") {
       router.push({
         pathname: `/canteen/${canteenId}`,

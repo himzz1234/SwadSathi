@@ -34,21 +34,33 @@ const CanteenDetails = () => {
         style={{
           display: "flex",
           flexDirection: "row",
-          alignItems: "center",
         }}
       >
-        <TouchableOpacity onPress={() => router.back()}>
-          <Icon name="arrow-left" size={20} color="black" />
+        <TouchableOpacity
+          style={{ width: "20%" }}
+          onPress={() => {
+            router.back();
+          }}
+        >
+          <Icon name="arrow-left" size={15} color="black" />
         </TouchableOpacity>
-      </View>
-
-      <View style={{ marginTop: 20, flex: 1 }}>
-        <View style={{ display: "flex", gap: 5 }}>
-          <Text style={{ fontSize: 24, fontWeight: 600 }}>{canteen.name}</Text>
-          <Text style={{ fontSize: 16 }}>{canteen.address}</Text>
+        <View style={{ width: "60%" }}>
+          <Text
+            style={{
+              textAlign: "center",
+              fontSize: 20,
+              fontWeight: 600,
+            }}
+          >
+            {canteen.name}
+          </Text>
+          <Text style={{ fontSize: 16, textAlign: "center", marginTop: 5 }}>
+            {canteen.address}
+          </Text>
         </View>
-
-        <View style={{ marginTop: 20 }}>
+      </View>
+      <View style={{ marginTop: 20, flex: 1 }}>
+        <View>
           <FlatList
             data={canteen.menu}
             style={{ marginTop: 20 }}

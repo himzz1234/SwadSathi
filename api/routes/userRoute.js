@@ -10,8 +10,6 @@ const FoodItem = require("../models/FoodItem");
 const dotenv = require("dotenv");
 dotenv.config();
 
-
-
 //Creating a user:
 router.post(
   "/signup",
@@ -112,64 +110,82 @@ router.post(
 );
 
 //Update Profile
-router.put('/updateprofile',fetchuser, 
-[
-  body("name","Enter a valid name").isLength({min: 3}),
-  body("email","Email should be valid").isEmail()
-], 
-async (req, res)=>{
-  const newdata = req.body;
-  const errors = validationResult(req);
-  if(!errors.isEmpty()){
-    return res.status(500).json({error: errors.array()});
-  }
-  try{
-    let userId = req.user.id;
-    let userdata = await User.findByIdAndUpdate(userId, newdata);
-    if(!userdata){
-      return res.status(404).json({error: "User not found."})
+router.put(
+  "/updateprofile",
+  fetchuser,
+  [
+    body("name", "Enter a valid name").isLength({ min: 3 }),
+    body("email", "Email should be valid").isEmail(),
+  ],
+  async (req, res) => {
+    const newdata = req.body;
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(500).json({ error: errors.array() });
     }
-    return res.status(200).json({ message: 'Updated successfully!', newdata})
+    try {
+      let userId = req.user.id;
+      let userdata = await User.findByIdAndUpdate(userId, newdata);
+      if (!userdata) {
+        return res.status(404).json({ error: "User not found." });
+      }
+      return res
+        .status(200)
+        .json({ message: "Updated successfully!", newdata });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to update profile." });
+    }
   }
-  catch(error){
-    res.status(500).json({error: "Failed to update profile."});
-  }
-})
-
+);
 
 //Update Password
-router.put('/updatepassword',fetchuser,[
-  body("newpassword","Passsword should be atleast 8 characters.").isLength({min: 8})
-],async (req, res)=>{
-  const errors = validationResult(req);
-  if(!errors.isEmpty()){
-    return res.status(500).json({error: errors.array()});
-  }
-  let success = false;
-  const {oldpassword, newpassword} = req.body;
-  try{
-    let userId = req.user.id;
-    const userdata = await User.findById(userId);
-    if(oldpassword && newpassword){
-      const passwordCompare = await bcrypt.compare(oldpassword, userdata.password);
-      if(!passwordCompare){
-        return res.send("Invalid old password!")
+router.put(
+  "/updatepassword",
+  fetchuser,
+  [
+    body("newpassword", "Passsword should be atleast 8 characters.").isLength({
+      min: 8,
+    }),
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(500).json({ error: errors.array() });
+    }
+    let success = false;
+    const { oldpassword, newpassword } = req.body;
+    try {
+      let userId = req.user.id;
+      const userdata = await User.findById(userId);
+      if (oldpassword && newpassword) {
+        const passwordCompare = await bcrypt.compare(
+          oldpassword,
+          userdata.password
+        );
+        if (!passwordCompare) {
+          return res.send("Invalid old password!");
+        }
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(newpassword, salt);
+        let newdata = await User.updateOne(
+          { _id: userId },
+          { $set: { password: hashedPassword } }
+        );
+        if (!newdata) {
+          return res.send("Password could not be updated");
+        }
+        success = true;
+        return res.status(200).json({
+          success,
+          message: "Password updated successfully!",
+          newdata,
+        });
       }
-      const salt = await bcrypt.genSalt(10);
-      const hashedPassword = await bcrypt.hash(newpassword, salt);
-      let newdata = await User.updateOne({_id: userId},{$set: {password: hashedPassword}});
-      if(!newdata){
-        return res.send("Password could not be updated");
-      }
-      success = true;
-      return res.status(200).json({success, message: "Password updated successfully!", newdata})
+    } catch (error) {
+      return res.status(500).json({ message: "Internal Server Error!" });
     }
   }
-  catch(error){
-    return res.status(500).json({message: "Internal Server Error!"});
-  }
-})
-
+);
 
 //Logged in user details
 router.get("/getdetails", fetchuser, async (req, res) => {
@@ -188,6 +204,7 @@ router.get("/getdetails", fetchuser, async (req, res) => {
 
 //Update recently saved canteens
 router.post("/saveCanteens/:canteenId", async (req, res) => {
+  console.log(req.params.canteenId);
   try {
     const userId = req.body.userId;
     const canteenId = req.params.canteenId;
@@ -199,12 +216,15 @@ router.post("/saveCanteens/:canteenId", async (req, res) => {
       .exec();
 
     if (findcanteen && user) {
+      console.log("mai");
       if (user.savedCanteens.includes(canteenId)) {
+        console.log("already");
         res.status(200).json({
           message: "This canteen already exists in the [Saved Canteens].",
           canteen: findcanteen,
         });
       } else {
+        console.log("nahi hai");
         user.savedCanteens.push(canteenId);
         user.save();
         res.status(200).json({

@@ -21,7 +21,6 @@ export default function Checkout() {
         style={{
           display: "flex",
           flexDirection: "row",
-          alignItems: "center",
         }}
       >
         <TouchableOpacity
