@@ -6,6 +6,13 @@ export default function CartReducer(state, action) {
       );
 
       newCart = [...state.cart];
+      if (
+        newCart.length &&
+        action.payload.cId !== newCart[newCart.length - 1].cId
+      ) {
+        newCart = [];
+      }
+
       if (findIndex != -1) {
         newCart = newCart.map((item) =>
           item.id == action.payload.id ? { ...item, qty: item.qty + 1 } : item

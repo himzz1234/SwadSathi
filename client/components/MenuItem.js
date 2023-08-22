@@ -18,6 +18,7 @@ export default function MenuItem({ item }) {
       type: "ADD_ITEM",
       payload: {
         id: item._id,
+        cId: item.canteenId,
         name: item.itemName,
         price: item.itemPrice,
         image: item.itemImage,
