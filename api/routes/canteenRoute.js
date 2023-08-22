@@ -118,7 +118,7 @@ router.get("/getcanteendetails/:id", async (req, res) => {
       "-password",
       "-email",
       "-dateCreated",
-    ]).populate({path: 'menu', select: ['itemName','itemImage','itemPrice','availability']}).exec();
+    ]).populate({path: 'menu', select: ['itemName','itemImage','itemPrice','availability','canteenId']}).exec();
     //const canteen = await Canteen.findById(id).select()
     res.send(canteen);
   } catch (error) {
