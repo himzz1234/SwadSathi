@@ -65,6 +65,6 @@ router.get("/getUsers", getUsers);
 
 router.delete("/deleteUser", userAuth, deleteUser);
 
-router.post("/saveCanteenId/:canteenId", userAuth, saveCanteenId);
+router.post("/saveCanteenId/:canteenId", saveCanteenId);
 
 module.exports = router;
