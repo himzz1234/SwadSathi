@@ -1,25 +1,29 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
-const FoodItemSchema = new Schema(
+const ItemSchema = new Schema(
     {
-        itemName: {
+        name: {
             type: String,
             required: true,
+        },
+        profilePicture: {
+            type: String,
+            default: ""
         },
         canteenId: {
             type: String,
             required: true
         },
-        itemImage: {
+        image: {
             type: String,
             required: true,
         },
-        itemPrice: {
+        price: {
             type: Number,
             required: true,
         },
-        availability: {
+        isAvailable: {
             type: Boolean,
             required: true,
         }
@@ -27,5 +31,5 @@ const FoodItemSchema = new Schema(
     }
 );
 
-const Fooditem = mongoose.model('fooditem', FoodItemSchema);
-module.exports = Fooditem
+const Item = mongoose.model('item', ItemSchema);
+module.exports = Item

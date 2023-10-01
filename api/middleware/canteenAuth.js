@@ -9,7 +9,8 @@ const fetchcanteen = (req, res, next)=>{
     }
     try{
         const data = jwt.verify(token,process.env.JWT_secret);
-        req.admin = data.admin;
+        req.admin = data;
+        console.log(req.admin)
         next();
     }
     catch(error){

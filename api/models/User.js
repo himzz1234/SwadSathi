@@ -7,6 +7,11 @@ const UserSchema = new Schema(
             type: String,
             required: true,
         },
+        isCanteen: {
+            type: Boolean,
+            required: true,
+            default: false
+        },
         email: {
             type: String,
             required: true,

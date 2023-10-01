@@ -8,6 +8,7 @@ export default function Settings() {
         <Text style={styles.text}>
           Update Profile
         </Text>
+        
       </TouchableOpacity>
       <TouchableOpacity onPress={()=>router.push({pathname: '/profileUpdate/passwordUpdate'})}>
         <Text style={styles.text}>
