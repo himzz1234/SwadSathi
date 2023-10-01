@@ -24,7 +24,7 @@ export default function Login() {
       password,
     };
 
-    const res = await axios.post("/auth/user/signin", credentials);
+    const res = await axios.post("/auth/user/login", credentials);
 
     if (res.status == 200) {
       await AsyncStorage.setItem("auth-token", res.data.token);
