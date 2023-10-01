@@ -7,7 +7,7 @@ dotenv.config();
 //@desc Create Order
 //@route
 const createOrder = async (req, res) => {
-  const user = req.user.id;
+  const userId = req.user.id;
   const {
     canteen,
     orderItems,

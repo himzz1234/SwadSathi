@@ -100,6 +100,21 @@ const updateUserProfile = async(req, res)=>{
     }
 } 
 
+
+const getUserDetails = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const user = await User.findById(userId)
+      .select("-password")
+      .populate({ path: "savedCanteens", select: ["name", "workingStatus"] })
+      .exec();
+    res.send(user);
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send("Some error occured.");
+  }
+}
+
 //@desc update User password
 //@route PUT api/user/password
 const updateUserPassword = async(req, res)=>{
@@ -199,5 +214,5 @@ const saveCanteenId = async(req, res)=>{
       }
 }
 
-module.exports = {register, login, updateUserProfile, updateUserPassword, getUsers, saveCanteenId, deleteUser}
+module.exports = {register, login, updateUserProfile, updateUserPassword, getUserDetails, getUsers, saveCanteenId, deleteUser}
 

@@ -13,7 +13,7 @@ app.use(cookieParser());
 //app.use('/api/items',require('./routes/foodItemRoute'));
 app.use("/api/auth/user", require("./routes/userRoutes"));
 app.use("/api/auth/admin", require("./routes/canteenRoutes"));
-app.use("/api/order", require("./routes/orderRoutes.js"))
+app.use("/api/orders", require("./routes/orderRoutes.js"))
 
 app.listen(port, () => {
   console.log(`Server running on ${port}`);
