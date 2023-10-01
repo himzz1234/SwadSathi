@@ -4,7 +4,6 @@ import {
   Text,
   StyleSheet,
   TextInput,
-  Pressable,
   TouchableOpacity,
 } from "react-native";
 import { AuthContext } from "../context/AuthContext";
@@ -64,7 +63,7 @@ export default function Login() {
 
       <Text style={{ textAlign: "center", marginTop: 15, fontSize: 16 }}>
         Don't have an account?{" "}
-        <Link href="/signup" style={{ color: "#0065ff" }}>
+        <Link href="/signup" style={{ color: "#FF4136" }}>
           Signup
         </Link>
       </Text>
@@ -86,7 +85,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   button: {
-    backgroundColor: "#0065ff",
+    backgroundColor: "#FF4136",
     paddingVertical: 10,
     borderRadius: 5,
   },

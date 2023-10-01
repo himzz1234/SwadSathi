@@ -37,7 +37,7 @@ export default function Home() {
         }}
       />
 
-      <Text style={{ fontSize: 20, marginTop: 20, fontWeight: 600 }}>
+      <Text style={{ fontSize: 18, marginTop: 20, fontWeight: 600 }}>
         Recently Scanned ({user.savedCanteens.length})
       </Text>
 

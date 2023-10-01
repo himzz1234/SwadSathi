@@ -39,7 +39,8 @@ export default function Sidebar(props) {
         >
           <Image
             style={{ width: 40, height: 40 }}
-            source={require("../assets/images/default.png")}
+            source={require("../assets/images/profile.jpeg")}
+            borderRadius={999}
           />
           <Text style={{ fontSize: 18, fontWeight: 600 }}>{user.name}</Text>
         </View>

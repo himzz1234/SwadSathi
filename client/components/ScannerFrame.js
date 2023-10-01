@@ -1,3 +1,4 @@
+import { Dimensions } from "react-native";
 import { useEffect, useRef } from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import * as Animatable from "react-native-animatable";
@@ -21,9 +22,9 @@ export default function ScannerFrame() {
       style={{
         height: 100,
         zIndex: 1,
-        marginHorizontal: 10,
         borderTopWidth: 5,
         borderTopColor: "rgb(128, 210, 247)",
+        width: Dimensions.get("screen").width - 20,
       }}
       colors={["rgba(128, 210, 247, 0.8)", "transparent"]}
     ></AnimatedLinearGradient>

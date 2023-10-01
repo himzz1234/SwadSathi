@@ -37,18 +37,19 @@ export default function MenuItem({ item }) {
   return (
     <View
       style={{
-        display: "flex",
-        flexDirection: "row",
-        alignItems: "flex-start",
         gap: 10,
+        display: "flex",
+        padding: 10,
+        borderRadius: 5,
+        width: "47.5%",
+        alignItems: "center",
+        backgroundColor: "#F8F8F8",
       }}
     >
-      <View>
-        <Image
-          source={{ uri: item.itemImage }}
-          style={{ width: 100, height: 100, borderRadius: 5 }}
-        />
-      </View>
+      <Image
+        source={{ uri: item.itemImage }}
+        style={{ width: "100%", height: 120, borderRadius: 5 }}
+      />
       <View
         style={{
           flex: 1,
@@ -57,9 +58,12 @@ export default function MenuItem({ item }) {
           flexDirection: "row",
         }}
       >
-        <View style={{ flex: 1, display: "flex" }}>
-          <Text style={{ fontSize: 17, fontWeight: 600, flex: 1 }}>
+        <View style={{ flex: 1, display: "flex", gap: 10 }}>
+          <Text style={{ fontSize: 14.5, fontWeight: 600, flex: 1 }}>
             {item.itemName}
+          </Text>
+          <Text style={{ fontSize: 14, fontWeight: "bold" }}>
+            ₹{item.itemPrice}
           </Text>
 
           <View
@@ -83,9 +87,9 @@ export default function MenuItem({ item }) {
                 borderRightColor: "#c1bfbf",
               }}
             >
-              <Text style={{ fontSize: 20 }}>-</Text>
+              <Text style={{ fontSize: 18 }}>-</Text>
             </TouchableOpacity>
-            <Text style={{ fontSize: 18, fontWeight: 600 }}>{quantity}</Text>
+            <Text style={{ fontSize: 15, fontWeight: 600 }}>{quantity}</Text>
             <TouchableOpacity
               onPress={addItem}
               style={{
@@ -94,12 +98,10 @@ export default function MenuItem({ item }) {
                 borderLeftColor: "#c1bfbf",
               }}
             >
-              <Text style={{ fontSize: 20 }}>+</Text>
+              <Text style={{ fontSize: 18 }}>+</Text>
             </TouchableOpacity>
           </View>
         </View>
-
-        <Text style={{ fontSize: 16 }}>₹{item.itemPrice}</Text>
       </View>
     </View>
   );
