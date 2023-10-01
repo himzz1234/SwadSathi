@@ -5,7 +5,8 @@ const { body, validationResult } = require("express-validator");
 const Item = require("../models/Item");
 const dotenv = require("dotenv");
 const generateToken = require("../utils/generateToken");
-const cloudinary = require('cloudinary').v2
+const cloudinary = require("cloudinary").v2;
+
 // @desc Canteen Login
 // @route POST canteen/login
 const register = async (req, res) => {
@@ -37,7 +38,7 @@ const register = async (req, res) => {
     //   },
     // };
 
-    const authtoken = generateToken(admin._id)
+    const authtoken = generateToken(admin._id);
     success = true;
     res.json({ success, authtoken, isCanteen: admin.isCanteen });
   } catch (error) {
@@ -59,7 +60,7 @@ const login = async (req, res) => {
     let admin = await Canteen.findOne({ email });
     const passwordCompare = await bcrypt.compare(password, admin.password);
     if (admin && passwordCompare) {
-      const authtoken = generateToken(admin._id)
+      const authtoken = generateToken(admin._id);
       success = true;
       res.json({
         success,
@@ -89,32 +90,30 @@ const updateProfile = async (req, res) => {
   const canteenId = req.admin.admin.id;
   try {
     const canteen = await Canteen.findById(canteenId);
-    if(req.file){
+    if (req.file) {
       const result = await cloudinary.uploader.upload(req.file.path, {
         public_id: `${canteenId}_profile`,
         width: 500,
         height: 500,
-        crop: 'fill'
-      })
+        crop: "fill",
+      });
     }
     if (canteen) {
-      canteen.name = req.body.name,
-      canteen.profilePicture = result.url,
-      canteen.address = req.body.address,
-      canteen.isOpen = req.body.isOpen,
-      canteen.phoneNumber = req.body.phoneNumber,
-      canteen.description = req.body.description;
+      (canteen.name = req.body.name),
+        (canteen.profilePicture = result.url),
+        (canteen.address = req.body.address),
+        (canteen.isOpen = req.body.isOpen),
+        (canteen.phoneNumber = req.body.phoneNumber),
+        (canteen.description = req.body.description);
       const updatedProfile = await canteen.save();
-      res
-        .status(200)
-        .json({
-          message: "Profile updated successfully!",
-          name: updatedProfile.name,
-          address: updatedProfile.address,
-          isOpen: updatedProfile.isOpen,
-          description: updatedProfile.description,
-          phoneNumber: updatedProfile.phoneNumber
-        });
+      res.status(200).json({
+        message: "Profile updated successfully!",
+        name: updatedProfile.name,
+        address: updatedProfile.address,
+        isOpen: updatedProfile.isOpen,
+        description: updatedProfile.description,
+        phoneNumber: updatedProfile.phoneNumber,
+      });
     } else {
       res.status(404).json({ message: "Profile not found!" });
     }
@@ -151,29 +150,27 @@ const canteenOrders = async (req, res) => {};
 // @route POST canteen/item
 const addItem = async (req, res) => {
   try {
-  const canteenId = req.admin.admin.id;
-  const { name, image, price, isAvailable } = req.body;
-  newItem = new Item({
-    name,
-    canteenId,
-    image,
-    price,
-    isAvailable,
-  });
-  await newItem.save();
-  const mycanteen = await Canteen.findById(canteenId);
-  mycanteen.menu.push(newItem._id);
-  mycanteen.save();
-  res
-    .status(200)
-    .json({
+    const canteenId = req.admin.admin.id;
+    const { name, image, price, isAvailable } = req.body;
+    newItem = new Item({
+      name,
+      canteenId,
+      image,
+      price,
+      isAvailable,
+    });
+    await newItem.save();
+    const mycanteen = await Canteen.findById(canteenId);
+    mycanteen.menu.push(newItem._id);
+    mycanteen.save();
+    res.status(200).json({
       message: "Item added successfully!",
       newItem,
       menu: mycanteen.menu,
     });
   } catch (error) {
-     return res.status(500).json({ error: "Internal server error!" });
- }
+    return res.status(500).json({ error: "Internal server error!" });
+  }
 };
 
 // @desc Update Item
@@ -183,10 +180,10 @@ const updateItem = async (req, res) => {
     const itemId = req.params.id;
     const item = await Item.findById(itemId);
     if (item) {
-      item.name = req.body.name,
-      item.image = req.body.image,
-      item.price = req.body.price,
-      item.isAvailable = req.body.isAvailable;
+      (item.name = req.body.name),
+        (item.image = req.body.image),
+        (item.price = req.body.price),
+        (item.isAvailable = req.body.isAvailable);
       const updatedItem = await item.save();
       res
         .status(200)
