@@ -30,7 +30,7 @@ router.put('/order/:id/delivered', updateOrderToDelivered)
 
 router.get('/order/myOrders',userAuth, getMyOrders)
 
-router.get('/checkout', checkout)
+router.post('/checkout', checkout)
 
 module.exports = router
 
