@@ -75,7 +75,7 @@ export default function Signup() {
 
       <Text style={{ textAlign: "center", marginTop: 15, fontSize: 16 }}>
         Already have an account?{" "}
-        <Link href="/login" style={{ color: "#0065ff" }}>
+        <Link href="/login" style={{ color: "#FF4136" }}>
           Login
         </Link>
       </Text>
@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   button: {
-    backgroundColor: "#0065ff",
+    backgroundColor: "#FF4136",
     paddingVertical: 10,
     borderRadius: 5,
   },

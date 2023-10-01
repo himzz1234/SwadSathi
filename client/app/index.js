@@ -37,7 +37,7 @@ export default function Page() {
         dispatch({ type: "LOGIN_FAILURE" });
       }
 
-      router.replace("/signup");
+      router.replace("/main");
     };
 
     fetchUser();

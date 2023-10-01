@@ -1,5 +1,11 @@
 import { useContext, useEffect, useState } from "react";
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  Dimensions,
+} from "react-native";
 import { BarCodeScanner } from "expo-barcode-scanner";
 import { router } from "expo-router";
 import Icon from "react-native-vector-icons/FontAwesome5";
@@ -68,7 +74,14 @@ export default function Scanner() {
           Scan QR code
         </Text>
       </View>
-      <View style={{ position: "relative", marginTop: 40 }}>
+      <View
+        style={{
+          marginTop: 40,
+          alignSelf: "center",
+          position: "relative",
+          width: Dimensions.get("screen").width - 20,
+        }}
+      >
         <ScannerFrame {...stopAnimation} />
         <BarCodeScanner
           onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}

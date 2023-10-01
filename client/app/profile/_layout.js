@@ -17,7 +17,8 @@ export default function Layout() {
             <TouchableOpacity onPress={() => navigation.openDrawer()}>
               <Image
                 style={{ width: 40, height: 40 }}
-                source={require("../../assets/images/default.png")}
+                source={require("../../assets/images/profile.jpeg")}
+                borderRadius={999}
               />
             </TouchableOpacity>
           ),
@@ -35,17 +36,6 @@ export default function Layout() {
             >
               <TouchableOpacity style={{ position: "relative" }}>
                 <Icon name="notifications-none" size={30} color="black" />
-                {/* <View
-                  style={{
-                    position: "absolute",
-                    backgroundColor: "red",
-                    width: 12,
-                    height: 12,
-                    top: 0,
-                    right: 5,
-                    borderRadius: 999,
-                  }}
-                ></View> */}
               </TouchableOpacity>
 
               <TouchableOpacity onPress={() => navigation.navigate("scanner")}>
@@ -65,7 +55,8 @@ export default function Layout() {
             <TouchableOpacity onPress={() => navigation.openDrawer()}>
               <Image
                 style={{ width: 40, height: 40 }}
-                source={require("../../assets/images/default.png")}
+                source={require("../../assets/images/profile.jpeg")}
+                borderRadius={999}
               />
             </TouchableOpacity>
           ),

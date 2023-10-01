@@ -6,11 +6,15 @@ import {
   Text,
   View,
   TouchableOpacity,
+  Pressable,
 } from "react-native";
 import axios from "../../axios";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import MenuItem from "../../components/MenuItem";
 import { CartContext } from "../../context/CartContext";
+import * as Animatable from "react-native-animatable";
+
+AnimatedPressable = Animatable.createAnimatableComponent(Pressable);
 
 const CanteenDetails = () => {
   const { canteenId } = useLocalSearchParams();
@@ -59,13 +63,15 @@ const CanteenDetails = () => {
           </Text>
         </View>
       </View>
-      <View style={{ marginTop: 20, flex: 1 }}>
+      <View style={{ marginTop: 10, flex: 1 }}>
         <View>
           <FlatList
             data={canteen.menu}
             style={{ marginTop: 20 }}
+            numColumns={2}
+            columnWrapperStyle={{ justifyContent: "space-between" }}
             ItemSeparatorComponent={() => {
-              return <View style={{ height: 15, width: "100%" }}></View>;
+              return <View style={{ height: 10, width: "100%" }}></View>;
             }}
             renderItem={({ item }) => {
               return <MenuItem {...{ item }} />;
@@ -75,17 +81,20 @@ const CanteenDetails = () => {
       </View>
 
       {cart.length ? (
-        <TouchableOpacity
+        <AnimatedPressable
+          animation="bounceInUp"
           onPress={() => router.push("/checkout")}
           style={{
             width: "100%",
-            backgroundColor: "#FFC300",
+            backgroundColor: "#FF4136",
             paddingVertical: 15,
             borderRadius: 5,
           }}
         >
-          <Text style={{ textAlign: "center", fontSize: 16 }}>Go To Cart</Text>
-        </TouchableOpacity>
+          <Text style={{ textAlign: "center", fontSize: 16, color: "white" }}>
+            Go To Cart
+          </Text>
+        </AnimatedPressable>
       ) : (
         ""
       )}
@@ -97,7 +106,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "white",
-    paddingVertical: 40,
+    paddingTop: 40,
+    paddingBottom: 20,
     paddingHorizontal: 20,
     color: "blue",
     display: "flex",

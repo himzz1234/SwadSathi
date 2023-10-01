@@ -5,6 +5,7 @@ import {
   FlatList,
   StyleSheet,
   TouchableOpacity,
+  Pressable,
   Image,
 } from "react-native";
 import { CartContext } from "../context/CartContext";
@@ -44,37 +45,64 @@ export default function Checkout() {
       </View>
       <FlatList
         data={cart}
-        style={{ marginTop: 40 }}
+        style={{ marginTop: 30 }}
         ItemSeparatorComponent={() => {
-          return <View style={{ height: 15, width: "100%" }}></View>;
+          return <View style={{ height: 10, width: "100%" }}></View>;
         }}
         renderItem={({ item }) => {
           return (
-            <View style={{ display: "flex", flexDirection: "row", gap: 10 }}>
+            <View
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                gap: 10,
+                backgroundColor: "#F8F8F8",
+                padding: 10,
+                borderRadius: 5,
+              }}
+            >
               <Image
                 source={{ uri: item.image }}
-                style={{ width: 100, height: 100, borderRadius: 5 }}
+                style={{ width: 80, height: 80, borderRadius: 5 }}
               />
-              <Text style={{ flex: 1 }}>{item.name}</Text>
+              <View style={{ flex: 1, rowGap: 5 }}>
+                <Text style={{ fontSize: 16 }}>{item.name}</Text>
+                <Text style={{ fontWeight: "bold", fontSize: 14 }}>
+                  ₹{item.price}
+                </Text>
+              </View>
 
               <View>
-                <Text>x{item.qty}</Text>
-                <Text>₹{item.qty * item.price}</Text>
+                <Text style={{ fontWeight: "bold" }}>x{item.qty}</Text>
               </View>
             </View>
           );
         }}
       />
 
-      <View>
-        <Text>
-          Total:{" "}
+      <View style={{ marginBottom: 20 }}>
+        <Text style={{ fontWeight: "bold", fontSize: 17 }}>
+          Total: ₹
           {cart.reduce(
             (total, cartItem) => total + cartItem.qty * cartItem.price,
             0
           )}
         </Text>
       </View>
+
+      <Pressable
+        onPress={() => router.push("/checkout")}
+        style={{
+          width: "100%",
+          backgroundColor: "#FF4136",
+          paddingVertical: 15,
+          borderRadius: 5,
+        }}
+      >
+        <Text style={{ textAlign: "center", fontSize: 16, color: "white" }}>
+          Checkout
+        </Text>
+      </Pressable>
     </View>
   );
 }
@@ -82,7 +110,8 @@ export default function Checkout() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingVertical: 40,
+    paddingTop: 40,
+    paddingBottom: 20,
     paddingHorizontal: 20,
   },
 });
