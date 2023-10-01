@@ -28,7 +28,7 @@ export default function Signup() {
     };
 
     try {
-      const res = await axios.post("/auth/user/signup", newData);
+      const res = await axios.post("/auth/user/register", newData);
 
       if (res.status == 200) {
         await AsyncStorage.setItem("auth-token", res.data.token);

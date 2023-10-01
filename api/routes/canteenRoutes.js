@@ -20,7 +20,9 @@ const {
   deleteItem,
 } = require("../controllers/canteenController");
 
-router.post('/register',[
+router.post(
+  "/register",
+  [
     body("name", "Enter a valid name").isLength({ min: 3 }),
     body("address", "Enter proper address").isLength({ min: 5 }),
     body("phoneNumber", "Phone number must be 10 digits").isLength({ max: 10 }),
@@ -28,24 +30,29 @@ router.post('/register',[
       min: 8,
     }),
     body("email", "Enter a valid email.").isEmail(),
-  ], register)
+  ],
+  register
+);
 
-router.post('/login', [
+router.post(
+  "/login",
+  [
     body("email", "Enter a valid email.").isEmail(),
     body("password", "Password should be atleast 8 characters.").exists(),
-  ], login)
+  ],
+  login
+);
 
-router.put('/profile',canteenAuth, updateProfile)
+router.put("/profile", canteenAuth, updateProfile);
 
-router.get('/canteens/:id', canteenDetails)
+router.get("/canteens/:id", canteenDetails);
 
-router.get('/canteenOrders', canteenOrders)
+router.get("/canteenOrders", canteenOrders);
 
-router.post('/item',canteenAuth, addItem)
+router.post("/item", canteenAuth, addItem);
 
-router.put('/item/:id', updateItem)
+router.put("/item/:id", updateItem);
 
-router.delete('/item/:id',canteenAuth, deleteItem)
+router.delete("/item/:id", canteenAuth, deleteItem);
 
-module.exports = router
-
+module.exports = router;

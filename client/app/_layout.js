@@ -8,9 +8,11 @@ export default function Root() {
   return (
     <AuthProvider>
       <CartProvider>
-        <View style={styles.container}>
-          <Slot />
-        </View>
+        <StripeProvider publishableKey="pk_test_51NtbHCSBOdrddaflpOZuSvJt0q5KZ77dKK4bMUwZfpXhGlzga4MBQUdrrCsJ59ozDAWVBUeT9APWsq9AK7EAMKXW00q6nGrm2M">
+          <View style={styles.container}>
+            <Slot />
+          </View>
+        </StripeProvider>
       </CartProvider>
     </AuthProvider>
   );

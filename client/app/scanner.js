@@ -32,7 +32,7 @@ export default function Scanner() {
     setScanned(true);
 
     const { canteenId, secret } = JSON.parse(data);
-    await axios.post(`/auth/user/saveCanteens/${canteenId}`, {
+    await axios.post(`/auth/user/saveCanteenId/${canteenId}`, {
       userId: user._id,
     });
 
