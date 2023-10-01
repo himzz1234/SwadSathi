@@ -110,7 +110,7 @@ const getUserDetails = async (req, res) => {
     const userId = req.user.id;
     const user = await User.findById(userId)
       .select("-password")
-      .populate({ path: "savedCanteens", select: ["name", "workingStatus"] })
+      .populate({ path: "savedCanteens", select: ["name", "isOpen"] })
       .exec();
     res.send(user);
   } catch (error) {
@@ -184,9 +184,8 @@ const deleteUser = async (req, res) => {
 // @route POST api/savecanteenId/:id
 const saveCanteenId = async (req, res) => {
   try {
-    const userId = req.user.admin.id;
+    const userId = req.body.userId;
     const canteenId = req.params.canteenId;
-
     const user = await User.findById(userId);
     const findcanteen = await Canteen.findById(canteenId)
       .select("-password")
