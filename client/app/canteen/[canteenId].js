@@ -24,7 +24,7 @@ const CanteenDetails = () => {
 
   useEffect(() => {
     async function fetchDetails() {
-      const res = await axios.get(`/auth/admin/getcanteendetails/${canteenId}`);
+      const res = await axios.get(`/auth/admin/canteens/${canteenId}`);
 
       setCanteen(res.data);
     }
