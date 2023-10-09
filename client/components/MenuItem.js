@@ -1,54 +1,47 @@
-import { useContext, useState } from "react";
-import { View, Image, Text } from "react-native";
+import { useContext } from "react";
+import { View, Image, Text, Pressable } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { CartContext } from "../context/CartContext";
+import MaterialCommunityIcon from "react-native-vector-icons/MaterialCommunityIcons";
 
 export default function MenuItem({ item }) {
   const { cart, dispatch } = useContext(CartContext);
-  const [quantity, setQuantity] = useState(
-    cart.findIndex((citem) => citem.id == item._id) > -1
-      ? cart.find((citem) => citem.id == item._id).qty
-      : 0
-  );
 
-  const addItem = () => {
-    setQuantity((prev) => prev + 1);
-
+  const addItem = (item) => {
     dispatch({
       type: "ADD_ITEM",
       payload: {
         id: item._id,
         cId: item.canteenId,
-        name: item.itemName,
-        price: item.itemPrice,
-        image: item.itemImage,
+        name: item.name,
+        price: item.price,
+        image: item.image,
         qty: 1,
       },
     });
   };
 
-  const removeItem = () => {
-    if (!quantity) return;
-
-    setQuantity((prev) => prev - 1);
-    dispatch({ type: "REMOVE_ITEM", payload: item._id });
-  };
-
   return (
     <View
       style={{
-        gap: 10,
+        position: "relative",
         display: "flex",
-        padding: 10,
         borderRadius: 5,
-        width: "47.5%",
+        width: "48.5%",
         alignItems: "center",
         backgroundColor: "#F8F8F8",
+        height: 240,
       }}
     >
       <Image
-        source={{ uri: item.itemImage }}
-        style={{ width: "100%", height: 120, borderRadius: 5 }}
+        source={{ uri: item.image }}
+        style={{
+          width: "100%",
+          height: 120,
+          borderRadius: 5,
+          borderBottomLeftRadius: 0,
+          borderBottomRightRadius: 0,
+        }}
       />
       <View
         style={{
@@ -58,50 +51,33 @@ export default function MenuItem({ item }) {
           flexDirection: "row",
         }}
       >
-        <View style={{ flex: 1, display: "flex", gap: 10 }}>
-          <Text style={{ fontSize: 14.5, fontWeight: 600, flex: 1 }}>
-            {item.itemName}
+        <View style={{ flex: 1, display: "flex", gap: 10, padding: 10 }}>
+          <Text style={{ fontSize: 15, fontWeight: 600, flex: 1 }}>
+            {item.name}
           </Text>
           <Text style={{ fontSize: 14, fontWeight: "bold" }}>
-            ₹{item.itemPrice}
+            ₹{item.price}
           </Text>
-
-          <View
-            style={{
-              display: "flex",
-              alignItems: "center",
-              flexDirection: "row",
-              justifyContent: "space-around",
-              backgroundColor: "#e9e9e9",
-              width: 100,
-              borderRadius: 5,
-              height: 36,
-              gap: 5,
-            }}
-          >
-            <TouchableOpacity
-              onPress={removeItem}
-              style={{
-                borderRightWidth: 1,
-                paddingHorizontal: 10,
-                borderRightColor: "#c1bfbf",
-              }}
-            >
-              <Text style={{ fontSize: 18 }}>-</Text>
-            </TouchableOpacity>
-            <Text style={{ fontSize: 15, fontWeight: 600 }}>{quantity}</Text>
-            <TouchableOpacity
-              onPress={addItem}
-              style={{
-                borderLeftWidth: 1,
-                paddingHorizontal: 10,
-                borderLeftColor: "#c1bfbf",
-              }}
-            >
-              <Text style={{ fontSize: 18 }}>+</Text>
-            </TouchableOpacity>
-          </View>
         </View>
+
+        <Pressable
+          onPress={addItem}
+          style={{
+            backgroundColor: "#00CC66",
+            position: "absolute",
+            bottom: 0,
+            right: 0,
+            height: 24,
+            width: 30,
+            borderTopLeftRadius: 5,
+            borderBottomRightRadius: 5,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <MaterialCommunityIcon name="plus" size={20} color="white" />
+        </Pressable>
       </View>
     </View>
   );

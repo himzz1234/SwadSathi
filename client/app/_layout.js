@@ -8,11 +8,14 @@ export default function Root() {
   return (
     <AuthProvider>
       <CartProvider>
-        <StripeProvider publishableKey="pk_test_51NtbHCSBOdrddaflpOZuSvJt0q5KZ77dKK4bMUwZfpXhGlzga4MBQUdrrCsJ59ozDAWVBUeT9APWsq9AK7EAMKXW00q6nGrm2M">
-          <View style={styles.container}>
+        <View style={styles.container}>
+          <StripeProvider
+            urlScheme="/checkout"
+            publishableKey="pk_test_51NtbHCSBOdrddaflpOZuSvJt0q5KZ77dKK4bMUwZfpXhGlzga4MBQUdrrCsJ59ozDAWVBUeT9APWsq9AK7EAMKXW00q6nGrm2M"
+          >
             <Slot />
-          </View>
-        </StripeProvider>
+          </StripeProvider>
+        </View>
       </CartProvider>
     </AuthProvider>
   );

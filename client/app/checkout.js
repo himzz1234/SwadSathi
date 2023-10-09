@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import {
   View,
   Text,
@@ -11,10 +11,41 @@ import {
 import { CartContext } from "../context/CartContext";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import { useRouter } from "expo-router";
+import Payment from "../components/PaymentComponent";
 
 export default function Checkout() {
-  const { cart } = useContext(CartContext);
+  const { cart, dispatch } = useContext(CartContext);
+  const [quantity, setQuantity] = useState(0);
+
+  const addItem = (item) => {
+    setQuantity((prev) => prev + 1);
+
+    dispatch({
+      type: "ADD_ITEM",
+      payload: {
+        id: item._id,
+        cId: item.canteenId,
+        name: item.name,
+        price: item.price,
+        image: item.image,
+        qty: 1,
+      },
+    });
+  };
+
+  const removeItem = (item) => {
+    if (!quantity) return;
+
+    setQuantity((prev) => prev - 1);
+    dispatch({ type: "REMOVE_ITEM", payload: item._id });
+  };
+
   const router = useRouter();
+  const [showPayment, setShowPayment] = useState(false);
+
+  const onCheckout = () => {
+    setShowPayment(true);
+  };
 
   return (
     <View style={styles.container}>
@@ -50,6 +81,12 @@ export default function Checkout() {
           return <View style={{ height: 10, width: "100%" }}></View>;
         }}
         renderItem={({ item }) => {
+          setQuantity(
+            cart.findIndex((citem) => citem.id == item._id) > -1
+              ? cart.find((citem) => citem.id == item._id).qty
+              : 1
+          );
+
           return (
             <View
               style={{
@@ -74,6 +111,43 @@ export default function Checkout() {
 
               <View>
                 <Text style={{ fontWeight: "bold" }}>x{item.qty}</Text>
+                <View
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    flexDirection: "row",
+                    justifyContent: "space-around",
+                    backgroundColor: "#e9e9e9",
+                    width: 100,
+                    borderRadius: 5,
+                    height: 36,
+                    gap: 5,
+                  }}
+                >
+                  <TouchableOpacity
+                    onPress={() => removeItem(item)}
+                    style={{
+                      borderRightWidth: 1,
+                      paddingHorizontal: 10,
+                      borderRightColor: "#c1bfbf",
+                    }}
+                  >
+                    <Text style={{ fontSize: 18 }}>-</Text>
+                  </TouchableOpacity>
+                  <Text style={{ fontSize: 15, fontWeight: 600 }}>
+                    {quantity}
+                  </Text>
+                  <TouchableOpacity
+                    onPress={() => addItem(item)}
+                    style={{
+                      borderLeftWidth: 1,
+                      paddingHorizontal: 10,
+                      borderLeftColor: "#c1bfbf",
+                    }}
+                  >
+                    <Text style={{ fontSize: 18 }}>+</Text>
+                  </TouchableOpacity>
+                </View>
               </View>
             </View>
           );
@@ -91,10 +165,10 @@ export default function Checkout() {
       </View>
 
       <Pressable
-        onPress={() => router.push("/checkout")}
+        onPress={onCheckout}
         style={{
           width: "100%",
-          backgroundColor: "#FF4136",
+          backgroundColor: "#FF6347",
           paddingVertical: 15,
           borderRadius: 5,
         }}
@@ -103,6 +177,8 @@ export default function Checkout() {
           Checkout
         </Text>
       </Pressable>
+
+      {showPayment ? <Payment {...{ showPayment }} /> : ""}
     </View>
   );
 }

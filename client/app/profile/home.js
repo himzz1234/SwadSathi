@@ -42,19 +42,17 @@ export default function Home() {
       </Text>
 
       <FlatList
-        data={user.savedCanteens.sort(
-          (a, b) => b.workingStatus - a.workingStatus
-        )}
+        data={user.savedCanteens.sort((a, b) => b.isOpen - a.isOpen)}
         style={{ marginTop: 20 }}
         renderItem={({ item }) => {
           if (item.name.toUpperCase().includes(input.toUpperCase())) {
             return (
               <TouchableOpacity
-                disabled={!item.workingStatus}
+                disabled={!item.isOpen}
                 onPress={() => navigateCanteen(item._id)}
                 style={[
                   styles.itemContainer,
-                  { opacity: item.workingStatus ? 1 : 0.3 },
+                  { opacity: item.isOpen ? 1 : 0.3 },
                 ]}
               >
                 <Text style={styles.item}>{item.name}</Text>
