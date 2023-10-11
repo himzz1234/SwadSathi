@@ -9,9 +9,9 @@ import {
 import { BarCodeScanner } from "expo-barcode-scanner";
 import { router } from "expo-router";
 import Icon from "react-native-vector-icons/FontAwesome5";
-import ScannerFrame from "../components/ScannerFrame";
-import axios from "../axios";
-import { AuthContext } from "../context/AuthContext";
+import ScannerFrame from "../../components/ScannerFrame";
+import axios from "../../axios";
+import { AuthContext } from "../../context/AuthContext";
 
 export default function Scanner() {
   const { user } = useContext(AuthContext);

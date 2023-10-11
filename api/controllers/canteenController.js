@@ -45,7 +45,7 @@ const register = async (req, res) => {
 
     const authtoken = generateToken(admin._id);
     success = true;
-    res.json({ success, authtoken, isCanteen: admin.isCanteen });
+    res.json({ success, token: authtoken, isCanteen: admin.isCanteen });
   } catch (error) {
     console.log(error.message);
     res.status(500).send("Some error occured.");

@@ -24,7 +24,7 @@ export default function Page() {
 
           if (res.data) {
             dispatch({ type: "LOGIN_SUCCESS", payload: res.data });
-            router.replace("/profile/home");
+            router.replace("/users/main/home");
 
             return;
           } else {
@@ -37,7 +37,7 @@ export default function Page() {
         dispatch({ type: "LOGIN_FAILURE" });
       }
 
-      router.replace("/main");
+      router.replace("/canteens/main/home");
     };
 
     fetchUser();

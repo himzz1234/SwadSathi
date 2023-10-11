@@ -1,40 +1,35 @@
-import axios from "../axios";
-import { useContext, useState } from "react";
-import { Link, useRouter } from "expo-router";
 import {
-  View,
   Text,
+  View,
   StyleSheet,
-  TextInput,
-  Pressable,
   TouchableOpacity,
+  TextInput,
 } from "react-native";
+import { Link } from "expo-router";
+import { useState } from "react";
+import axios from "../../../axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { AuthContext } from "../context/AuthContext";
 
-export default function Signup() {
-  const [username, setUsername] = useState("");
-  const [emailId, setEmailId] = useState("");
-  const [password, setPassword] = useState("");
-
-  const { dispatch } = useContext(AuthContext);
-  const router = useRouter();
+export default function SignUp() {
+  const [formData, setFormData] = useState({
+    name: "",
+    phone: "",
+    address: "",
+    emailId: "",
+    password: "",
+  });
 
   const register = async () => {
-    const newData = {
-      name: username,
-      email: emailId,
-      password: password,
-    };
-
     try {
-      const res = await axios.post("/auth/user/register", newData);
+      const res = await axios.post("/auth/admin/register", {
+        ...formData,
+        phoneNumber: formData.phone,
+        email: formData.emailId,
+        description: "",
+      });
 
       if (res.status == 200) {
         await AsyncStorage.setItem("auth-token", res.data.token);
-
-        dispatch({ type: "LOGIN_SUCCESS", payload: res.data.user });
-        router.push("/profile/home");
       }
     } catch (error) {
       console.log(error);
@@ -47,23 +42,37 @@ export default function Signup() {
 
       <View style={{ display: "flex", gap: 10, marginVertical: 32 }}>
         <TextInput
-          value={username}
-          placeholder="Username"
+          value={formData.name}
+          placeholder="Canteen Name"
           style={styles.inputContainer}
-          onChangeText={(e) => setUsername(e)}
+          onChangeText={(e) => setFormData({ ...formData, name: e })}
         />
         <TextInput
-          value={emailId}
+          value={formData.address}
+          placeholder="Canteen Address"
+          style={styles.inputContainer}
+          onChangeText={(e) => setFormData({ ...formData, address: e })}
+        />
+        <TextInput
+          value={formData.phone}
+          placeholder="Phone Number"
+          style={styles.inputContainer}
+          onChangeText={(e) =>
+            setFormData({ ...formData, phone: e.replace(/[^0-9]/g, "") })
+          }
+        />
+        <TextInput
+          value={formData.emailId}
           placeholder="Email ID"
           style={styles.inputContainer}
-          onChangeText={(e) => setEmailId(e)}
+          onChangeText={(e) => setFormData({ ...formData, emailId: e })}
         />
         <TextInput
-          value={password}
+          value={formData.password}
           secureTextEntry={true}
           placeholder="Password"
           style={styles.inputContainer}
-          onChangeText={(e) => setPassword(e)}
+          onChangeText={(e) => setFormData({ ...formData, password: e })}
         />
       </View>
 
@@ -75,7 +84,7 @@ export default function Signup() {
 
       <Text style={{ textAlign: "center", marginTop: 15, fontSize: 16 }}>
         Already have an account?{" "}
-        <Link href="/login" style={{ color: "#FF4136" }}>
+        <Link href="/canteens/auth/login" style={{ color: "#FF4136" }}>
           Login
         </Link>
       </Text>

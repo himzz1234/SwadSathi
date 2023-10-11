@@ -8,10 +8,10 @@ import {
   TouchableOpacity,
   Pressable,
 } from "react-native";
-import axios from "../../axios";
+import axios from "../../../axios";
 import Icon from "react-native-vector-icons/FontAwesome5";
-import MenuItem from "../../components/MenuItem";
-import { CartContext } from "../../context/CartContext";
+import MenuItem from "../../../components/MenuItem";
+import { CartContext } from "../../../context/CartContext";
 import * as Animatable from "react-native-animatable";
 
 AnimatedPressable = Animatable.createAnimatableComponent(Pressable);
@@ -83,7 +83,7 @@ const CanteenDetails = () => {
       {cart.length ? (
         <AnimatedPressable
           animation="bounceInUp"
-          onPress={() => router.push("/checkout")}
+          onPress={() => router.push("/users/checkout")}
           style={{
             width: "100%",
             backgroundColor: "#FF6347",

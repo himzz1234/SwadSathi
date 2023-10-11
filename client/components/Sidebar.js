@@ -21,7 +21,7 @@ export default function Sidebar(props) {
 
   const logout = async () => {
     await AsyncStorage.setItem("auth-token", "");
-    router.push("/login");
+    router.push("/users/auth/login");
   };
 
   return (

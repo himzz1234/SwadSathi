@@ -2,7 +2,7 @@ import { View, Image, TouchableOpacity } from "react-native";
 import { Drawer } from "expo-router/drawer";
 import Icon from "react-native-vector-icons/MaterialIcons";
 
-import Sidebar from "../../components/Sidebar";
+import Sidebar from "../../../components/Sidebar";
 
 export default function Layout() {
   return (
@@ -17,7 +17,7 @@ export default function Layout() {
             <TouchableOpacity onPress={() => navigation.openDrawer()}>
               <Image
                 style={{ width: 40, height: 40 }}
-                source={require("../../assets/images/profile.jpeg")}
+                source={require("../../../assets/images/profile.jpeg")}
                 borderRadius={999}
               />
             </TouchableOpacity>
@@ -55,7 +55,24 @@ export default function Layout() {
             <TouchableOpacity onPress={() => navigation.openDrawer()}>
               <Image
                 style={{ width: 40, height: 40 }}
-                source={require("../../assets/images/profile.jpeg")}
+                source={require("../../../assets/images/profile.jpeg")}
+                borderRadius={999}
+              />
+            </TouchableOpacity>
+          ),
+        })}
+      ></Drawer.Screen>
+      <Drawer.Screen
+        name="myorders"
+        options={({ navigation }) => ({
+          headerTitle: "",
+          drawerLabel: "My Orders",
+          headerLeftContainerStyle: { paddingHorizontal: 20 },
+          headerLeft: () => (
+            <TouchableOpacity onPress={() => navigation.openDrawer()}>
+              <Image
+                style={{ width: 40, height: 40 }}
+                source={require("../../../assets/images/profile.jpeg")}
                 borderRadius={999}
               />
             </TouchableOpacity>

@@ -6,16 +6,15 @@ import {
   TextInput,
   TouchableOpacity,
 } from "react-native";
-import { AuthContext } from "../context/AuthContext";
+import { AuthContext } from "../../../context/AuthContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import axios from "../axios";
+import axios from "../../../axios";
 import { Link, useRouter } from "expo-router";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const { dispatch } = useContext(AuthContext);
   const router = useRouter();
 
   const login = async () => {
@@ -24,13 +23,10 @@ export default function Login() {
       password,
     };
 
-    const res = await axios.post("/auth/user/login", credentials);
+    const res = await axios.post("/auth/admin/login", credentials);
 
     if (res.status == 200) {
-      await AsyncStorage.setItem("auth-token", res.data.token);
-
-      dispatch({ type: "LOGIN_SUCCESS", payload: res.data.user });
-      router.replace("/profile/home");
+      router.replace("/canteens/main/home");
     } else {
       console.log("Something went wrong!");
     }
@@ -63,7 +59,7 @@ export default function Login() {
 
       <Text style={{ textAlign: "center", marginTop: 15, fontSize: 16 }}>
         Don't have an account?{" "}
-        <Link href="/signup" style={{ color: "#FF4136" }}>
+        <Link href="/canteens/auth/signup" style={{ color: "#FF4136" }}>
           Signup
         </Link>
       </Text>

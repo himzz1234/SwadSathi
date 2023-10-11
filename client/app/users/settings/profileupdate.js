@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import { AuthContext } from "../context/AuthContext";
+import { AuthContext } from "../../../context/AuthContext";
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import MaterialIcon from "react-native-vector-icons/MaterialIcons";
 import FontAwesome5Icon from "react-native-vector-icons/FontAwesome5";
@@ -68,7 +68,9 @@ export default function ProfileUpdate() {
           <Image
             style={{ width: 80, height: 80 }}
             source={
-              !image ? require("../assets/images/profile.jpeg") : { uri: image }
+              !image
+                ? require("../../../assets/images/profile.jpeg")
+                : { uri: image }
             }
             borderRadius={999}
           ></Image>

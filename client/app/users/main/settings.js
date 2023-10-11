@@ -8,14 +8,14 @@ export default function Settings() {
     <View style={styles.container}>
       <TouchableOpacity
         style={styles.option}
-        onPress={() => router.push("/profileupdate")}
+        onPress={() => router.push("/users/settings/profileupdate")}
       >
         <Text style={styles.text}>Update Profile</Text>
         <FontAwesomeIcon size={20} name="angle-right" />
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.option}
-        onPress={() => router.push("/passwordupdate")}
+        onPress={() => router.push("/users/settings/passwordupdate")}
       >
         <Text style={styles.text}>Update Password</Text>
         <FontAwesomeIcon size={20} name="angle-right" />

@@ -1,23 +1,26 @@
 import { useContext } from "react";
 import { View, Image, Text, Pressable } from "react-native";
-import { TouchableOpacity } from "react-native-gesture-handler";
 import { CartContext } from "../context/CartContext";
 import MaterialCommunityIcon from "react-native-vector-icons/MaterialCommunityIcons";
+import MaterialIcon from "react-native-vector-icons/MaterialIcons";
 
 export default function MenuItem({ item }) {
   const { cart, dispatch } = useContext(CartContext);
 
-  const addItem = (item) => {
+  const isAdded = cart.findIndex((cartItem) => cartItem.id === item._id) > -1;
+  const addItem = () => {
+    const data = {
+      id: item._id,
+      cId: item.canteenId,
+      name: item.name,
+      price: item.price,
+      image: item.image,
+      qty: 1,
+    };
+
     dispatch({
       type: "ADD_ITEM",
-      payload: {
-        id: item._id,
-        cId: item.canteenId,
-        name: item.name,
-        price: item.price,
-        image: item.image,
-        qty: 1,
-      },
+      payload: data,
     });
   };
 
@@ -61,6 +64,7 @@ export default function MenuItem({ item }) {
         </View>
 
         <Pressable
+          disabled={isAdded}
           onPress={addItem}
           style={{
             backgroundColor: "#00CC66",
@@ -76,7 +80,11 @@ export default function MenuItem({ item }) {
             justifyContent: "center",
           }}
         >
-          <MaterialCommunityIcon name="plus" size={20} color="white" />
+          {isAdded ? (
+            <MaterialIcon name="done" size={20} color="white" />
+          ) : (
+            <MaterialCommunityIcon name="plus" size={20} color="white" />
+          )}
         </Pressable>
       </View>
     </View>

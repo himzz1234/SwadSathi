@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   TextInput,
 } from "react-native";
-import { AuthContext } from "../../context/AuthContext";
+import { AuthContext } from "../../../context/AuthContext";
 import { useRouter } from "expo-router";
 
 export default function Home() {
@@ -17,7 +17,7 @@ export default function Home() {
 
   const navigateCanteen = async (canteenId) => {
     router.push({
-      pathname: `/canteen/${canteenId}`,
+      pathname: `/users/canteen/${canteenId}`,
       params: { canteenId },
     });
   };

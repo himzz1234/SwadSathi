@@ -1,9 +1,10 @@
 export default function CartReducer(state, action) {
   switch (action.type) {
     case "ADD_ITEM": {
-      const findIndex = state.cart.findIndex(
+      const index = state.cart.findIndex(
         (item) => item.id == action.payload.id
       );
+      console.log(index);
 
       newCart = [...state.cart];
       if (
@@ -13,7 +14,7 @@ export default function CartReducer(state, action) {
         newCart = [];
       }
 
-      if (findIndex != -1) {
+      if (index != -1) {
         newCart = newCart.map((item) =>
           item.id == action.payload.id ? { ...item, qty: item.qty + 1 } : item
         );
