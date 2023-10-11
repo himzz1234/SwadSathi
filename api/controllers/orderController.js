@@ -106,18 +106,17 @@ const updateOrderToPaid = async (req, res) => {
 //@route GET api/orders/myorder
 const getMyOrders = async(req,res)=>{
     const userId = req.user.id
-    console.log(userId)
-    // try {
-        const orders = await Order.find({userId})
+    try {
+        const orders = await Order.find({user: userId})
         if(orders){
             return res.status(200).json(orders)
         }
         else{
             return res.status(404).json({ message: 'No orders found!'})
         }
-    // } catch (error) {
-    //     return res.status(500).json({ error: 'Internal server error!'})
-    // }
+    } catch (error) {
+        return res.status(500).json({ error: 'Internal server error!'})
+    }
 }
 
 
@@ -208,19 +207,26 @@ const checkout_native = async (req, res) => {
 };
 
 const checkout = async(req, res)=>{
-    try{
-        const paymentIntent = await stripe.paymentIntents.create({
-            amount: req.body.amount,
-            currency: 'inr',
-            automatic_payment_methods: {
-                enabled: true,
-              },
-        });
-        res.json({ paymentIntent: paymentIntent.client_secret})
-    }
-    catch(err){
-        res.status(400).json({ error: err.message })
-    }
+  const customer = await stripe.customers.create();
+  const ephemeralKey = await stripe.ephemeralKeys.create(
+    {customer: customer.id},
+    {apiVersion: '2023-08-16'}
+  );
+  const paymentIntent = await stripe.paymentIntents.create({
+    amount: 1099,
+    currency: 'eur',
+    customer: customer.id,
+    // In the latest version of the API, specifying the `automatic_payment_methods` parameter is optional because Stripe enables its functionality by default.
+    automatic_payment_methods: {
+      enabled: true,
+    },
+  });
+  res.json({
+    paymentIntent: paymentIntent.client_secret,
+    ephemeralKey: ephemeralKey.secret,
+    customer: customer.id,
+    publishableKey: process.env.PUBLISHABLEKEY
+  });
 }
 
 module.exports = { createOrder, getOrderById, updateOrderToPaid, updateOrderToDelivered, getMyOrders, checkout_web, checkout_native, checkout}

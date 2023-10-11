@@ -92,21 +92,20 @@ const login = async (req, res) => {
 // @desc Update canteen profile
 // @route PUT canteen/profile
 const updateProfile = async (req, res) => {
-  const canteenId = req.admin.admin.id;
-  console.log(canteenId)
+  const canteenId = req.admin.id;
   try {
     const canteen = await Canteen.findById(canteenId);
-    if (req.file) {
-      const result = await cloudinary.uploader.upload(req.file.path, {
-        public_id: `${canteenId}_profile`,
-        width: 500,
-        height: 500,
-        crop: "fill",
-      });
-    }
+    // if (req.file) {
+    //   const result = await cloudinary.uploader.upload(req.file.path, {
+    //     public_id: `${canteenId}_profile`,
+    //     width: 500,
+    //     height: 500,
+    //     crop: "fill",
+    //   });
+    // }
     if (canteen) {
       (canteen.name = req.body.name),
-        (canteen.profilePicture = result.url),
+        //(canteen.profilePicture = result.url),
         (canteen.address = req.body.address),
         (canteen.isOpen = req.body.isOpen),
         (canteen.phoneNumber = req.body.phoneNumber),
