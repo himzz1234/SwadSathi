@@ -209,53 +209,18 @@ const checkout_native = async (req, res) => {
 
 const checkout = async(req, res)=>{
     try{
-        let intent 
-        if (req.body.payment_method_id) {
-          
-          intent = await stripe.paymentIntents.create({
-            payment_method: request.body.payment_method_id,
-            amount: 1099,
-            currency: 'usd',
-            confirmation_method: 'manual',
-            confirm: true
-          });
-        } else if (req.body.payment_intent_id) {
-          intent = await stripe.paymentIntents.confirm(
-            req.body.payment_intent_id
-          );
-        }
-        // Send the response to the client
-        res.send(generateResponse(intent));
+        const paymentIntent = await stripe.paymentIntents.create({
+            amount: req.body.amount,
+            currency: 'inr',
+            automatic_payment_methods: {
+                enabled: true,
+              },
+        });
+        res.json({ paymentIntent: paymentIntent.client_secret})
     }
     catch(err){
-      return res.send({ error: err.message });
+        res.status(400).json({ error: err.message })
     }
 }
-
-const generateResponse = (intent) => {
-  // Note that if your API version is before 2019-02-11, 'requires_action'
-  // appears as 'requires_source_action'.
-  if (
-    intent.status === 'requires_action' &&
-    intent.next_action.type === 'use_stripe_sdk'
-  ) {
-    // Tell the client to handle the action
-    return {
-      requires_action: true,
-      payment_intent_client_secret: intent.client_secret
-    };
-  } else if (intent.status === 'succeeded') {
-    // The payment didn’t need any additional actions and completed!
-    // Handle post-payment fulfillment
-    return {
-      success: true
-    };
-  } else {
-    // Invalid status
-    return {
-      error: 'Invalid PaymentIntent status'
-    }
-  }
-};
 
 module.exports = { createOrder, getOrderById, updateOrderToPaid, updateOrderToDelivered, getMyOrders, checkout_web, checkout_native, checkout}
