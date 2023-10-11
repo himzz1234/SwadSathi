@@ -1,5 +1,5 @@
 import { View, StyleSheet, FlatList, Text } from "react-native";
-import OrderItem from "../../../components/CanteenComponents/OrderItem";
+import OrderItem from "../../../components/CanteenComponents/OrderItemComponent";
 
 const data = [
   {
