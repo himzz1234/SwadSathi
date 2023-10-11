@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { View, Image, Text, Pressable } from "react-native";
-import { CartContext } from "../context/CartContext";
+import { CartContext } from "../../context/CartContext";
 import MaterialCommunityIcon from "react-native-vector-icons/MaterialCommunityIcons";
 import MaterialIcon from "react-native-vector-icons/MaterialIcons";
 

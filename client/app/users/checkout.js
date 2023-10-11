@@ -9,8 +9,8 @@ import {
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import { useRouter } from "expo-router";
-import Payment from "../../components/PaymentComponent";
-import CartItem from "../../components/CartItem";
+import Payment from "../../components/UserComponents/PaymentComponent";
+import CartItem from "../../components/UserComponents/CartItemComponent";
 import { CartContext } from "../../context/CartContext";
 
 export default function Checkout() {

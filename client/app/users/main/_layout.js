@@ -2,7 +2,7 @@ import { View, Image, TouchableOpacity } from "react-native";
 import { Drawer } from "expo-router/drawer";
 import Icon from "react-native-vector-icons/MaterialIcons";
 
-import Sidebar from "../../../components/Sidebar";
+import Sidebar from "../../../components/UserComponents/SidebarComponent";
 
 export default function Layout() {
   return (

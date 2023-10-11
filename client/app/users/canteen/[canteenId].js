@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import axios from "../../../axios";
 import Icon from "react-native-vector-icons/FontAwesome5";
-import MenuItem from "../../../components/MenuItem";
+import MenuItem from "../../../components/UserComponents/MenuItemComponent";
 import { CartContext } from "../../../context/CartContext";
 import * as Animatable from "react-native-animatable";
 
