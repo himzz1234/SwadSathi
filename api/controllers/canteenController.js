@@ -93,6 +93,7 @@ const login = async (req, res) => {
 // @route PUT canteen/profile
 const updateProfile = async (req, res) => {
   const canteenId = req.admin.admin.id;
+  console.log(canteenId)
   try {
     const canteen = await Canteen.findById(canteenId);
     if (req.file) {
