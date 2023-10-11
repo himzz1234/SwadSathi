@@ -104,17 +104,16 @@ const updateOrderToPaid = async (req, res) => {
 //@route GET api/orders/myorder
 const getMyOrders = async (req, res) => {
   const userId = req.user.id;
-  console.log(userId);
-  // try {
-  const orders = await Order.find({ userId });
-  if (orders) {
-    return res.status(200).json(orders);
-  } else {
-    return res.status(404).json({ message: "No orders found!" });
+  try {
+    const orders = await Order.find({ user: userId });
+    if (orders) {
+      return res.status(200).json(orders);
+    } else {
+      return res.status(404).json({ message: "No orders found!" });
+    }
+  } catch (error) {
+    return res.status(500).json({ error: "Internal server error!" });
   }
-  // } catch (error) {
-  //     return res.status(500).json({ error: 'Internal server error!'})
-  // }
 };
 
 const checkout_web = async (req, res) => {
@@ -204,9 +203,11 @@ const checkout_native = async (req, res) => {
 const checkout = async (req, res) => {
   try {
     const paymentIntent = await stripe.paymentIntents.create({
-      amount: 400,
+      amount: req.body.amount,
       currency: "inr",
-      payment_method_types: ["card"],
+      automatic_payment_methods: {
+        enabled: true,
+      },
     });
     res.json({ paymentIntent: paymentIntent.client_secret });
   } catch (err) {
