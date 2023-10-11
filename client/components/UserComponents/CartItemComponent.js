@@ -1,6 +1,6 @@
 import { View, Text, TouchableOpacity, Image } from "react-native";
 import { useState, useContext, useEffect } from "react";
-import { CartContext } from "../context/CartContext";
+import { CartContext } from "../../context/CartContext";
 
 export default function CartItem({ item }) {
   const { cart, dispatch } = useContext(CartContext);

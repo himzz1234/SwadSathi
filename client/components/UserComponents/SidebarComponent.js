@@ -13,7 +13,7 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 import { useContext } from "react";
-import { AuthContext } from "../context/AuthContext";
+import { AuthContext } from "../../context/AuthContext";
 
 export default function Sidebar(props) {
   const { user } = useContext(AuthContext);
@@ -39,7 +39,7 @@ export default function Sidebar(props) {
         >
           <Image
             style={{ width: 40, height: 40 }}
-            source={require("../assets/images/profile.jpeg")}
+            source={require("../../assets/images/profile.jpeg")}
             borderRadius={999}
           />
           <Text style={{ fontSize: 18, fontWeight: 600 }}>{user.name}</Text>

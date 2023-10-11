@@ -4,7 +4,7 @@ import {
   useConfirmPayment,
   useStripe,
 } from "@stripe/stripe-react-native";
-import axios from "../axios";
+import axios from "../../axios";
 
 export default function Payment({ showPayment }) {
   const { confirmPayment, loading } = useConfirmPayment();
