@@ -28,7 +28,7 @@ router.put('/order/:id/pay', updateOrderToPaid)
 
 router.put('/order/:id/delivered', updateOrderToDelivered)
 
-router.get('/order/myOrders',userAuth, getMyOrders)
+router.get('/order/myorders',userAuth, getMyOrders)
 
 router.post('/checkout', checkout)
 

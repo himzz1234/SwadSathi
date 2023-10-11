@@ -15,25 +15,25 @@ const createOrder = async (req, res) => {
     paymentResult,
     totalPrice,
     isPaid,
-    paidAt,
+    //paidAt,
     isDelivered,
-    deliveredAt,
+    //deliveredAt,
   } = req.body;
   try {
     if (orderItems && orderItems.length === 0) {
       return res.status(400).json({ message: "No order items!" });
     } else {
       const order = new Order({
-        canteen,
-        user,
-        orderItems,
-        paymentMethod,
-        paymentResult,
-        totalPrice,
-        isPaid,
-        paidAt,
-        isDelivered,
-        deliveredAt,
+        user: userId,
+        canteen: canteen,
+        orderItems: orderItems,
+        paymentMethod: paymentMethod,
+        paymentResult: paymentResult,
+        totalPrice: totalPrice,
+        isPaid: isPaid,
+        //paidAt,
+        isDelivered: isDelivered
+        //deliveredAt,
       });
       const createdOrder = await order.save();
       res
@@ -41,7 +41,7 @@ const createOrder = async (req, res) => {
         .json({ success: true, message: "Order created!", createdOrder });
     }
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: "catch" });
   }
 };
 
@@ -105,19 +105,19 @@ const updateOrderToPaid = async (req, res) => {
 //@desc get all user's orders(Used by admin)
 //@route GET api/orders/myorder
 const getMyOrders = async(req,res)=>{
-
     const userId = req.user.id
-    try {
-        const orders = await Order.find({user: userId, isDelivered: false})
+    console.log(userId)
+    // try {
+        const orders = await Order.find({userId})
         if(orders){
             return res.status(200).json(orders)
         }
         else{
             return res.status(404).json({ message: 'No orders found!'})
         }
-    } catch (error) {
-        return res.status(500).json({ error: 'Internal server error!'})
-    }
+    // } catch (error) {
+    //     return res.status(500).json({ error: 'Internal server error!'})
+    // }
 }
 
 
@@ -209,18 +209,53 @@ const checkout_native = async (req, res) => {
 
 const checkout = async(req, res)=>{
     try{
-        const paymentIntent = await stripe.paymentIntents.create({
-            amount: req.body.amount,
-            currency: 'inr',
-            automatic_payment_methods: {
-                enabled: true,
-              },
-        });
-        res.json({ paymentIntent: paymentIntent.client_secret})
+        let intent 
+        if (req.body.payment_method_id) {
+          
+          intent = await stripe.paymentIntents.create({
+            payment_method: request.body.payment_method_id,
+            amount: 1099,
+            currency: 'usd',
+            confirmation_method: 'manual',
+            confirm: true
+          });
+        } else if (req.body.payment_intent_id) {
+          intent = await stripe.paymentIntents.confirm(
+            req.body.payment_intent_id
+          );
+        }
+        // Send the response to the client
+        res.send(generateResponse(intent));
     }
     catch(err){
-        res.status(400).json({ error: err.message })
+      return res.send({ error: err.message });
     }
 }
+
+const generateResponse = (intent) => {
+  // Note that if your API version is before 2019-02-11, 'requires_action'
+  // appears as 'requires_source_action'.
+  if (
+    intent.status === 'requires_action' &&
+    intent.next_action.type === 'use_stripe_sdk'
+  ) {
+    // Tell the client to handle the action
+    return {
+      requires_action: true,
+      payment_intent_client_secret: intent.client_secret
+    };
+  } else if (intent.status === 'succeeded') {
+    // The payment didn’t need any additional actions and completed!
+    // Handle post-payment fulfillment
+    return {
+      success: true
+    };
+  } else {
+    // Invalid status
+    return {
+      error: 'Invalid PaymentIntent status'
+    }
+  }
+};
 
 module.exports = { createOrder, getOrderById, updateOrderToPaid, updateOrderToDelivered, getMyOrders, checkout_web, checkout_native, checkout}
