@@ -1,7 +1,7 @@
 const { body, validationResult } = require("express-validator");
 const dotenv = require("dotenv");
 const Order = require("../models/Order");
-const stripe = require('stripe')(process.env.SECRETKEY)
+const stripe = require("stripe")(process.env.SECRETKEY);
 dotenv.config();
 
 //@desc Create Order
@@ -32,7 +32,7 @@ const createOrder = async (req, res) => {
         totalPrice: totalPrice,
         isPaid: isPaid,
         //paidAt,
-        isDelivered: isDelivered
+        isDelivered: isDelivered,
         //deliveredAt,
       });
       const createdOrder = await order.save();
@@ -63,24 +63,22 @@ const getOrderById = async (req, res) => {
 
 //@desc Update Order to delivered(Used by canteen admin)
 //@route PUT
-const updateOrderToDelivered = async(req, res)=>{
-    const order = await Order.findById(req.params.id)
-    try {
-        if(order) {
-            order.isDelivered = true
-            order.deliveredAt = Date.now()
-    
-            const updatedOrder = await order.save()
-            res.status(200).json({ message: 'Order updated!', updatedOrder})
-        }
-        else{
-            return res.status(404).json({ message: 'Order not found!'})
-        }
-    } catch (error) {
-        return res.status(500).json({ error: 'Internal Server error!'})
+const updateOrderToDelivered = async (req, res) => {
+  const order = await Order.findById(req.params.id);
+  try {
+    if (order) {
+      order.isDelivered = true;
+      order.deliveredAt = Date.now();
+
+      const updatedOrder = await order.save();
+      res.status(200).json({ message: "Order updated!", updatedOrder });
+    } else {
+      return res.status(404).json({ message: "Order not found!" });
     }
-    
-}
+  } catch (error) {
+    return res.status(500).json({ error: "Internal Server error!" });
+  }
+};
 
 //@desc Update Order to paid(used by canteen admin)
 //@route PUT
@@ -90,38 +88,34 @@ const updateOrderToPaid = async (req, res) => {
     if (order) {
       order.isPaid = true;
       order.paidAt = Date.now();
-      const updatedOrder = await order.save()
-      res.status(200).json({ success: true, message: 'Order updated!', updatedOrder})
-    }
-    else{
-        res.status(404).json({ error: 'Order not found!'})
+      const updatedOrder = await order.save();
+      res
+        .status(200)
+        .json({ success: true, message: "Order updated!", updatedOrder });
+    } else {
+      res.status(404).json({ error: "Order not found!" });
     }
   } catch (error) {
-    res.status(500).json({ error: 'Internal server error!'})
+    res.status(500).json({ error: "Internal server error!" });
   }
 };
 
-
 //@desc get all user's orders(Used by admin)
 //@route GET api/orders/myorder
-const getMyOrders = async(req,res)=>{
-    const userId = req.user.id
-    console.log(userId)
-    // try {
-        const orders = await Order.find({userId})
-        if(orders){
-            return res.status(200).json(orders)
-        }
-        else{
-            return res.status(404).json({ message: 'No orders found!'})
-        }
-    // } catch (error) {
-    //     return res.status(500).json({ error: 'Internal server error!'})
-    // }
-}
-
-
-
+const getMyOrders = async (req, res) => {
+  const userId = req.user.id;
+  console.log(userId);
+  // try {
+  const orders = await Order.find({ userId });
+  if (orders) {
+    return res.status(200).json(orders);
+  } else {
+    return res.status(404).json({ message: "No orders found!" });
+  }
+  // } catch (error) {
+  //     return res.status(500).json({ error: 'Internal server error!'})
+  // }
+};
 
 const checkout_web = async (req, res) => {
   try {
@@ -203,24 +197,30 @@ const checkout_native = async (req, res) => {
     paymentIntent: paymentIntent.client_secret,
     ephemeralKey: ephemeralKey.secret,
     customer: customer.id,
-    publishableKey: process.env.PUBLISHABLE_KEY
+    publishableKey: process.env.PUBLISHABLE_KEY,
   });
 };
 
-const checkout = async(req, res)=>{
-    try{
-        const paymentIntent = await stripe.paymentIntents.create({
-            amount: req.body.amount,
-            currency: 'inr',
-            automatic_payment_methods: {
-                enabled: true,
-              },
-        });
-        res.json({ paymentIntent: paymentIntent.client_secret})
-    }
-    catch(err){
-        res.status(400).json({ error: err.message })
-    }
-}
+const checkout = async (req, res) => {
+  try {
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: 400,
+      currency: "inr",
+      payment_method_types: ["card"],
+    });
+    res.json({ paymentIntent: paymentIntent.client_secret });
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+};
 
-module.exports = { createOrder, getOrderById, updateOrderToPaid, updateOrderToDelivered, getMyOrders, checkout_web, checkout_native, checkout}
+module.exports = {
+  createOrder,
+  getOrderById,
+  updateOrderToPaid,
+  updateOrderToDelivered,
+  getMyOrders,
+  checkout_web,
+  checkout_native,
+  checkout,
+};

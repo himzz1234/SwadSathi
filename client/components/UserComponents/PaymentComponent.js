@@ -8,43 +8,41 @@ import axios from "../../axios";
 
 export default function Payment({ showPayment }) {
   const { confirmPayment, loading } = useConfirmPayment();
-  const { createPaymentMethod, handleNextAction } = useStripe();
 
   const fetchPaymentIntentClientSecret = async () => {
-    const resp = await axios.post("/orders/checkout", {
-      amount: 400,
-    });
-
-    const { paymentIntent: clientSecret } = resp.data;
-
     return clientSecret;
   };
 
   const handlePayPress = async () => {
-    const billingDetails = {
-      email: "email@stripe.com",
-      phone: "+48888000888",
-      addressCity: "Houston",
-      addressCountry: "US",
-      addressLine1: "1459  Circle Drive",
-      addressLine2: "Texas",
-      addressPostalCode: "77063",
-    };
+    const resp = await axios.post("/orders/checkout", {
+      currency: "inr",
+    });
 
-    const clientSecret = await fetchPaymentIntentClientSecret();
+    const { paymentIntent: clientSecret } = resp.data;
 
-    const { paymentMethod, error } = await createPaymentMethod({
+    const { error, paymentIntent } = await confirmPayment(clientSecret, {
       paymentMethodType: "Card",
       paymentMethodData: {
-        billingDetails,
+        billingDetails: {
+          name: "Himanshu",
+          email: "jenny.rosen@example.com",
+          phone: "+48888000888",
+          addressCity: "Houston",
+          addressCountry: "US",
+          addressLine1: "1459  Circle Drive",
+          addressLine2: "Texas",
+          addressPostalCode: "77063",
+        },
       },
     });
 
     if (error) {
-      console.log("Payment confirmation error", error);
-    } else if (paymentIntent) {
-      console.log("Success from promise", paymentIntent);
+      console.log(error);
+    } else {
+      console.log("Success");
     }
+
+    // const billingDetails = {};
   };
 
   return (
@@ -72,7 +70,7 @@ export default function Payment({ showPayment }) {
           }}
         >
           <CardField
-            postalCodeEnabled={true}
+            postalCodeEnabled={false}
             placeholders={{
               number: "4242 4242 4242 4242",
             }}
