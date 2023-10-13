@@ -71,7 +71,7 @@ export default function MenuItem({ item }) {
             position: "absolute",
             bottom: 0,
             right: 0,
-            height: 24,
+            height: 28,
             width: 30,
             borderTopLeftRadius: 5,
             borderBottomRightRadius: 5,
@@ -81,7 +81,7 @@ export default function MenuItem({ item }) {
           }}
         >
           {isAdded ? (
-            <MaterialIcon name="done" size={20} color="white" />
+            <MaterialIcon name="done" size={18} color="white" />
           ) : (
             <MaterialCommunityIcon name="plus" size={20} color="white" />
           )}

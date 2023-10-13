@@ -24,7 +24,7 @@ export default function Page() {
 
           if (res.data) {
             dispatch({ type: "LOGIN_SUCCESS", payload: res.data });
-            router.replace("/users/main/home");
+            router.replace("/canteens/main/home");
 
             return;
           } else {

@@ -1,49 +1,46 @@
 import { Dimensions, Modal, Pressable, View, Text } from "react-native";
-import {
-  CardField,
-  useConfirmPayment,
-  useStripe,
-} from "@stripe/stripe-react-native";
+import { CardField, useStripe } from "@stripe/stripe-react-native";
 import axios from "../../axios";
+import { useState, useEffect } from "react";
 
 export default function Payment({ showPayment }) {
-  const { confirmPayment, loading } = useConfirmPayment();
+  const { initPaymentSheet, presentPaymentSheet } = useStripe();
+  const [loading, setLoading] = useState(false);
 
-  const fetchPaymentIntentClientSecret = async () => {
-    return clientSecret;
-  };
+  const initializePaymentSheet = async () => {
+    const resp = await axios.post("/orders/checkout");
+    const { paymentIntent, ephemeralKey, customer } = resp.data;
 
-  const handlePayPress = async () => {
-    const resp = await axios.post("/orders/checkout", {
-      currency: "inr",
-    });
+    const { error } = await initPaymentSheet({
+      merchantDisplayName: "Example, Inc.",
+      customerId: customer,
+      customerEphemeralKeySecret: ephemeralKey,
+      paymentIntentClientSecret: paymentIntent,
 
-    const { paymentIntent: clientSecret } = resp.data;
-
-    const { error, paymentIntent } = await confirmPayment(clientSecret, {
-      paymentMethodType: "Card",
-      paymentMethodData: {
-        billingDetails: {
-          name: "Himanshu",
-          email: "jenny.rosen@example.com",
-          phone: "+48888000888",
-          addressCity: "Houston",
-          addressCountry: "US",
-          addressLine1: "1459  Circle Drive",
-          addressLine2: "Texas",
-          addressPostalCode: "77063",
-        },
+      allowsDelayedPaymentMethods: true,
+      defaultBillingDetails: {
+        name: "Jane Doe",
       },
     });
 
-    if (error) {
-      console.log(error);
-    } else {
-      console.log("Success");
+    if (!error) {
+      setLoading(true);
     }
-
-    // const billingDetails = {};
   };
+
+  const openPaymentSheet = async () => {
+    const { error } = await presentPaymentSheet();
+
+    if (error) {
+      Alert.alert(`Error code: ${error.code}`, error.message);
+    } else {
+      Alert.alert("Success", "Your order is confirmed!");
+    }
+  };
+
+  useEffect(() => {
+    initializePaymentSheet();
+  }, []);
 
   return (
     <Modal
@@ -92,7 +89,7 @@ export default function Payment({ showPayment }) {
           />
 
           <Pressable
-            onPress={handlePayPress}
+            onPress={openPaymentSheet}
             style={{ backgroundColor: "#FF4136", padding: 15, borderRadius: 5 }}
           >
             <Text style={{ textAlign: "center", fontSize: 16, color: "white" }}>

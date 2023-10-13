@@ -4,16 +4,11 @@ import { CartContext } from "../../context/CartContext";
 
 export default function CartItem({ item }) {
   const { cart, dispatch } = useContext(CartContext);
-  const [quantity, setQuantity] = useState(1);
-
-  useEffect(() => {
-    const qty =
-      cart.findIndex((citem) => citem.id == item._id) > -1
-        ? cart.find((citem) => citem.id == item._id).qty
-        : 1;
-
-    setQuantity(qty);
-  }, []);
+  const [quantity, setQuantity] = useState(
+    cart.findIndex((citem) => citem.id == item.id) > -1
+      ? cart.find((citem) => citem.id == item.id).qty
+      : 1
+  );
 
   const addItem = () => {
     setQuantity((prev) => prev + 1);
@@ -33,85 +28,71 @@ export default function CartItem({ item }) {
   };
 
   const removeItem = () => {
-    if (!quantity) return;
-
     setQuantity((prev) => prev - 1);
-    dispatch({ type: "REMOVE_ITEM", payload: item._id });
+    dispatch({ type: "REMOVE_ITEM", payload: item.id });
   };
 
   return (
     <View
       style={{
+        gap: 12.5,
+        padding: 7.5,
+        height: 100,
         display: "flex",
-        flexDirection: "row",
-        gap: 10,
-        backgroundColor: "#F8F8F8",
-        padding: 10,
         borderRadius: 5,
+        flexDirection: "row",
+        backgroundColor: "#F8F8F8",
       }}
     >
       <Image
         source={{ uri: item.image }}
-        style={{ width: 80, height: 80, borderRadius: 5 }}
+        style={{ width: 80, height: "100%", borderRadius: 5 }}
       />
       <View style={{ flex: 1, rowGap: 5 }}>
         <Text style={{ fontSize: 16, fontWeight: "600" }}>{item.name}</Text>
-        <Text style={{ fontWeight: "bold", fontSize: 14 }}>₹{item.price}</Text>
+        <Text style={{ fontWeight: "bold", fontSize: 15 }}>
+          ₹{item.price * item.qty}
+        </Text>
       </View>
 
-      <View style={{ display: "flex" }}>
+      <View
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-around",
+          backgroundColor: "#e9e9e9",
+          height: "100%",
+          borderRadius: 2,
+        }}
+      >
+        <TouchableOpacity
+          onPress={removeItem}
+          style={{
+            borderBottomWidth: 1,
+            paddingHorizontal: 10,
+            borderBottomColor: "#c1bfbf",
+          }}
+        >
+          <Text style={{ fontSize: 18 }}>-</Text>
+        </TouchableOpacity>
         <Text
           style={{
-            fontWeight: "600",
-            flex: 1,
-            textAlign: "right",
-            fontSize: 17,
+            fontSize: 15,
+            fontWeight: 600,
           }}
         >
-          ₹{item.qty * item.price}
+          {quantity}
         </Text>
-        <View
+        <TouchableOpacity
+          onPress={addItem}
           style={{
-            display: "flex",
-            alignItems: "center",
-            flexDirection: "row",
-            justifyContent: "space-around",
-            backgroundColor: "#e9e9e9",
-            width: 100,
-            borderRadius: 5,
-            height: 36,
-            gap: 5,
+            borderTopWidth: 1,
+            paddingHorizontal: 10,
+            borderTopColor: "#c1bfbf",
           }}
         >
-          <TouchableOpacity
-            onPress={removeItem}
-            style={{
-              borderRightWidth: 1,
-              paddingHorizontal: 10,
-              borderRightColor: "#c1bfbf",
-            }}
-          >
-            <Text style={{ fontSize: 18 }}>-</Text>
-          </TouchableOpacity>
-          <Text
-            style={{
-              fontSize: 15,
-              fontWeight: 600,
-            }}
-          >
-            {quantity}
-          </Text>
-          <TouchableOpacity
-            onPress={addItem}
-            style={{
-              borderLeftWidth: 1,
-              paddingHorizontal: 10,
-              borderLeftColor: "#c1bfbf",
-            }}
-          >
-            <Text style={{ fontSize: 18 }}>+</Text>
-          </TouchableOpacity>
-        </View>
+          <Text style={{ fontSize: 18 }}>+</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );

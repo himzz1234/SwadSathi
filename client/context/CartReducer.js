@@ -4,9 +4,8 @@ export default function CartReducer(state, action) {
       const index = state.cart.findIndex(
         (item) => item.id == action.payload.id
       );
-      console.log(index);
-
       newCart = [...state.cart];
+
       if (
         newCart.length &&
         action.payload.cId !== newCart[newCart.length - 1].cId
@@ -18,9 +17,7 @@ export default function CartReducer(state, action) {
         newCart = newCart.map((item) =>
           item.id == action.payload.id ? { ...item, qty: item.qty + 1 } : item
         );
-      } else {
-        newCart = [...newCart, action.payload];
-      }
+      } else newCart = [...newCart, action.payload];
 
       return {
         cart: [...newCart],
@@ -42,6 +39,12 @@ export default function CartReducer(state, action) {
 
       return {
         cart: [...newItems],
+      };
+    }
+
+    case "REMOVE_ALL": {
+      return {
+        cart: [],
       };
     }
   }
