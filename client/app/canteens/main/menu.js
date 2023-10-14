@@ -5,7 +5,8 @@ import MenuItem from "../../../components/CanteenComponents/MenuItemComponent";
 export default function Menu() {
   return (
     <View style={styles.container}>
-      <View style={{ marginTop: 20 }}>
+      <View style={{ marginTop: 20, gap: 15 }}>
+        <MenuItem />
         <MenuItem />
       </View>
       {/* <FlatList /> */}

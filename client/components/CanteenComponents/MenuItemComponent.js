@@ -1,7 +1,10 @@
-import { View, Text, Image } from "react-native";
-import React from "react";
+import React, { useState } from "react";
+import { View, Text, Image, Switch } from "react-native";
+import MaterialIcon from "react-native-vector-icons/MaterialIcons";
 
 export default function MenuItem() {
+  const [isEnabled, setIsEnabled] = useState(true);
+  const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
   return (
     <View
       style={{
@@ -30,9 +33,41 @@ export default function MenuItem() {
           borderTopWidth: 1,
           borderTopColor: "#E5E4E2",
           paddingVertical: 5,
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
         }}
       >
-        <Text>Edit</Text>
+        <View
+          style={{
+            gap: 5,
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+          }}
+        >
+          <Switch
+            style={{ width: 40 }}
+            trackColor={{ false: "#767577", true: "#ff9e8c" }}
+            thumbColor={isEnabled ? "#FF6347" : "#f4f3f4"}
+            onValueChange={toggleSwitch}
+            value={isEnabled}
+          />
+          <Text>In stock</Text>
+        </View>
+
+        <View
+          style={{
+            gap: 5,
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+          }}
+        >
+          <MaterialIcon name="edit" size={16} />
+          <Text>Edit</Text>
+        </View>
       </View>
     </View>
   );

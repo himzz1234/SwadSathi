@@ -1,5 +1,5 @@
 import axios from "../axios";
-import { View, ActivityIndicator, StyleSheet } from "react-native";
+import { View, ActivityIndicator, StyleSheet, Text } from "react-native";
 import { useContext, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AuthContext } from "../context/AuthContext";
@@ -24,7 +24,7 @@ export default function Page() {
 
           if (res.data) {
             dispatch({ type: "LOGIN_SUCCESS", payload: res.data });
-            router.replace("/canteens/main/home");
+            // router.replace("/canteens/main/home");
 
             return;
           } else {
@@ -37,7 +37,7 @@ export default function Page() {
         dispatch({ type: "LOGIN_FAILURE" });
       }
 
-      router.replace("/canteens/main/home");
+      // router.replace("/canteens/main/home");
     };
 
     fetchUser();
@@ -45,7 +45,7 @@ export default function Page() {
 
   return (
     <View style={styles.container}>
-      <ActivityIndicator size={80} />
+      <Text>Hi</Text>
     </View>
   );
 }
