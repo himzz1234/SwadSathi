@@ -43,9 +43,9 @@ const register = async (req, res) => {
     //   },
     // };
 
-    const authtoken = generateToken(admin._id);
+    const authtoken = generateToken({ id: admin._id, role: "Canteen" });
     success = true;
-    res.json({ success, token: authtoken, isCanteen: admin.isCanteen });
+    res.json({ success, token: authtoken, role: "Canteen", auth: admin });
   } catch (error) {
     console.log(error.message);
     res.status(500).send("Some error occured.");
@@ -65,16 +65,13 @@ const login = async (req, res) => {
     let admin = await Canteen.findOne({ email });
     const passwordCompare = await bcrypt.compare(password, admin.password);
     if (admin && passwordCompare) {
-      const authtoken = generateToken(admin._id);
+      const authtoken = generateToken({ id: admin._id, role: "Canteen" });
       success = true;
       res.json({
         success,
-        authtoken,
-        id: admin._id,
-        isCanteen: admin.isCanteen,
-        name: admin.name,
-        email: admin.email,
-        menu: admin.menu,
+        auth: admin,
+        role: "Canteen",
+        token: authtoken,
       });
     } else {
       success = false;

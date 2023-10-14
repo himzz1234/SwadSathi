@@ -34,12 +34,14 @@ const register = async (req, res) => {
       email: email,
     });
 
-    const authtoken = generateToken(user._id);
+    const authtoken = generateToken({ id: user._id, role: "User" });
     success = true;
     res.json({
       success,
-      message: "Account created successfully!",
+      auth: user,
+      role: "User",
       token: authtoken,
+      message: "Account created successfully!",
     });
   } catch (error) {
     console.log(error.message);
@@ -61,16 +63,14 @@ const login = async (req, res) => {
     let user = await User.findOne({ email });
     const passwordCompare = await bcrypt.compare(password, user.password);
     if (user && passwordCompare) {
-      const authtoken = generateToken(user._id);
+      const authtoken = generateToken({ id: user._id, role: "User" });
       success = true;
       res.json({
         success,
-        message: "Logged In successfully!",
+        auth: user,
+        role: "User",
         token: authtoken,
-        id: user._id,
-        name: user.name,
-        email: user.email,
-        savedCanteens: user.savedCanteens,
+        message: "Logged In successfully!",
       });
     } else {
       success = false;
@@ -112,7 +112,7 @@ const getUserDetails = async (req, res) => {
       .select("-password")
       .populate({ path: "savedCanteens", select: ["name", "isOpen"] })
       .exec();
-    res.send(user);
+    return res.status(404).json({ auth: user, role: "User" });
   } catch (error) {
     console.error(error.message);
     res.status(500).send("Some error occured.");
