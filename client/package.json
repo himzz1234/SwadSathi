@@ -10,6 +10,9 @@
   },
   "dependencies": {
     "@expo-google-fonts/lato": "^0.2.3",
+    "@expo-google-fonts/montserrat": "^0.2.3",
+    "@expo-google-fonts/playfair-display": "^0.2.3",
+    "@expo-google-fonts/poppins": "^0.2.3",
     "@expo-google-fonts/qwigley": "^0.2.3",
     "@expo-google-fonts/raleway": "^0.2.3",
     "@react-native-async-storage/async-storage": "1.17.11",
