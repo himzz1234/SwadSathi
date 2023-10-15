@@ -16,12 +16,12 @@ import { useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
 
 export default function Sidebar(props) {
-  const { user } = useContext(AuthContext);
+  const { auth: user } = useContext(AuthContext);
   const router = useRouter();
 
   const logout = async () => {
-    await AsyncStorage.setItem("auth-token", "");
-    router.push("/users/auth/login");
+    await AsyncStorage.setItem("auth", "");
+    router.replace("/");
   };
 
   return (

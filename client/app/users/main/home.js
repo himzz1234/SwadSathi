@@ -12,7 +12,7 @@ import { useRouter } from "expo-router";
 
 export default function Home() {
   const [input, setInput] = useState("");
-  const { user } = useContext(AuthContext);
+  const { auth: user } = useContext(AuthContext);
   const router = useRouter();
 
   const navigateCanteen = async (canteenId) => {

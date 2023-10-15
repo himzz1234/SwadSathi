@@ -2,14 +2,16 @@ export default function AuthReducer(state, action) {
   switch (action.type) {
     case "LOGIN_START":
       return {
-        user: null,
+        auth: null,
+        role: null,
         isFetching: true,
         error: false,
       };
 
     case "LOGIN_SUCCESS":
       return {
-        user: action.payload,
+        auth: action.payload.auth,
+        role: action.payload.role,
         isFetching: false,
         error: false,
       };
@@ -17,6 +19,7 @@ export default function AuthReducer(state, action) {
     case "LOGIN_FAILURE":
       return {
         user: null,
+        role: null,
         isFetching: false,
         error: true,
       };
@@ -24,6 +27,7 @@ export default function AuthReducer(state, action) {
     case "LOGOUT":
       return {
         user: null,
+        role: null,
         isFetching: false,
         error: false,
       };

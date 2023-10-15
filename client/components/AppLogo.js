@@ -1,4 +1,4 @@
-import { View, Text } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import React from "react";
 import {
   useFonts,
@@ -24,24 +24,24 @@ export default function AppLogo() {
         alignSelf: "center",
       }}
     >
-      <Text
-        style={{
-          fontSize: 40,
-          fontWeight: "400",
-          fontFamily: "PlayfairDisplay_400Regular",
-        }}
-      >
+      <Text style={[styles.text, { fontFamily: "PlayfairDisplay_400Regular" }]}>
         Swad
       </Text>
       <Text
-        style={{
-          fontSize: 40,
-          fontWeight: "400",
-          fontFamily: "PlayfairDisplay_600SemiBold",
-        }}
+        style={[
+          styles.text,
+          { fontFamily: "PlayfairDisplay_600SemiBold", color: "#006442" },
+        ]}
       >
         Sathi
       </Text>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  text: {
+    fontSize: 40,
+    fontWeight: "400",
+  },
+});

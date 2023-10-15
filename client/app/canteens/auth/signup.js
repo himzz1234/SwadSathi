@@ -29,7 +29,20 @@ export default function SignUp() {
       });
 
       if (res.status == 200) {
-        await AsyncStorage.setItem("auth-token", res.data.token);
+        await AsyncStorage.setItem(
+          "auth",
+          JSON.stringify({
+            token: res.data.token,
+            role: "Canteen",
+          })
+        );
+
+        dispatch({
+          type: "LOGIN_SUCCESS",
+          payload: { auth: res.data.auth, role: "Canteen" },
+        });
+
+        router.replace("/canteens/main/home");
       }
     } catch (error) {
       console.log(error);

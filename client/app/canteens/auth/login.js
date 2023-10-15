@@ -14,6 +14,7 @@ import { Link, useRouter } from "expo-router";
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const { dispatch } = useContext(AuthContext);
 
   const router = useRouter();
 
@@ -24,8 +25,21 @@ export default function Login() {
     };
 
     const res = await axios.post("/auth/admin/login", credentials);
-
     if (res.status == 200) {
+      await AsyncStorage.setItem(
+        "auth",
+        JSON.stringify({
+          token: res.data.token,
+          role: "Canteen",
+        })
+      );
+
+      console.log(res.data.auth);
+      dispatch({
+        type: "LOGIN_SUCCESS",
+        payload: { auth: res.data.auth, role: "Canteen" },
+      });
+
       router.replace("/canteens/main/home");
     } else {
       console.log("Something went wrong!");

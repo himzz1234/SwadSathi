@@ -30,9 +30,18 @@ export default function Signup() {
       const res = await axios.post("/auth/user/register", newData);
 
       if (res.status == 200) {
-        await AsyncStorage.setItem("auth-token", res.data.token);
+        await AsyncStorage.setItem(
+          "auth",
+          JSON.stringify({
+            token: res.data.token,
+            role: "User",
+          })
+        );
 
-        dispatch({ type: "LOGIN_SUCCESS", payload: res.data.user });
+        dispatch({
+          type: "LOGIN_SUCCESS",
+          payload: { auth: res.data.auth, role: "User" },
+        });
         router.push("/users/main/home");
       }
     } catch (error) {
@@ -74,7 +83,7 @@ export default function Signup() {
 
       <Text style={{ textAlign: "center", marginTop: 15, fontSize: 16 }}>
         Already have an account?{" "}
-        <Link href="/login" style={{ color: "#FF4136" }}>
+        <Link href="/users/auth/login" style={{ color: "#FF4136" }}>
           Login
         </Link>
       </Text>

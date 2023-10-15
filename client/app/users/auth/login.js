@@ -27,9 +27,20 @@ export default function Login() {
     const res = await axios.post("/auth/user/login", credentials);
 
     if (res.status == 200) {
-      await AsyncStorage.setItem("auth-token", res.data.token);
+      await AsyncStorage.setItem(
+        "auth",
+        JSON.stringify({
+          token: res.data.token,
+          role: "User",
+        })
+      );
 
-      dispatch({ type: "LOGIN_SUCCESS", payload: res.data.user });
+      console.log(res.data.auth);
+
+      dispatch({
+        type: "LOGIN_SUCCESS",
+        payload: { auth: res.data.auth, role: "User" },
+      });
       router.replace("/users/main/home");
     } else {
       console.log("Something went wrong!");
