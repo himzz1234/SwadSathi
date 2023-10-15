@@ -18,6 +18,7 @@ const {
   addItem,
   updateItem,
   deleteItem,
+  getCanteenAuth,
 } = require("../controllers/canteenController");
 
 router.post(
@@ -42,6 +43,8 @@ router.post(
   ],
   login
 );
+
+router.get("/getDetails", canteenAuth, getCanteenAuth);
 
 router.put("/profile", canteenAuth, updateProfile);
 

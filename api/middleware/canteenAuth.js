@@ -3,7 +3,7 @@ const dotenv = require("dotenv");
 dotenv.config();
 
 const fetchcanteen = (req, res, next) => {
-  const token = req.header("token");
+  const token = req.headers.token;
   if (!token) {
     return res
       .status(500)
@@ -12,7 +12,6 @@ const fetchcanteen = (req, res, next) => {
   try {
     const data = jwt.verify(token, process.env.JWT_secret);
     req.admin = data;
-    console.log(req.admin);
     next();
   } catch (error) {
     res.status(500).send({ error: "Please authenticate using a valid token." });

@@ -136,8 +136,26 @@ const canteenDetails = async (req, res) => {
         select: ["name", "image", "price", "isAvailable", "canteenId"],
       })
       .exec();
-    //const canteen = await Canteen.findById(id).select()
     res.send(canteen);
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send("Some error occured.");
+  }
+};
+
+const getCanteenAuth = async (req, res) => {
+  try {
+    const canteenId = req.admin.id;
+    const admin = await Canteen.findById(canteenId)
+      .select(["-password", "-dateCreated"])
+      .populate({
+        path: "menu",
+        select: ["name", "image", "price", "isAvailable", "canteenId"],
+      })
+      .exec();
+
+    console.log(admin);
+    return res.status(200).json({ auth: admin, role: "Canteen" });
   } catch (error) {
     console.error(error.message);
     res.status(500).send("Some error occured.");
@@ -224,6 +242,7 @@ module.exports = {
   login,
   updateProfile,
   canteenDetails,
+  getCanteenAuth,
   canteenOrders,
   addItem,
   updateItem,

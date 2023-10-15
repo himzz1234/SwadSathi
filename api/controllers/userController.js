@@ -103,7 +103,7 @@ const updateUserProfile = async (req, res) => {
   }
 };
 
-const getUserDetails = async (req, res) => {
+const getUserAuth = async (req, res) => {
   try {
     const userId = req.user.id;
     const user = await User.findById(userId)
@@ -219,7 +219,7 @@ module.exports = {
   login,
   updateUserProfile,
   updateUserPassword,
-  getUserDetails,
+  getUserAuth,
   getUsers,
   saveCanteenId,
   deleteUser,
