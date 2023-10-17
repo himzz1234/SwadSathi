@@ -170,7 +170,7 @@ const canteenOrders = async (req, res) => {};
 // @route POST canteen/item
 const addItem = async (req, res) => {
   try {
-    const canteenId = req.admin.admin.id;
+    const canteenId = req.admin.id;
     const { name, image, price, isAvailable } = req.body;
     newItem = new Item({
       name,
@@ -185,8 +185,7 @@ const addItem = async (req, res) => {
     mycanteen.save();
     res.status(200).json({
       message: "Item added successfully!",
-      newItem,
-      menu: mycanteen.menu,
+      newItem
     });
   } catch (error) {
     return res.status(500).json({ error: "Internal server error!" });
