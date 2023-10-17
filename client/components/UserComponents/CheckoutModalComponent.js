@@ -17,8 +17,9 @@ export default function CheckoutModal({ openModal }) {
         router.replace("/users/main/myorders");
       }, 2000);
     }
+
     return () => clearTimeout(timer);
-  });
+  }, []);
 
   return (
     <CustomModal openFn={openModal}>
