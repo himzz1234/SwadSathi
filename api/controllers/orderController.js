@@ -11,12 +11,10 @@ const createOrder = async (req, res) => {
   const {
     canteen,
     orderItems,
-    paymentMethod,
-    paymentResult,
     totalPrice,
     isPaid,
     //paidAt,
-    isDelivered,
+    status,
     //deliveredAt,
   } = req.body;
   try {
@@ -27,18 +25,14 @@ const createOrder = async (req, res) => {
         user: userId,
         canteen: canteen,
         orderItems: orderItems,
-        paymentMethod: paymentMethod,
-        paymentResult: paymentResult,
         totalPrice: totalPrice,
         isPaid: isPaid,
-        //paidAt,
-        isDelivered: isDelivered,
-        //deliveredAt,
+        status: status
       });
-      const createdOrder = await order.save();
+      const createdOrder = await order.save().then(order => order.populate({path: 'orderItems.product'})).then(order => order)
       res
         .status(201)
-        .json({ success: true, message: "Order created!", createdOrder });
+        .json({ success: true, message: "Order created!", createdOrder});
     }
   } catch (error) {
     res.status(500).json({ message: "catch" });
@@ -50,7 +44,7 @@ const createOrder = async (req, res) => {
 const getOrderById = async (req, res) => {
   const orderId = req.params.id;
   try {
-    const order = await Order.findById(orderId);
+    const order = await Order.findById(orderId).populate({ path: 'orderItems.product'}).exec();
     if (order) {
       return res.status(200).json(order);
     } else {
@@ -107,7 +101,7 @@ const updateOrderToPaid = async (req, res) => {
 const getMyOrders = async (req, res) => {
   const userId = req.user.id;
   try {
-    const orders = await Order.find({ user: userId });
+    const orders = await Order.find({ user: userId }).populate({ path: 'orderItems.product'}).exec();
     if (orders) {
       return res.status(200).json(orders);
     } else {
