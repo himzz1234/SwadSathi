@@ -14,7 +14,11 @@ import CustomModal from "../ModalComponent";
 import MaterialIcon from "react-native-vector-icons/MaterialIcons";
 import { AuthContext } from "../../context/AuthContext";
 
-export default function AddItemComponenent({ openModal, setOpenModal }) {
+export default function AddItemComponenent({
+  openModal,
+  setOpenModal,
+  setCanteenMenu,
+}) {
   const { auth: canteen } = useContext(AuthContext);
   const [isEnabled, setIsEnabled] = useState(true);
   const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
@@ -31,6 +35,9 @@ export default function AddItemComponenent({ openModal, setOpenModal }) {
       ...formData,
       canteenId: canteen._id,
     });
+
+    setCanteenMenu((prev) => [...prev, res.data.newItem]);
+    setOpenModal(false);
   };
 
   return (

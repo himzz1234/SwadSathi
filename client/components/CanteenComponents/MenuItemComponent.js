@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, Image, Switch } from "react-native";
+import { View, Text, Image, Switch, Pressable } from "react-native";
 import MaterialIcon from "react-native-vector-icons/MaterialIcons";
 
 export default function MenuItem({ item }) {
@@ -20,10 +20,14 @@ export default function MenuItem({ item }) {
           <Text style={{ fontSize: 16, fontWeight: "600" }}>{item.name}</Text>
           <Text style={{ fontSize: 15 }}>₹{item.price}</Text>
         </View>
-        <Image
-          source={{ uri: `${item.image}` }}
-          style={{ width: 80, height: 80, borderRadius: 5 }}
-        />
+        <View style={{ width: 80, height: 80 }}>
+          {item.image && (
+            <Image
+              source={{ uri: `${item.image}` }}
+              style={{ width: "100%", height: "100%", borderRadius: 5 }}
+            />
+          )}
+        </View>
       </View>
 
       <View
@@ -55,17 +59,21 @@ export default function MenuItem({ item }) {
           <Text>In stock</Text>
         </View>
 
-        <View
+        <Pressable
           style={{
             gap: 5,
             display: "flex",
             flexDirection: "row",
             alignItems: "center",
+            backgroundColor: "#eef5ca",
+            paddingHorizontal: 10,
+            paddingVertical: 5,
+            borderRadius: 2,
           }}
         >
-          <MaterialIcon name="edit" size={16} />
-          <Text>Edit</Text>
-        </View>
+          <MaterialIcon name="edit" size={16} color="#2d7262" />
+          <Text style={{ color: "#2d7262" }}>Edit</Text>
+        </Pressable>
       </View>
     </View>
   );
