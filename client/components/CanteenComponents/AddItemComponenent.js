@@ -1,21 +1,26 @@
 import React, { useState } from "react";
 import Ionicon from "react-native-vector-icons/Ionicons";
-import { TextInput } from "react-native-gesture-handler";
 import {
   View,
   Text,
-  Modal,
   Dimensions,
   StyleSheet,
   TouchableOpacity,
+  TextInput,
+  Switch,
 } from "react-native";
 import CustomModal from "../ModalComponent";
+import MaterialIcon from "react-native-vector-icons/MaterialIcons";
 
 export default function AddItemComponenent({ openModal, setOpenModal }) {
+  const [isEnabled, setIsEnabled] = useState(true);
+  const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
+
   const [formData, setFormData] = useState({
     name: "",
     image: "",
-    description: "",
+    price: "",
+    isAvailable: "",
   });
 
   return (
@@ -46,13 +51,37 @@ export default function AddItemComponenent({ openModal, setOpenModal }) {
         >
           <Ionicon name="camera" size={40} color="#2d7262" />
         </View>
-        <View style={{ width: "100%", flex: 1 }}>
+        <View style={{ width: "100%", flex: 1, gap: 15 }}>
           <TextInput
             placeholder="Name"
             value={formData.name}
             style={styles.inputContainer}
             onChangeText={(e) => setFormData({ ...formData, name: e })}
           />
+          <TextInput
+            placeholder="Price"
+            value={formData.price}
+            style={styles.inputContainer}
+            onChangeText={(e) => setFormData({ ...formData, price: e })}
+          />
+
+          <View
+            style={{
+              gap: 5,
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+          >
+            <Switch
+              style={{ width: 40 }}
+              trackColor={{ false: "#767577", true: "#ff9e8c" }}
+              thumbColor={isEnabled ? "#FF6347" : "#f4f3f4"}
+              onValueChange={toggleSwitch}
+              value={isEnabled}
+            />
+            <Text>In stock</Text>
+          </View>
         </View>
 
         <View

@@ -3,7 +3,7 @@ import { View, Text, Image, Switch } from "react-native";
 import MaterialIcon from "react-native-vector-icons/MaterialIcons";
 
 export default function MenuItem({ item }) {
-  const [isEnabled, setIsEnabled] = useState(true);
+  const [isEnabled, setIsEnabled] = useState(item.isAvailable);
   const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
   return (
     <View
@@ -17,13 +17,11 @@ export default function MenuItem({ item }) {
     >
       <View style={{ display: "flex", flexDirection: "row" }}>
         <View style={{ flex: 1, rowGap: 5 }}>
-          <Text style={{ fontSize: 16, fontWeight: "600" }}>
-            Chicken Pepper
-          </Text>
-          <Text style={{ fontSize: 15 }}>₹250</Text>
+          <Text style={{ fontSize: 16, fontWeight: "600" }}>{item.name}</Text>
+          <Text style={{ fontSize: 15 }}>₹{item.price}</Text>
         </View>
         <Image
-          source={require("../../assets/images/canteen.jpg")}
+          source={{ uri: `${item.image}` }}
           style={{ width: 80, height: 80, borderRadius: 5 }}
         />
       </View>

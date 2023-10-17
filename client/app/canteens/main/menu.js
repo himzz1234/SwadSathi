@@ -9,16 +9,17 @@ import AddItemComponenent from "../../../components/CanteenComponents/AddItemCom
 export default function Menu() {
   const [openModal, setOpenModal] = useState(false);
   const { auth: canteen } = useContext(AuthContext);
-
   return (
     <View style={styles.container}>
       <FlatList
-        data={canteen?.menu}
+        data={canteen.menu}
+        style={{ marginTop: 20 }}
         ItemSeparatorComponent={() => (
           <View style={{ height: 15, width: "100%" }}></View>
         )}
-        render={({ item }) => <MenuItem {...{ item }} />}
+        renderItem={({ item }) => <MenuItem {...{ item }} />}
       />
+
       <Pressable
         onPress={() => setOpenModal(true)}
         style={{
