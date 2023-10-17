@@ -14,7 +14,7 @@ import axios from "../../axios";
 import { AuthContext } from "../../context/AuthContext";
 
 export default function Scanner() {
-  const { user } = useContext(AuthContext);
+  const { auth: user } = useContext(AuthContext);
   const [stopAnimation, setStopAnimation] = useState();
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);

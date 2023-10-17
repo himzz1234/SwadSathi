@@ -14,7 +14,7 @@ const {
   getUsers,
   saveCanteenId,
   deleteUser,
-  getUserDetails,
+  getUserAuth,
 } = require("../controllers/userController.js");
 
 router.post(
@@ -48,7 +48,7 @@ router.put(
   updateUserProfile
 );
 
-router.get('/getDetails', userAuth, getUserDetails)
+router.get("/getDetails", userAuth, getUserAuth);
 
 router.put(
   "/updatepassword",

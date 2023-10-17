@@ -45,7 +45,7 @@ const register = async (req, res) => {
 
     const authtoken = generateToken(admin._id);
     success = true;
-    res.json({ success, token: authtoken, isCanteen: admin.isCanteen });
+    res.json({ success, token: authtoken, auth: admin });
   } catch (error) {
     console.log(error.message);
     res.status(500).send("Some error occured.");
@@ -69,12 +69,9 @@ const login = async (req, res) => {
       success = true;
       res.json({
         success,
-        authtoken,
-        id: admin._id,
-        isCanteen: admin.isCanteen,
-        name: admin.name,
-        email: admin.email,
-        menu: admin.menu,
+        auth: admin,
+        token: authtoken,
+        message: "Logged In successfully!",
       });
     } else {
       success = false;
@@ -139,8 +136,26 @@ const canteenDetails = async (req, res) => {
         select: ["name", "image", "price", "isAvailable", "canteenId"],
       })
       .exec();
-    //const canteen = await Canteen.findById(id).select()
     res.send(canteen);
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send("Some error occured.");
+  }
+};
+
+const getCanteenAuth = async (req, res) => {
+  try {
+    const canteenId = req.admin.id;
+    const admin = await Canteen.findById(canteenId)
+      .select(["-password", "-dateCreated"])
+      .populate({
+        path: "menu",
+        select: ["name", "image", "price", "isAvailable", "canteenId"],
+      })
+      .exec();
+
+    console.log(admin);
+    return res.status(200).json({ auth: admin, role: "Canteen" });
   } catch (error) {
     console.error(error.message);
     res.status(500).send("Some error occured.");
@@ -227,6 +242,7 @@ module.exports = {
   login,
   updateProfile,
   canteenDetails,
+  getCanteenAuth,
   canteenOrders,
   addItem,
   updateItem,

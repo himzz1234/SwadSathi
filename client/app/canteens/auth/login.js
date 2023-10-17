@@ -5,15 +5,19 @@ import {
   StyleSheet,
   TextInput,
   TouchableOpacity,
+  Pressable,
 } from "react-native";
 import { AuthContext } from "../../../context/AuthContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import Ionicon from "react-native-vector-icons/Ionicons";
 import axios from "../../../axios";
 import { Link, useRouter } from "expo-router";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const { dispatch } = useContext(AuthContext);
+  const [showPassword, setShowPassword] = useState(false);
 
   const router = useRouter();
 
@@ -24,8 +28,20 @@ export default function Login() {
     };
 
     const res = await axios.post("/auth/admin/login", credentials);
-
     if (res.status == 200) {
+      await AsyncStorage.setItem(
+        "auth",
+        JSON.stringify({
+          token: res.data.token,
+          role: "Canteen",
+        })
+      );
+
+      dispatch({
+        type: "LOGIN_SUCCESS",
+        payload: { auth: res.data.auth, role: "Canteen" },
+      });
+
       router.replace("/canteens/main/home");
     } else {
       console.log("Something went wrong!");
@@ -42,13 +58,32 @@ export default function Login() {
           placeholder="Email ID"
           style={styles.inputContainer}
         />
-        <TextInput
-          value={password}
-          onChangeText={(text) => setPassword(text)}
-          secureTextEntry={true}
-          placeholder="Password"
-          style={styles.inputContainer}
-        />
+        <View
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            backgroundColor: "#efeeea",
+            paddingRight: 10,
+          }}
+        >
+          <TextInput
+            value={password}
+            placeholder="Password"
+            secureTextEntry={showPassword}
+            style={[styles.inputContainer, { flex: 1 }]}
+            onChangeText={(e) => setPassword(e)}
+          />
+          {!showPassword ? (
+            <Pressable onPress={() => setShowPassword(true)}>
+              <Ionicon name="eye" size={20} />
+            </Pressable>
+          ) : (
+            <Pressable onPress={() => setShowPassword(false)}>
+              <Ionicon name="eye-off" size={20} />
+            </Pressable>
+          )}
+        </View>
       </View>
 
       <TouchableOpacity style={styles.button} onPress={login}>
@@ -59,7 +94,7 @@ export default function Login() {
 
       <Text style={{ textAlign: "center", marginTop: 15, fontSize: 16 }}>
         Don't have an account?{" "}
-        <Link href="/canteens/auth/signup" style={{ color: "#FF4136" }}>
+        <Link href="/canteens/auth/signup" style={{ color: "#006442" }}>
           Signup
         </Link>
       </Text>
@@ -81,8 +116,9 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   button: {
-    backgroundColor: "#FF4136",
-    paddingVertical: 10,
+    backgroundColor: "#006442",
     borderRadius: 5,
+    paddingVertical: 12.5,
+    elevation: 3,
   },
 });

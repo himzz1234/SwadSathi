@@ -11,9 +11,9 @@ import { AuthContext } from "../../../context/AuthContext";
 import { useRouter } from "expo-router";
 
 export default function Home() {
-  const [input, setInput] = useState("");
-  const { user } = useContext(AuthContext);
   const router = useRouter();
+  const [input, setInput] = useState("");
+  const { auth: user } = useContext(AuthContext);
 
   const navigateCanteen = async (canteenId) => {
     router.push({
@@ -42,7 +42,7 @@ export default function Home() {
       </Text>
 
       <FlatList
-        data={user.savedCanteens.sort((a, b) => b.isOpen - a.isOpen)}
+        data={user?.savedCanteens.sort((a, b) => b.isOpen - a.isOpen)}
         style={{ marginTop: 20 }}
         renderItem={({ item }) => {
           if (item.name.toUpperCase().includes(input.toUpperCase())) {

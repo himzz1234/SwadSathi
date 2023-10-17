@@ -12,16 +12,15 @@ import { useRouter } from "expo-router";
 import Payment from "../../components/UserComponents/PaymentComponent";
 import CartItem from "../../components/UserComponents/CartItemComponent";
 import { CartContext } from "../../context/CartContext";
+import CheckoutModal from "../../components/UserComponents/CheckoutModalComponent";
 
 export default function Checkout() {
   const router = useRouter();
   const { cart } = useContext(CartContext);
-  const [showPayment, setShowPayment] = useState(false);
-
-  console.log(cart);
+  const [openModal, setOpenModal] = useState(false);
 
   const onCheckout = () => {
-    setShowPayment(true);
+    setOpenModal(true);
   };
 
   return (
@@ -62,9 +61,23 @@ export default function Checkout() {
         }}
       />
 
-      <View style={{ marginBottom: 20 }}>
-        <Text style={{ fontWeight: "bold", fontSize: 17 }}>
-          Total: ₹
+      <View
+        style={{
+          paddingTop: 10,
+          marginBottom: 20,
+          borderTopWidth: 1,
+          borderTopColor: "#E5E4E2",
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <Text style={{ fontWeight: "500", fontSize: 16, color: "#9e9ea0" }}>
+          Subtotal
+        </Text>
+        <Text style={{ fontWeight: "600", fontSize: 18 }}>
+          ₹
           {cart.reduce(
             (total, cartItem) => total + cartItem.qty * cartItem.price,
             0
@@ -73,20 +86,25 @@ export default function Checkout() {
       </View>
 
       <Pressable
+        disabled={!cart.length}
         onPress={onCheckout}
-        style={{
-          width: "100%",
-          backgroundColor: "#FF6347",
-          paddingVertical: 15,
-          borderRadius: 5,
-        }}
+        style={[
+          !cart.length
+            ? { backgroundColor: "gray" }
+            : { backgroundColor: "#FF6347" },
+          {
+            width: "100%",
+            paddingVertical: 15,
+            borderRadius: 5,
+          },
+        ]}
       >
         <Text style={{ textAlign: "center", fontSize: 16, color: "white" }}>
           Checkout
         </Text>
       </Pressable>
 
-      {showPayment ? <Payment {...{ showPayment }} /> : ""}
+      <CheckoutModal {...{ openModal }} />
     </View>
   );
 }

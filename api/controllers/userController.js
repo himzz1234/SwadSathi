@@ -38,8 +38,9 @@ const register = async (req, res) => {
     success = true;
     res.json({
       success,
-      message: "Account created successfully!",
+      auth: user,
       token: authtoken,
+      message: "Account created successfully!",
     });
   } catch (error) {
     console.log(error.message);
@@ -65,12 +66,9 @@ const login = async (req, res) => {
       success = true;
       res.json({
         success,
-        message: "Logged In successfully!",
+        auth: user,
         token: authtoken,
-        id: user._id,
-        name: user.name,
-        email: user.email,
-        savedCanteens: user.savedCanteens,
+        message: "Logged In successfully!",
       });
     } else {
       success = false;
@@ -105,14 +103,15 @@ const updateUserProfile = async (req, res) => {
   }
 };
 
-const getUserDetails = async (req, res) => {
+const getUserAuth = async (req, res) => {
   try {
     const userId = req.user.id;
     const user = await User.findById(userId)
       .select("-password")
       .populate({ path: "savedCanteens", select: ["name", "isOpen"] })
       .exec();
-    res.send(user);
+
+    return res.status(200).json({ auth: user, role: "User" });
   } catch (error) {
     console.error(error.message);
     res.status(500).send("Some error occured.");
@@ -220,7 +219,7 @@ module.exports = {
   login,
   updateUserProfile,
   updateUserPassword,
-  getUserDetails,
+  getUserAuth,
   getUsers,
   saveCanteenId,
   deleteUser,

@@ -16,13 +16,12 @@ import { useRouter } from "expo-router";
 
 export default function ProfileUpdate() {
   const router = useRouter();
-  const { user } = useContext(AuthContext);
+  const { auth: user } = useContext(AuthContext);
   const [email, setEmail] = useState(user?.email);
   const [username, setUsername] = useState(user?.name);
   const [image, setImage] = useState(null);
 
   const pickImage = async () => {
-    // No permissions request is necessary for launching the image library
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
