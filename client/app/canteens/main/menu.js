@@ -10,15 +10,21 @@ export default function Menu() {
   const [openModal, setOpenModal] = useState(false);
   const { auth: canteen } = useContext(AuthContext);
 
-  const [canteenMenu, setCanteenMenu] = useState(canteen.menu);
+  const [canteenMenu, setCanteenMenu] = useState([]);
+
+  useEffect(() => {
+    setCanteenMenu(canteen.menu);
+  }, []);
+
   return (
     <View style={styles.container}>
       <FlatList
         data={canteenMenu}
-        style={{ marginTop: 20 }}
+        style={{ marginVertical: 20 }}
         ItemSeparatorComponent={() => (
           <View style={{ height: 15, width: "100%" }}></View>
         )}
+        showsVerticalScrollIndicator={false}
         renderItem={({ item }) => <MenuItem {...{ item }} />}
       />
 

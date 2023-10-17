@@ -11,15 +11,23 @@ import {
 } from "react-native";
 import axios from "../../axios";
 import CustomModal from "../ModalComponent";
-import MaterialIcon from "react-native-vector-icons/MaterialIcons";
 import { AuthContext } from "../../context/AuthContext";
+import * as ImagePicker from "expo-image-picker";
 
-export default function AddItemComponenent({ openModal, setOpenModal }) {
+const cloudName = "dnj89k1rw";
+const uploadPreset = "swad-sathi";
+const cloudinaryBaseUrl = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`;
+
+export default function AddItemComponenent({
+  openModal,
+  setOpenModal,
+  setCanteenMenu,
+}) {
   const { auth: canteen } = useContext(AuthContext);
   const [isEnabled, setIsEnabled] = useState(true);
   const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
 
-  const [formData, setFormData] = useState({
+  const [itemData, setItemData] = useState({
     name: "",
     image: "",
     price: "",
@@ -27,10 +35,47 @@ export default function AddItemComponenent({ openModal, setOpenModal }) {
   });
 
   const addItem = async () => {
+    console.log(itemData);
     const res = await axios.post("/auth/admin/item", {
-      ...formData,
+      ...itemData,
       canteenId: canteen._id,
     });
+
+    setCanteenMenu((prev) => [...prev, res.data.newItem]);
+    setOpenModal(false);
+  };
+
+  const uploadImage = async () => {
+    try {
+      const imagePickResponse = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.All,
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 1,
+      });
+
+      if (!imagePickResponse.canceled) {
+        const data = new FormData();
+        data.append("file", {
+          uri: imagePickResponse.assets[0].uri,
+          type: `test/${imagePickResponse.assets[0].uri.split(".")[1]}`,
+          name: `test.${imagePickResponse.assets[0].uri.split(".")[1]}`,
+        });
+
+        data.append("upload_preset", uploadPreset);
+        data.append("cloud_name", cloudName);
+
+        const fileUploadResponse = await fetch(cloudinaryBaseUrl, {
+          body: data,
+          method: "POST",
+        });
+
+        const jsonResponse = await fileUploadResponse.json();
+        setItemData({ ...itemData, image: jsonResponse.url });
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -48,7 +93,8 @@ export default function AddItemComponenent({ openModal, setOpenModal }) {
           width: Dimensions.get("screen").width - 40,
         }}
       >
-        <View
+        <TouchableOpacity
+          onPress={uploadImage}
           style={{
             width: 100,
             height: 100,
@@ -60,19 +106,19 @@ export default function AddItemComponenent({ openModal, setOpenModal }) {
           }}
         >
           <Ionicon name="camera" size={40} color="#2d7262" />
-        </View>
+        </TouchableOpacity>
         <View style={{ width: "100%", flex: 1, gap: 15 }}>
           <TextInput
             placeholder="Name"
-            value={formData.name}
+            value={itemData.name}
             style={styles.inputContainer}
-            onChangeText={(e) => setFormData({ ...formData, name: e })}
+            onChangeText={(e) => setItemData({ ...itemData, name: e })}
           />
           <TextInput
             placeholder="Price"
-            value={formData.price}
+            value={itemData.price}
             style={styles.inputContainer}
-            onChangeText={(e) => setFormData({ ...formData, price: e })}
+            onChangeText={(e) => setItemData({ ...itemData, price: e })}
           />
 
           <View
