@@ -1,7 +1,7 @@
 import { Pressable, StyleSheet, View, FlatList } from "react-native";
 import MaterialIcon from "react-native-vector-icons/MaterialIcons";
 import MenuItem from "../../../components/CanteenComponents/MenuItemComponent";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../../context/AuthContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import AddItemComponenent from "../../../components/CanteenComponents/AddItemComponenent";
@@ -9,10 +9,12 @@ import AddItemComponenent from "../../../components/CanteenComponents/AddItemCom
 export default function Menu() {
   const [openModal, setOpenModal] = useState(false);
   const { auth: canteen } = useContext(AuthContext);
+
+  const [canteenMenu, setCanteenMenu] = useState(canteen.menu);
   return (
     <View style={styles.container}>
       <FlatList
-        data={canteen.menu}
+        data={canteenMenu}
         style={{ marginTop: 20 }}
         ItemSeparatorComponent={() => (
           <View style={{ height: 15, width: "100%" }}></View>
@@ -39,7 +41,7 @@ export default function Menu() {
         <MaterialIcon name="add" size={30} color="white" />
       </Pressable>
 
-      <AddItemComponenent {...{ openModal, setOpenModal }} />
+      <AddItemComponenent {...{ openModal, setOpenModal, setCanteenMenu }} />
     </View>
   );
 }

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import Ionicon from "react-native-vector-icons/Ionicons";
 import {
   View,
@@ -9,10 +9,13 @@ import {
   TextInput,
   Switch,
 } from "react-native";
+import axios from "../../axios";
 import CustomModal from "../ModalComponent";
 import MaterialIcon from "react-native-vector-icons/MaterialIcons";
+import { AuthContext } from "../../context/AuthContext";
 
 export default function AddItemComponenent({ openModal, setOpenModal }) {
+  const { auth: canteen } = useContext(AuthContext);
   const [isEnabled, setIsEnabled] = useState(true);
   const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
 
@@ -20,8 +23,15 @@ export default function AddItemComponenent({ openModal, setOpenModal }) {
     name: "",
     image: "",
     price: "",
-    isAvailable: "",
+    isAvailable: true,
   });
+
+  const addItem = async () => {
+    const res = await axios.post("/auth/admin/item", {
+      ...formData,
+      canteenId: canteen._id,
+    });
+  };
 
   return (
     <CustomModal openFn={openModal}>
@@ -109,6 +119,7 @@ export default function AddItemComponenent({ openModal, setOpenModal }) {
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
+            onPress={addItem}
             style={[
               { backgroundColor: "#006442", borderColor: "transparent" },
               styles.button,
