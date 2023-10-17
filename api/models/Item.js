@@ -7,10 +7,6 @@ const ItemSchema = new Schema(
             type: String,
             required: true,
         },
-        profilePicture: {
-            type: String,
-            default: ""
-        },
         canteenId: {
             type: String,
             required: true

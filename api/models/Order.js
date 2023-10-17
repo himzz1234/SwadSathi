@@ -25,18 +25,6 @@ const OrderSchema = new Schema({
             }
         }
     ],
-    paymentMethod: {
-        type: String,
-        required: true
-    },
-    paymentResult: {
-        status: {
-            type: String // Success/Failure
-        },
-        update_time: {
-            type: String
-        },
-    },
     totalPrice: {
         type: Number,
         required: true,
@@ -47,17 +35,12 @@ const OrderSchema = new Schema({
         required: true,
         default: false
     },
-    paidAt: {
-        type: Date
-    },
-    isDelivered: {
-        type: Boolean,
-        required: true,
-        default: false
-    },
-    deliveredAt: {
-        type: Date
+    status: {
+        type: String,
+        enum: ['Rejected','Accepted','Preparing','Ready','Delivered','Pending'],
+        default: 'Pending'
     }
+
 },
 {
     timestamps: true,
