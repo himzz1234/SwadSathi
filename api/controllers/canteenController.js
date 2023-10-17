@@ -170,8 +170,8 @@ const canteenOrders = async (req, res) => {};
 // @route POST canteen/item
 const addItem = async (req, res) => {
   try {
-    const canteenId = req.admin.id;
-    const { name, image, price, isAvailable } = req.body;
+    //const canteenId = req.admin.id;
+    const { name, canteenId, image, price, isAvailable } = req.body;
     newItem = new Item({
       name,
       canteenId,
