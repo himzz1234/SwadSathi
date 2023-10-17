@@ -15,6 +15,7 @@ const {
   updateOrderToPaid,
   updateOrderToDelivered,
   getMyOrders,
+  getCanteenOrders,
   checkout_web,
   checkout_native,
   checkout
@@ -30,6 +31,7 @@ router.put('/order/:id/delivered', updateOrderToDelivered)
 
 router.get('/myorders',userAuth, getMyOrders)
 
+router.get('/canteenOrders/:id', getCanteenOrders )
 router.post('/checkout', checkout)
 
 module.exports = router

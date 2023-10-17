@@ -100,7 +100,7 @@ const updateOrderToPaid = async (req, res) => {
   }
 };
 
-
+//@desc update 
 
 //@desc get all user's orders(Used by admin)
 //@route GET api/orders/myorder
@@ -117,6 +117,21 @@ const getMyOrders = async (req, res) => {
     return res.status(500).json({ error: "Internal server error!" });
   }
 };
+
+const getCanteenOrders = async(req, res) => {
+  const canteenId = req.params.id;
+  try{
+    const orders = await Order.find({ canteen: canteenId });
+    if(orders){
+      return res.status(200).json(orders)
+    }
+    else{
+      return res.status(404).json({ message: "No orders found!"});
+    }
+  } catch(error) {
+    return res.status(500).json({ error: "Interval server error!"});
+  }
+}
 
 const checkout_web = async (req, res) => {
   try {
@@ -232,6 +247,7 @@ module.exports = {
   updateOrderToPaid,
   updateOrderToDelivered,
   getMyOrders,
+  getCanteenOrders,
   checkout_web,
   checkout_native,
   checkout,
