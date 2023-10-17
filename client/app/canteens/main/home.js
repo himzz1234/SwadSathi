@@ -1,5 +1,7 @@
 import { View, StyleSheet, FlatList, Text } from "react-native";
 import OrderItem from "../../../components/CanteenComponents/OrderItemComponent";
+import { useContext } from "react";
+import { AuthContext } from "../../../context/AuthContext";
 
 const data = [
   {
@@ -47,6 +49,7 @@ const data = [
 ];
 
 export default function Home() {
+  const { auth: canteen } = useContext(AuthContext);
   return (
     <View style={styles.container}>
       <Text style={{ fontSize: 22, fontWeight: "600" }}>All Orders</Text>

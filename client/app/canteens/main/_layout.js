@@ -3,8 +3,21 @@ import { Drawer } from "expo-router/drawer";
 import Icon from "react-native-vector-icons/MaterialIcons";
 
 import Sidebar from "../../../components/CanteenComponents/SidebarComponent";
+import { useContext } from "react";
+import { AuthContext } from "../../../context/AuthContext";
 
 export default function Layout() {
+  const { auth: canteen } = useContext(AuthContext);
+
+  const truncate = (str) => {
+    if (str) {
+      const length = str.length;
+      return str.replace(str.slice(30, length), "...");
+    }
+
+    return "";
+  };
+
   return (
     <Drawer drawerContent={(props) => <Sidebar {...props} />}>
       <Drawer.Screen
@@ -30,9 +43,11 @@ export default function Layout() {
               </TouchableOpacity>
               <View style={{ gap: 2 }}>
                 <Text style={{ fontWeight: "500", fontSize: 16 }}>
-                  BBQ Mechanic
+                  {canteen?.name}
                 </Text>
-                <Text style={{ fontSize: 13 }}>Plot 122 Part, Angel St..</Text>
+                <Text style={{ fontSize: 13 }}>
+                  {truncate(canteen?.address)}
+                </Text>
               </View>
             </View>
           ),

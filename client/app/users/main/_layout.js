@@ -3,8 +3,10 @@ import { Drawer } from "expo-router/drawer";
 import Icon from "react-native-vector-icons/MaterialIcons";
 
 import Sidebar from "../../../components/UserComponents/SidebarComponent";
+import { useRouter } from "expo-router";
 
 export default function Layout() {
+  const router = useRouter();
   return (
     <Drawer drawerContent={(props) => <Sidebar {...props} />}>
       <Drawer.Screen
@@ -38,7 +40,7 @@ export default function Layout() {
                 <Icon name="notifications-none" size={30} color="black" />
               </TouchableOpacity>
 
-              <TouchableOpacity onPress={() => navigation.navigate("scanner")}>
+              <TouchableOpacity onPress={() => router.push("/users/scanner")}>
                 <Icon name="qr-code-scanner" size={30} color="black" />
               </TouchableOpacity>
             </View>

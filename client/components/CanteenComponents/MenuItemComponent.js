@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { View, Text, Image, Switch } from "react-native";
 import MaterialIcon from "react-native-vector-icons/MaterialIcons";
 
-export default function MenuItem() {
+export default function MenuItem({ item }) {
   const [isEnabled, setIsEnabled] = useState(true);
   const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
   return (

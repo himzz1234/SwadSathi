@@ -7,8 +7,10 @@ import {
   StyleSheet,
   TextInput,
   TouchableOpacity,
+  Pressable,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import Ionicon from "react-native-vector-icons/Ionicons";
 import { AuthContext } from "../../../context/AuthContext";
 
 export default function Signup() {
@@ -16,6 +18,7 @@ export default function Signup() {
   const [emailId, setEmailId] = useState("");
   const [password, setPassword] = useState("");
 
+  const [showPassword, setShowPassword] = useState(false);
   const { dispatch } = useContext(AuthContext);
   const router = useRouter();
 
@@ -66,24 +69,43 @@ export default function Signup() {
           style={styles.inputContainer}
           onChangeText={(e) => setEmailId(e)}
         />
-        <TextInput
-          value={password}
-          secureTextEntry={true}
-          placeholder="Password"
-          style={styles.inputContainer}
-          onChangeText={(e) => setPassword(e)}
-        />
+        <View
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            backgroundColor: "#efeeea",
+            paddingRight: 10,
+          }}
+        >
+          <TextInput
+            value={password}
+            placeholder="Password"
+            secureTextEntry={showPassword}
+            style={[styles.inputContainer, { flex: 1 }]}
+            onChangeText={(e) => setPassword(e)}
+          />
+          {!showPassword ? (
+            <Pressable onPress={() => setShowPassword(true)}>
+              <Ionicon name="eye" size={20} />
+            </Pressable>
+          ) : (
+            <Pressable onPress={() => setShowPassword(false)}>
+              <Ionicon name="eye-off" size={20} />
+            </Pressable>
+          )}
+        </View>
       </View>
 
       <TouchableOpacity style={styles.button} onPress={register}>
-        <Text style={{ color: "white", textAlign: "center", fontSize: 16 }}>
+        <Text style={{ color: "white", textAlign: "center", fontSize: 17 }}>
           Continue
         </Text>
       </TouchableOpacity>
 
       <Text style={{ textAlign: "center", marginTop: 15, fontSize: 16 }}>
         Already have an account?{" "}
-        <Link href="/users/auth/login" style={{ color: "#FF4136" }}>
+        <Link href="/users/auth/login" style={{ color: "#006442" }}>
           Login
         </Link>
       </Text>
@@ -98,15 +120,15 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingHorizontal: 20,
   },
-
   inputContainer: {
     padding: 10,
     backgroundColor: "#efeeea",
     borderRadius: 5,
   },
   button: {
-    backgroundColor: "#FF4136",
-    paddingVertical: 10,
+    backgroundColor: "#006442",
     borderRadius: 5,
+    paddingVertical: 12.5,
+    elevation: 3,
   },
 });

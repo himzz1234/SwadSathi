@@ -4,11 +4,13 @@ import {
   StyleSheet,
   TouchableOpacity,
   TextInput,
+  Pressable,
 } from "react-native";
 import { Link } from "expo-router";
 import { useState } from "react";
 import axios from "../../../axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import Ionicon from "react-native-vector-icons/Ionicons";
 
 export default function SignUp() {
   const [formData, setFormData] = useState({
@@ -18,6 +20,7 @@ export default function SignUp() {
     emailId: "",
     password: "",
   });
+  const [showPassword, setShowPassword] = useState(false);
 
   const register = async () => {
     try {
@@ -80,13 +83,32 @@ export default function SignUp() {
           style={styles.inputContainer}
           onChangeText={(e) => setFormData({ ...formData, emailId: e })}
         />
-        <TextInput
-          value={formData.password}
-          secureTextEntry={true}
-          placeholder="Password"
-          style={styles.inputContainer}
-          onChangeText={(e) => setFormData({ ...formData, password: e })}
-        />
+        <View
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            backgroundColor: "#efeeea",
+            paddingRight: 10,
+          }}
+        >
+          <TextInput
+            value={formData.password}
+            placeholder="Password"
+            secureTextEntry={showPassword}
+            style={[styles.inputContainer, { flex: 1 }]}
+            onChangeText={(e) => setFormData({ ...formData, password: e })}
+          />
+          {!showPassword ? (
+            <Pressable onPress={() => setShowPassword(true)}>
+              <Ionicon name="eye" size={20} />
+            </Pressable>
+          ) : (
+            <Pressable onPress={() => setShowPassword(false)}>
+              <Ionicon name="eye-off" size={20} />
+            </Pressable>
+          )}
+        </View>
       </View>
 
       <TouchableOpacity style={styles.button} onPress={register}>
@@ -97,7 +119,7 @@ export default function SignUp() {
 
       <Text style={{ textAlign: "center", marginTop: 15, fontSize: 16 }}>
         Already have an account?{" "}
-        <Link href="/canteens/auth/login" style={{ color: "#FF4136" }}>
+        <Link href="/canteens/auth/login" style={{ color: "#006442" }}>
           Login
         </Link>
       </Text>
@@ -119,8 +141,9 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   button: {
-    backgroundColor: "#FF4136",
-    paddingVertical: 10,
+    backgroundColor: "#006442",
     borderRadius: 5,
+    paddingVertical: 12.5,
+    elevation: 3,
   },
 });

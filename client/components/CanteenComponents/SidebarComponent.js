@@ -10,13 +10,14 @@ import {
   DrawerContentScrollView,
   DrawerItemList,
 } from "@react-navigation/drawer";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useRouter } from "expo-router";
 import { useContext } from "react";
+import { useRouter } from "expo-router";
 import { AuthContext } from "../../context/AuthContext";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function Sidebar(props) {
   const router = useRouter();
+  const { auth: canteen } = useContext(AuthContext);
 
   const logout = async () => {
     await AsyncStorage.setItem("auth", "");
@@ -41,7 +42,7 @@ export default function Sidebar(props) {
             source={require("../../assets/images/canteen.jpg")}
             borderRadius={999}
           />
-          <Text style={{ fontSize: 18, fontWeight: 600 }}>BBQ Mechanic</Text>
+          <Text style={{ fontSize: 18, fontWeight: 600 }}>{canteen?.name}</Text>
         </View>
 
         <DrawerItemList {...props} />
