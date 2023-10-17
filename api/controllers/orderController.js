@@ -100,6 +100,8 @@ const updateOrderToPaid = async (req, res) => {
   }
 };
 
+
+
 //@desc get all user's orders(Used by admin)
 //@route GET api/orders/myorder
 const getMyOrders = async (req, res) => {
@@ -201,27 +203,18 @@ const checkout_native = async (req, res) => {
 };
 
 const checkout = async (req, res) => {
-  const customer = await stripe.customers.create();
-  const ephemeralKey = await stripe.ephemeralKeys.create(
-    {customer: customer.id},
-    {apiVersion: '2023-08-16'}
-  );
-  const paymentIntent = await stripe.paymentIntents.create({
-    amount: 1099,
-    currency: 'eur',
-    customer: customer.id,
-    // In the latest version of the API, specifying the `automatic_payment_methods` parameter is optional because Stripe enables its functionality by default.
-    automatic_payment_methods: {
-      enabled: true,
-    },
-  });
-
-  res.json({
-    paymentIntent: paymentIntent.client_secret,
-    ephemeralKey: ephemeralKey.secret,
-    customer: customer.id,
-    publishableKey: process.env.PUBLISHABLEKEY
-  });
+  try {
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: req.body.amount,
+      currency: "inr",
+      automatic_payment_methods: {
+        enabled: true,
+      },
+    });
+    res.json({ paymentIntent: paymentIntent.client_secret });
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
 };
 
 module.exports = {
