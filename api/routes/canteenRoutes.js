@@ -52,7 +52,7 @@ router.get("/canteens/:id", canteenDetails);
 
 router.get("/canteenOrders", canteenOrders);
 
-router.post("/item", canteenAuth, addItem);
+router.post("/item", addItem);
 
 router.put("/item/:id", updateItem);
 
