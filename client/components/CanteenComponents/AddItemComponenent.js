@@ -8,15 +8,13 @@ import {
   TouchableOpacity,
   TextInput,
   Switch,
+  Image,
 } from "react-native";
 import axios from "../../axios";
 import CustomModal from "../ModalComponent";
 import { AuthContext } from "../../context/AuthContext";
 import * as ImagePicker from "expo-image-picker";
-
-const cloudName = "dnj89k1rw";
-const uploadPreset = "swad-sathi";
-const cloudinaryBaseUrl = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`;
+import useUpload from "../../hooks/useUpload";
 
 export default function AddItemComponenent({
   openModal,
@@ -34,18 +32,27 @@ export default function AddItemComponenent({
     isAvailable: true,
   });
 
+  const { uploadedImage, isLoading } = useUpload(itemData.image);
+
   const addItem = async () => {
-    console.log(itemData);
     const res = await axios.post("/auth/admin/item", {
       ...itemData,
+      image: uploadedImage,
       canteenId: canteen._id,
     });
 
     setCanteenMenu((prev) => [...prev, res.data.newItem]);
+    setItemData({
+      name: "",
+      image: "",
+      price: "",
+      isAvailable: true,
+    });
+
     setOpenModal(false);
   };
 
-  const uploadImage = async () => {
+  const pickImage = async () => {
     try {
       const imagePickResponse = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -55,23 +62,7 @@ export default function AddItemComponenent({
       });
 
       if (!imagePickResponse.canceled) {
-        const data = new FormData();
-        data.append("file", {
-          uri: imagePickResponse.assets[0].uri,
-          type: `test/${imagePickResponse.assets[0].uri.split(".")[1]}`,
-          name: `test.${imagePickResponse.assets[0].uri.split(".")[1]}`,
-        });
-
-        data.append("upload_preset", uploadPreset);
-        data.append("cloud_name", cloudName);
-
-        const fileUploadResponse = await fetch(cloudinaryBaseUrl, {
-          body: data,
-          method: "POST",
-        });
-
-        const jsonResponse = await fileUploadResponse.json();
-        setItemData({ ...itemData, image: jsonResponse.url });
+        setItemData({ ...itemData, image: imagePickResponse.assets[0].uri });
       }
     } catch (error) {
       console.log(error);
@@ -94,7 +85,7 @@ export default function AddItemComponenent({
         }}
       >
         <TouchableOpacity
-          onPress={uploadImage}
+          onPress={pickImage}
           style={{
             width: 100,
             height: 100,
@@ -105,7 +96,14 @@ export default function AddItemComponenent({
             backgroundColor: "#eef5ca",
           }}
         >
-          <Ionicon name="camera" size={40} color="#2d7262" />
+          {!uploadedImage ? (
+            <Ionicon name="camera" size={40} color="#2d7262" />
+          ) : (
+            <Image
+              source={{ uri: uploadedImage }}
+              style={{ width: "100%", height: "100%", borderRadius: 999 }}
+            />
+          )}
         </TouchableOpacity>
         <View style={{ width: "100%", flex: 1, gap: 15 }}>
           <TextInput
@@ -165,6 +163,7 @@ export default function AddItemComponenent({
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
+            disabled={isLoading}
             onPress={addItem}
             style={[
               { backgroundColor: "#006442", borderColor: "transparent" },
