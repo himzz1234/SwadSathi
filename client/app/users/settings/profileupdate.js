@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../../context/AuthContext";
 import { TextInput, TouchableOpacity } from "react-native";
 import MaterialIcon from "react-native-vector-icons/MaterialIcons";
@@ -11,8 +11,12 @@ import {
   StyleSheet,
   Dimensions,
   Pressable,
+  ActivityIndicator,
 } from "react-native";
 import { useRouter } from "expo-router";
+import useUpload from "../../../hooks/useUpload";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "../../../axios";
 
 export default function ProfileUpdate() {
   const router = useRouter();
@@ -21,6 +25,7 @@ export default function ProfileUpdate() {
   const [username, setUsername] = useState(user?.name);
   const [image, setImage] = useState(null);
 
+  const { uploadedImage, isLoading } = useUpload(image);
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -32,6 +37,23 @@ export default function ProfileUpdate() {
     if (result.assets[0].uri) {
       setImage(result.assets[0].uri);
     }
+  };
+
+  const updateProfile = async () => {
+    const obj = await AsyncStorage.getItem("auth");
+    const { token } = JSON.parse(obj);
+
+    await axios.put(
+      "/auth/user/updateprofile",
+      {
+        email,
+        name: username,
+        profilePicture: uploadedImage || user.profilePicture,
+      },
+      { headers: { token } }
+    );
+
+    user.profilePicture = uploadedImage || user.profilePicture;
   };
 
   return (
@@ -65,9 +87,9 @@ export default function ProfileUpdate() {
           <Image
             style={{ width: 80, height: 80 }}
             source={
-              !image
-                ? require("../../../assets/images/profile.jpeg")
-                : { uri: image }
+              !uploadedImage
+                ? { uri: user.profilePicture }
+                : { uri: uploadedImage }
             }
             borderRadius={999}
           ></Image>
@@ -113,17 +135,25 @@ export default function ProfileUpdate() {
             />
           </View>
           <Pressable
+            disabled={isLoading}
+            onPress={updateProfile}
             style={{
               height: 45,
               borderRadius: 5,
-              backgroundColor: "#FF4136",
               display: "flex",
               width: Dimensions.get("screen").width - 40,
               alignItems: "center",
               justifyContent: "center",
+              backgroundColor: "#006442",
             }}
           >
-            <Text style={{ color: "white", fontSize: 16 }}>Reset Profile</Text>
+            {isLoading ? (
+              <ActivityIndicator size="small" />
+            ) : (
+              <Text style={{ color: "white", fontSize: 16 }}>
+                Reset Profile
+              </Text>
+            )}
           </Pressable>
         </View>
       </View>

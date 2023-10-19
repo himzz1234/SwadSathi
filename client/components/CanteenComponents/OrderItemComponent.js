@@ -1,10 +1,17 @@
-import { Text, View, FlatList, Pressable } from "react-native";
+import {
+  Text,
+  View,
+  FlatList,
+  Pressable,
+  TouchableOpacity,
+} from "react-native";
 import OctIcon from "react-native-vector-icons/Octicons";
 import MaterialCommunityIcon from "react-native-vector-icons/MaterialCommunityIcons";
+import moment from "moment/moment";
 
 export default function OrderItem({ item }) {
-  const statusColor = () => {
-    if (item.orderStatus === "Pending") {
+  const statusColor = (status) => {
+    if (status === "Pending") {
       return "#FAC898";
     }
   };
@@ -28,9 +35,9 @@ export default function OrderItem({ item }) {
       >
         <View>
           <Text style={{ fontWeight: "600", fontSize: 16.5 }}>
-            ID: {item.orderId}
+            ID: {item._id.slice(-4)}
           </Text>
-          <Text style={{ marginTop: 5 }}>{item.customerName}'s order</Text>
+          <Text style={{ marginTop: 5 }}>{item.user.name}'s order</Text>
         </View>
 
         <View>
@@ -42,7 +49,9 @@ export default function OrderItem({ item }) {
               justifyContent: "space-between",
             }}
           >
-            <Text style={{ fontSize: 16 }}>{item.orderTime.split(" ")[1]}</Text>
+            <Text style={{ fontSize: 13.5 }}>
+              {moment(item.createdAt).calendar()}
+            </Text>
             <MaterialCommunityIcon
               name="dots-vertical"
               size={19}
@@ -51,15 +60,20 @@ export default function OrderItem({ item }) {
           </View>
           <View
             style={{
+              gap: 5,
+              marginTop: 5,
               display: "flex",
               flexDirection: "row",
               alignItems: "center",
-              gap: 5,
-              marginTop: 5,
+              justifyContent: "flex-end",
             }}
           >
-            <OctIcon name="dot-fill" color={statusColor()} size={10} />
-            <Text style={{ fontSize: 13 }}>{item.orderStatus}</Text>
+            <OctIcon
+              name="dot-fill"
+              color={statusColor(item.status)}
+              size={10}
+            />
+            <Text style={{ fontSize: 13 }}>{item.status}</Text>
           </View>
         </View>
       </View>
@@ -82,8 +96,10 @@ export default function OrderItem({ item }) {
             return (
               <View style={{ display: "flex", flexDirection: "row", gap: 10 }}>
                 <Text style={{ fontSize: 15 }}>{menuItem.qty}x</Text>
-                <Text style={{ flex: 1, fontSize: 15 }}>{menuItem.name}</Text>
-                <Text style={{ fontSize: 15 }}>₹{menuItem.price}</Text>
+                <Text style={{ flex: 1, fontSize: 15 }}>
+                  {menuItem.product.name}
+                </Text>
+                <Text style={{ fontSize: 15 }}>₹{menuItem.product.price}</Text>
               </View>
             );
           }}
@@ -94,7 +110,7 @@ export default function OrderItem({ item }) {
       <View style={{ padding: 10 }}>
         <Text style={{ fontSize: 16 }}>
           Total bill:{" "}
-          <Text style={{ fontWeight: "600" }}>₹{item.orderCost}</Text>
+          <Text style={{ fontWeight: "600" }}>₹{item.totalPrice}</Text>
         </Text>
         <View
           style={{
@@ -105,23 +121,21 @@ export default function OrderItem({ item }) {
             flexDirection: "row",
           }}
         >
-          <Pressable
+          <TouchableOpacity
             style={{
               flex: 1.5,
               borderRadius: 4,
               borderWidth: 2,
               borderColor: "transparent",
               paddingVertical: 7.5,
-              backgroundColor: "#68bd46",
+              backgroundColor: "#006442",
             }}
           >
-            <Text
-              style={{ textAlign: "center", color: "white", fontSize: 14.5 }}
-            >
+            <Text style={{ textAlign: "center", color: "white", fontSize: 15 }}>
               ACCEPT
             </Text>
-          </Pressable>
-          <Pressable
+          </TouchableOpacity>
+          <TouchableOpacity
             style={{
               flex: 0.5,
               borderRadius: 4,
@@ -130,10 +144,10 @@ export default function OrderItem({ item }) {
               paddingVertical: 7.5,
             }}
           >
-            <Text style={{ textAlign: "center", color: "red", fontSize: 14.5 }}>
+            <Text style={{ textAlign: "center", color: "red", fontSize: 15 }}>
               DECLINE
             </Text>
-          </Pressable>
+          </TouchableOpacity>
         </View>
       </View>
     </View>

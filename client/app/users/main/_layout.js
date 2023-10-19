@@ -4,9 +4,14 @@ import Icon from "react-native-vector-icons/MaterialIcons";
 
 import Sidebar from "../../../components/UserComponents/SidebarComponent";
 import { useRouter } from "expo-router";
+import { useContext } from "react";
+import { AuthContext } from "../../../context/AuthContext";
 
 export default function Layout() {
   const router = useRouter();
+  const { auth: user } = useContext(AuthContext);
+
+  console.log(user);
   return (
     <Drawer drawerContent={(props) => <Sidebar {...props} />}>
       <Drawer.Screen
@@ -19,7 +24,7 @@ export default function Layout() {
             <TouchableOpacity onPress={() => navigation.openDrawer()}>
               <Image
                 style={{ width: 40, height: 40 }}
-                source={require("../../../assets/images/profile.jpeg")}
+                source={{ uri: user.profilePicture }}
                 borderRadius={999}
               />
             </TouchableOpacity>
@@ -57,7 +62,7 @@ export default function Layout() {
             <TouchableOpacity onPress={() => navigation.openDrawer()}>
               <Image
                 style={{ width: 40, height: 40 }}
-                source={require("../../../assets/images/profile.jpeg")}
+                source={{ uri: user.profilePicture }}
                 borderRadius={999}
               />
             </TouchableOpacity>
@@ -74,7 +79,7 @@ export default function Layout() {
             <TouchableOpacity onPress={() => navigation.openDrawer()}>
               <Image
                 style={{ width: 40, height: 40 }}
-                source={require("../../../assets/images/profile.jpeg")}
+                source={{ uri: user.profilePicture }}
                 borderRadius={999}
               />
             </TouchableOpacity>

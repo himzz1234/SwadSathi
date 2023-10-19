@@ -18,21 +18,20 @@ const {
   getCanteenOrders,
   checkout_web,
   checkout_native,
-  checkout
+  checkout,
 } = require("../controllers/orderController.js");
 
-router.post('/order', userAuth, createOrder)
+router.post("/order", userAuth, createOrder);
 
-router.get('/order/:id', getOrderById)
+router.get("/order/:id", getOrderById);
 
-router.put('/order/:id/pay', updateOrderToPaid)
+router.put("/order/:id/pay", updateOrderToPaid);
 
-router.put('/order/:id/delivered', updateOrderToDelivered)
+router.put("/order/:id/delivered", updateOrderToDelivered);
 
-router.get('/myorders',userAuth, getMyOrders)
+router.get("/myorders", userAuth, getMyOrders);
 
-router.get('/canteenOrders/:id', getCanteenOrders )
-router.post('/checkout', checkout)
+router.get("/canteenOrders/:id", getCanteenOrders);
+router.post("/checkout", checkout);
 
-module.exports = router
-
+module.exports = router;

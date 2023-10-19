@@ -39,7 +39,7 @@ export default function Sidebar(props) {
         >
           <Image
             style={{ width: 40, height: 40 }}
-            source={require("../../assets/images/profile.jpeg")}
+            source={{ uri: user.profilePicture }}
             borderRadius={999}
           />
           <Text style={{ fontSize: 18, fontWeight: 600 }}>{user.name}</Text>

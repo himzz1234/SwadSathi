@@ -27,12 +27,15 @@ const createOrder = async (req, res) => {
         orderItems: orderItems,
         totalPrice: totalPrice,
         isPaid: isPaid,
-        status: status
+        status: status,
       });
-      const createdOrder = await order.save().then(order => order.populate({path: 'orderItems.product'})).then(order => order)
+      const createdOrder = await order
+        .save()
+        .then((order) => order.populate({ path: "orderItems.product" }))
+        .then((order) => order);
       res
         .status(201)
-        .json({ success: true, message: "Order created!", createdOrder});
+        .json({ success: true, message: "Order created!", createdOrder });
     }
   } catch (error) {
     res.status(500).json({ message: "catch" });
@@ -44,7 +47,9 @@ const createOrder = async (req, res) => {
 const getOrderById = async (req, res) => {
   const orderId = req.params.id;
   try {
-    const order = await Order.findById(orderId).populate({ path: 'orderItems.product'}).exec();
+    const order = await Order.findById(orderId)
+      .populate({ path: "orderItems.product" })
+      .exec();
     if (order) {
       return res.status(200).json(order);
     } else {
@@ -94,14 +99,16 @@ const updateOrderToPaid = async (req, res) => {
   }
 };
 
-//@desc update 
+//@desc update
 
 //@desc get all user's orders(Used by admin)
 //@route GET api/orders/myorder
 const getMyOrders = async (req, res) => {
   const userId = req.user.id;
   try {
-    const orders = await Order.find({ user: userId }).populate({ path: 'orderItems.product'}).exec();
+    const orders = await Order.find({ user: userId })
+      .populate("orderItems.product")
+      .exec();
     if (orders) {
       return res.status(200).json(orders);
     } else {
@@ -112,20 +119,26 @@ const getMyOrders = async (req, res) => {
   }
 };
 
-const getCanteenOrders = async(req, res) => {
+const getCanteenOrders = async (req, res) => {
   const canteenId = req.params.id;
-  try{
-    const orders = await Order.find({ canteen: canteenId });
-    if(orders){
-      return res.status(200).json(orders)
+  try {
+    const orders = await Order.find({ canteen: canteenId })
+      .populate("orderItems.product")
+      .populate({
+        path: "user",
+        select: ["name"],
+      })
+      .exec();
+    console.log(orders);
+    if (orders) {
+      return res.status(200).json(orders);
+    } else {
+      return res.status(404).json({ message: "No orders found!" });
     }
-    else{
-      return res.status(404).json({ message: "No orders found!"});
-    }
-  } catch(error) {
-    return res.status(500).json({ error: "Interval server error!"});
+  } catch (error) {
+    return res.status(500).json({ error: "Interval server error!" });
   }
-}
+};
 
 const checkout_web = async (req, res) => {
   try {

@@ -1,60 +1,27 @@
 import { View, StyleSheet, FlatList, Text } from "react-native";
 import OrderItem from "../../../components/CanteenComponents/OrderItemComponent";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../../context/AuthContext";
-
-const data = [
-  {
-    orderId: 123,
-    orderTime: "10-10-2023 12:35",
-    customerName: "Himanshu",
-    orderItems: [
-      {
-        id: 382939232,
-        name: "Rajma Chawal",
-        price: 200,
-        qty: 4,
-      },
-      {
-        id: 382939233,
-        name: "Chole Chawal",
-        price: 50,
-        qty: 1,
-      },
-    ],
-    orderCost: 250,
-    orderStatus: "Pending",
-    orderPayment: "Paid",
-  },
-  {
-    orderId: 124,
-    orderTime: "10-10-2023 11:35",
-    customerName: "Pravs",
-    orderItems: [
-      {
-        name: "Penne Pasta",
-        price: 400,
-        qty: 1,
-      },
-      {
-        name: "Margherita",
-        price: 260,
-        qty: 1,
-      },
-    ],
-    orderCost: 660,
-    orderStatus: "Pending",
-    orderPayment: "Not Paid",
-  },
-];
+import axios from "../../../axios";
 
 export default function Home() {
   const { auth: canteen } = useContext(AuthContext);
+  const [orders, setOrders] = useState([]);
+
+  useEffect(() => {
+    const fetchOrders = async () => {
+      const res = await axios.get(`/orders/canteenOrders/${canteen._id}`);
+      setOrders(res.data);
+    };
+
+    fetchOrders();
+  }, []);
+
   return (
     <View style={styles.container}>
       <Text style={{ fontSize: 22, fontWeight: "600" }}>All Orders</Text>
       <FlatList
-        data={data}
+        data={orders}
         style={{ marginTop: 20 }}
         ItemSeparatorComponent={() => {
           return <View style={{ height: 15, width: "100%" }}></View>;
