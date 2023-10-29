@@ -13,7 +13,9 @@ export default function SocketProvider({ children }) {
   const { auth } = useContext(AuthContext);
 
   useEffect(() => {
-    setSocket(io("http://192.168.43.173:8800"));
+    if (auth) {
+      setSocket(io("http://192.168.43.173:8800"));
+    }
   }, [auth]);
 
   return (

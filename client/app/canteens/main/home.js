@@ -1,18 +1,13 @@
 import axios from "../../../axios";
 import { useContext, useEffect, useState } from "react";
-import { View, StyleSheet, FlatList, Text } from "react-native";
-import OrderItem from "../../../components/CanteenComponents/OrderItemComponent";
 import { AuthContext } from "../../../context/AuthContext";
+import { View, StyleSheet, FlatList, Text } from "react-native";
 import { SocketContext } from "../../../context/SocketContext";
+import OrderItem from "../../../components/CanteenComponents/OrderItemComponent";
 
 export default function Home() {
   const [orders, setOrders] = useState([]);
   const { auth: canteen } = useContext(AuthContext);
-  const { socket } = useContext(SocketContext);
-
-  useEffect(() => {
-    socket.emit("event", { name: "Himanshu" });
-  }, []);
 
   useEffect(() => {
     const fetchOrders = async () => {

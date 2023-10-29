@@ -44,15 +44,7 @@ const io = require("socket.io")(server, {
 });
 
 io.on("connection", (socket) => {
-  console.log(socket.id);
-  socket.on("event", (data) => console.log(data));
-  // socket.on("newuser", (userId)=>{
-  //   addnewuser(userId, socket.id)
-  //   console.log("A user connected")
-  // })
+  socket.on("order-placed", (data) => console.log(data));
 
-  socket.on("disconnect", () => {
-    // removeUser(socket.id)
-    // console.log("A user disconnected")
-  });
+  socket.on("disconnect", () => {});
 });

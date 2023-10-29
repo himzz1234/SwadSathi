@@ -41,7 +41,7 @@ export default function OrderItem({ item }) {
       >
         <View style={{ gap: 2 }}>
           <Text style={{ fontWeight: "600", fontSize: 16 }}>
-            {item.canteen.name}
+            {item.canteen?.name}
           </Text>
           <Text style={{ fontWeight: "400", fontSize: 13.5 }}>
             {truncate(item.canteen.address)}
@@ -105,7 +105,7 @@ export default function OrderItem({ item }) {
               <View style={{ display: "flex", flexDirection: "row", gap: 10 }}>
                 <Text style={{ fontSize: 15 }}>{menuItem.qty}x</Text>
                 <Text style={{ flex: 1, fontSize: 15 }}>
-                  {menuItem.product.name}
+                  {menuItem.product?.name}
                 </Text>
                 <Text style={{ fontSize: 15 }}>₹{menuItem.product.price}</Text>
               </View>
