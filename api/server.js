@@ -14,8 +14,8 @@ let connected = [];
 
 /// User connection
 const addnewuser = (connectedId, socketId) => {
-  !connected.some((user) => user.connectedId === connectedId) && connected.push({ connectedId, socketId });
-
+  !connected.some((user) => user.connectedId === connectedId) &&
+    connected.push({ connectedId, socketId });
 };
 
 const removeUser = (socketId) => {
@@ -23,9 +23,8 @@ const removeUser = (socketId) => {
 };
 
 const getUser = (connectedId) => {
-  return connected.find((user)=> user.connectedId === connectedId)
-}
-
+  return connected.find((user) => user.connectedId === connectedId);
+};
 
 /// Canteen Connection
 const addNewCanteen = (canteenId, socketId) => {
@@ -33,13 +32,15 @@ const addNewCanteen = (canteenId, socketId) => {
     connectedCanteens.push({ canteenId, socketId });
 };
 
-const removeCanteen = (socketId) =>{
-  connectedCanteens = connectedCanteens.filter((canteen)=>canteen.socketId !== socketId)
-}
+const removeCanteen = (socketId) => {
+  connectedCanteens = connectedCanteens.filter(
+    (canteen) => canteen.socketId !== socketId
+  );
+};
 
-const getCanteen = (socketId) =>{
-  return connectedCanteens.find((canteen)=>canteen.canteenId === canteenId)
-}
+const getCanteen = (socketId) => {
+  return connectedCanteens.find((canteen) => canteen.canteenId === canteenId);
+};
 
 //app.use('/api/items',require('./routes/foodItemRoute'));
 app.use("/api/auth/user", require("./routes/userRoutes"));
@@ -58,27 +59,20 @@ const io = require("socket.io")(server, {
 });
 
 io.on("connection", (socket) => {
-<<<<<<< HEAD
-  socket.on("order-placed", (data) => console.log(data));
+  socket.on("newconnection", (connectedId) => {
+    addnewuser(connectedId, socket.id);
+    console.log("Someone connected!", connected);
+  });
 
-  socket.on("disconnect", () => {});
-=======
-  socket.on("newconnection", (connectedId)=>{
-    addnewuser(connectedId, socket.id)
-    console.log("Someone connected!",connected)
-  })
-
-  socket.on('order-placed', (data)=>{
-    const canteenSocket = getUser(data.receiverId)
-    if(canteenSocket){
-      io.to(canteenSocket.socketId).emit("new-order", {order: data.order})
-    }    
-  })
-  
+  socket.on("order-placed", (data) => {
+    const canteenSocket = getUser(data.receiverId);
+    if (canteenSocket) {
+      io.to(canteenSocket.socketId).emit("new-order", { order: data.order });
+    }
+  });
 
   socket.on("disconnect", () => {
-    removeUser(socket.id)
-    console.log("someone disconnected", connected)
+    removeUser(socket.id);
+    console.log("someone disconnected", connected);
   });
->>>>>>> 235d2f1efc67ee826a71e9d6392ceda02ead8b3e
 });
