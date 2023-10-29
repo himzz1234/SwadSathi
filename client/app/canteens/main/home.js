@@ -1,12 +1,12 @@
+import axios from "../../../axios";
+import { useContext, useEffect, useState } from "react";
 import { View, StyleSheet, FlatList, Text } from "react-native";
 import OrderItem from "../../../components/CanteenComponents/OrderItemComponent";
-import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../../context/AuthContext";
-import axios from "../../../axios";
 
 export default function Home() {
-  const { auth: canteen } = useContext(AuthContext);
   const [orders, setOrders] = useState([]);
+  const { auth: canteen } = useContext(AuthContext);
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -29,6 +29,7 @@ export default function Home() {
         renderItem={({ item }) => {
           return <OrderItem {...{ item }} />;
         }}
+        keyExtractor={(item) => item._id}
       />
     </View>
   );

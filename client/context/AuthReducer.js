@@ -32,6 +32,15 @@ export default function AuthReducer(state, action) {
         error: false,
       };
 
+    case "PROFILE_UPDATE":
+      // Update the user's profile information
+      return {
+        auth: { ...state.auth, ...action.payload.auth },
+        role: action.payload.role,
+        isFetching: false,
+        error: false,
+      };
+
     default:
       return state;
   }

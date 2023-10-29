@@ -13,13 +13,35 @@ import Payment from "../../components/UserComponents/PaymentComponent";
 import CartItem from "../../components/UserComponents/CartItemComponent";
 import { CartContext } from "../../context/CartContext";
 import CheckoutModal from "../../components/UserComponents/CheckoutModalComponent";
+import axios from "../../axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function Checkout() {
   const router = useRouter();
   const { cart } = useContext(CartContext);
   const [openModal, setOpenModal] = useState(false);
 
-  const onCheckout = () => {
+  const onCheckout = async () => {
+    const obj = await AsyncStorage.getItem("auth");
+    const { token } = JSON.parse(obj);
+
+    await axios.post(
+      "/orders/order",
+      {
+        canteen: cart[0].cId,
+        orderItems: cart.map((cartItem) => ({
+          qty: cartItem.qty,
+          product: cartItem.id,
+        })),
+        totalPrice: cart.reduce(
+          (total, cartItem) => total + cartItem.qty * cartItem.price,
+          0
+        ),
+        isPaid: true,
+      },
+      { headers: { token } }
+    );
+
     setOpenModal(true);
   };
 

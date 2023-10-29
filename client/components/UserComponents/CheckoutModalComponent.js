@@ -12,14 +12,12 @@ export default function CheckoutModal({ openModal }) {
 
   useEffect(() => {
     if (openModal) {
-      var timer = setTimeout(() => {
+      setTimeout(() => {
         dispatch({ type: "REMOVE_ALL" });
         router.replace("/users/main/myorders");
       }, 2000);
     }
-
-    return () => clearTimeout(timer);
-  }, []);
+  }, [openModal]);
 
   return (
     <CustomModal openFn={openModal}>

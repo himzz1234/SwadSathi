@@ -6,6 +6,7 @@ import {
   FlatList,
   TouchableOpacity,
   TextInput,
+  Image,
 } from "react-native";
 import { AuthContext } from "../../../context/AuthContext";
 import { useRouter } from "expo-router";

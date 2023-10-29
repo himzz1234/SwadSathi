@@ -4,6 +4,7 @@ dotenv.config();
 
 const userAuth = (req, res, next) => {
   const token = req.headers.token;
+  console.log(token);
   if (!token) {
     res.status(401).send({ error: "Please authenticate using a valid token." });
   }
