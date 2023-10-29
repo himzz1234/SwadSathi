@@ -3,19 +3,22 @@ import AuthProvider from "../context/AuthContext";
 import { View, StyleSheet } from "react-native";
 import CartProvider from "../context/CartContext";
 import { StripeProvider } from "@stripe/stripe-react-native";
+import SocketProvider from "../context/SocketContext";
 
 export default function Root() {
   return (
     <AuthProvider>
       <CartProvider>
-        <View style={styles.container}>
-          <StripeProvider
-            urlScheme="/checkout"
-            publishableKey="pk_test_51NtbHCSBOdrddaflpOZuSvJt0q5KZ77dKK4bMUwZfpXhGlzga4MBQUdrrCsJ59ozDAWVBUeT9APWsq9AK7EAMKXW00q6nGrm2M"
-          >
-            <Slot />
-          </StripeProvider>
-        </View>
+        <SocketProvider>
+          <View style={styles.container}>
+            <StripeProvider
+              urlScheme="/checkout"
+              publishableKey="pk_test_51NtbHCSBOdrddaflpOZuSvJt0q5KZ77dKK4bMUwZfpXhGlzga4MBQUdrrCsJ59ozDAWVBUeT9APWsq9AK7EAMKXW00q6nGrm2M"
+            >
+              <Slot />
+            </StripeProvider>
+          </View>
+        </SocketProvider>
       </CartProvider>
     </AuthProvider>
   );

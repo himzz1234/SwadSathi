@@ -70,6 +70,7 @@ const CanteenDetails = () => {
             style={{ marginTop: 20 }}
             numColumns={2}
             columnWrapperStyle={{ justifyContent: "space-between" }}
+            showsVerticalScrollIndicator={false}
             ItemSeparatorComponent={() => {
               return <View style={{ height: 10, width: "100%" }}></View>;
             }}

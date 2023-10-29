@@ -19,7 +19,6 @@ export default function Page() {
 
   useEffect(() => {
     const fetchUser = async () => {
-      console.log("does it run");
       dispatch({ type: "LOGIN_START" });
       setLoading(true);
 
