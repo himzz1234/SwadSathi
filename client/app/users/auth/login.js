@@ -38,8 +38,6 @@ export default function Login() {
         })
       );
 
-      console.log(res.data.auth);
-
       dispatch({
         type: "LOGIN_SUCCESS",
         payload: { auth: res.data.auth, role: "User" },

@@ -5,38 +5,46 @@ const cors = require("cors");
 const app = express();
 const port = 8800;
 
-
-
 connectToMongo();
 app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
 
-let connectedUsers = []
-let connectedCanteens = []
+let connected = [];
 
-const addnewuser = (userId, socketId) => {
-  !connectedUsers.some((user)=>user.userId === userId) && connectedUsers.push({userId, socketId})
+/// User connection
+const addnewuser = (connectedId, socketId) => {
+  !connected.some((user) => user.connectedId === connectedId) && connected.push({ connectedId, socketId });
+
+};
+
+const removeUser = (socketId) => {
+  connected = connected.filter((user) => user.socketId !== socketId);
+};
+
+const getUser = (connectedId) => {
+  return connected.find((user)=> user.connectedId === connectedId)
 }
 
+
+/// Canteen Connection
 const addNewCanteen = (canteenId, socketId) => {
-  !connectedCanteens.some((canteen)=>canteen.canteenId === canteenId) && connectedCanteens.push({canteenId, socketId})
+  !connectedCanteens.some((canteen) => canteen.canteenId === canteenId) &&
+    connectedCanteens.push({ canteenId, socketId });
+};
+
+const removeCanteen = (socketId) =>{
+  connectedCanteens = connectedCanteens.filter((canteen)=>canteen.socketId !== socketId)
 }
 
-const removeUser = (socketId) =>{
-  connectedUsers = connectedUsers.filter((user)=>user.socketId !== socketId)
+const getCanteen = (socketId) =>{
+  return connectedCanteens.find((canteen)=>canteen.canteenId === canteenId)
 }
-
-
-
-
 
 //app.use('/api/items',require('./routes/foodItemRoute'));
 app.use("/api/auth/user", require("./routes/userRoutes"));
 app.use("/api/auth/admin", require("./routes/canteenRoutes"));
-app.use("/api/orders", require("./routes/orderRoutes.js"))
-
-
+app.use("/api/orders", require("./routes/orderRoutes.js"));
 
 const server = app.listen(port, () => {
   console.log(`Server running on ${port}`);
@@ -46,26 +54,25 @@ const io = require("socket.io")(server, {
   perMessageDeflate: false,
   cors: {
     origin: "*",
-  }
-})
+  },
+});
 
-io.on("connection", (socket)=>{
-  console.log("someone has connected")
-  // socket.on("newuser", (userId)=>{
-  //   addnewuser(userId, socket.id)
-  //   console.log("A user connected")
-  // })
-  
-  socket.on("disconnect", ()=>{
-    console.log("someone has left")
-    // removeUser(socket.id)
-    // console.log("A user disconnected")
-
+io.on("connection", (socket) => {
+  socket.on("newconnection", (connectedId)=>{
+    addnewuser(connectedId, socket.id)
+    console.log("Someone connected!",connected)
   })
-})
 
+  socket.on('order-placed', (data)=>{
+    const canteenSocket = getUser(data.receiverId)
+    if(canteenSocket){
+      io.to(canteenSocket.socketId).emit("new-order", {order: data.order})
+    }    
+  })
+  
 
-
-
-
-
+  socket.on("disconnect", () => {
+    removeUser(socket.id)
+    console.log("someone disconnected", connected)
+  });
+});

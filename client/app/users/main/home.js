@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -10,11 +10,19 @@ import {
 } from "react-native";
 import { AuthContext } from "../../../context/AuthContext";
 import { useRouter } from "expo-router";
+import { SocketContext } from "../../../context/SocketContext";
+//import { Socket } from "socket.io-client/build/esm";
+
 
 export default function Home() {
   const router = useRouter();
   const [input, setInput] = useState("");
   const { auth: user } = useContext(AuthContext);
+  const { socket } = useContext(SocketContext)
+
+  // useEffect(()=>{
+  //   socket.emit("newuser", user._id)
+  // },[socket, user._id])
 
   const navigateCanteen = async (canteenId) => {
     router.push({

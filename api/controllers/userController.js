@@ -87,7 +87,6 @@ const login = async (req, res) => {
 // @route PUT api/users/profile
 const updateUserProfile = async (req, res) => {
   const data = req.body;
-  console.log(data);
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(500).json({ error: errors.array() });
