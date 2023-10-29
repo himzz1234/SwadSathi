@@ -18,7 +18,7 @@ const createOrder = async (req, res) => {
     //deliveredAt,
   } = req.body;
   try {
-    if (orderItems && orderItems.length === 0) {
+    if (!orderItems.length) {
       return res.status(400).json({ message: "No order items!" });
     } else {
       const order = new Order({
@@ -33,9 +33,11 @@ const createOrder = async (req, res) => {
         .save()
         .then((order) => order.populate({ path: "orderItems.product" }))
         .then((order) => order);
-      res
-        .status(201)
-        .json({ success: true, message: "Order created!", createdOrder });
+      res.status(201).json({
+        success: true,
+        message: "Order created!",
+        details: createdOrder,
+      });
     }
   } catch (error) {
     res.status(500).json({ message: "catch" });
@@ -107,10 +109,12 @@ const getMyOrders = async (req, res) => {
   const userId = req.user.id;
   try {
     const orders = await Order.find({ user: userId })
-      .populate("orderItems.product")
+      .sort({ createdAt: -1 })
+      .populate(["orderItems.product", "canteen"])
       .exec();
     if (orders) {
-      return res.status(200).json(orders);
+      console.log(orders[0].orderItems);
+      return res.status(200).json({ orders });
     } else {
       return res.status(404).json({ message: "No orders found!" });
     }
@@ -129,7 +133,6 @@ const getCanteenOrders = async (req, res) => {
         select: ["name"],
       })
       .exec();
-    console.log(orders);
     if (orders) {
       return res.status(200).json(orders);
     } else {

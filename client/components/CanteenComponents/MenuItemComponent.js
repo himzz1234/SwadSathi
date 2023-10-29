@@ -1,8 +1,12 @@
 import React, { useState } from "react";
 import { View, Text, Image, Switch, Pressable } from "react-native";
+import { TouchableOpacity } from "react-native-gesture-handler";
 import MaterialIcon from "react-native-vector-icons/MaterialIcons";
+import EditItemComponenent from "./EditItemModalComponent";
 
 export default function MenuItem({ item }) {
+  const [openModal, setOpenModal] = useState(false);
+
   const [isEnabled, setIsEnabled] = useState(item.isAvailable);
   const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
   return (
@@ -59,22 +63,29 @@ export default function MenuItem({ item }) {
           <Text>In stock</Text>
         </View>
 
-        <Pressable
+        <TouchableOpacity
+          onPress={() => setOpenModal(true)}
           style={{
             gap: 5,
             display: "flex",
             flexDirection: "row",
             alignItems: "center",
-            backgroundColor: "#eef5ca",
+            backgroundColor: "#FF6347",
             paddingHorizontal: 10,
             paddingVertical: 5,
-            borderRadius: 2,
+            borderRadius: 4,
           }}
         >
-          <MaterialIcon name="edit" size={16} color="#2d7262" />
-          <Text style={{ color: "#2d7262" }}>Edit</Text>
-        </Pressable>
+          <MaterialIcon name="edit" size={16} color="white" />
+          <Text style={{ color: "white" }}>Edit</Text>
+        </TouchableOpacity>
       </View>
+
+      {openModal ? (
+        <EditItemComponenent {...{ openModal, setOpenModal, item }} />
+      ) : (
+        ""
+      )}
     </View>
   );
 }

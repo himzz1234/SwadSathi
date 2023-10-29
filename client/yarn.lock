@@ -1805,7 +1805,11 @@
 
 "@react-native-community/cli-platform-android@10.2.0", "@react-native-community/cli-platform-android@^10.2.0":
   version "10.2.0"
+<<<<<<< HEAD
   resolved "https://registry.npmjs.org/@react-native-community/cli-platform-android/-/cli-platform-android-10.2.0.tgz"
+=======
+  resolved "https://registry.yarnpkg.com/@react-native-community/cli-platform-android/-/cli-platform-android-10.2.0.tgz#0bc689270a5f1d9aaf9e723181d43ca4dbfffdef"
+>>>>>>> 5bd4969ddb524ca730a484f3f4148bb19eb120de
   integrity sha512-CBenYwGxwFdObZTn1lgxWtMGA5ms2G/ALQhkS+XTAD7KHDrCxFF9yT/fnAjFZKM6vX/1TqGI1RflruXih3kAhw==
   dependencies:
     "@react-native-community/cli-tools" "^10.1.1"

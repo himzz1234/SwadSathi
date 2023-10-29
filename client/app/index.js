@@ -14,11 +14,12 @@ import {
 
 export default function Page() {
   const router = useRouter();
-  const { dispatch } = useContext(AuthContext);
+  const { auth, dispatch } = useContext(AuthContext);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchUser = async () => {
+      console.log("does it run");
       dispatch({ type: "LOGIN_START" });
       setLoading(true);
 

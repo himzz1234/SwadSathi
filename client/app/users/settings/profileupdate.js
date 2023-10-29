@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { AuthContext } from "../../../context/AuthContext";
 import { TextInput, TouchableOpacity } from "react-native";
 import MaterialIcon from "react-native-vector-icons/MaterialIcons";
@@ -20,7 +20,7 @@ import axios from "../../../axios";
 
 export default function ProfileUpdate() {
   const router = useRouter();
-  const { auth: user } = useContext(AuthContext);
+  const { auth: user, dispatch } = useContext(AuthContext);
   const [email, setEmail] = useState(user?.email);
   const [username, setUsername] = useState(user?.name);
   const [image, setImage] = useState(null);
@@ -43,7 +43,7 @@ export default function ProfileUpdate() {
     const obj = await AsyncStorage.getItem("auth");
     const { token } = JSON.parse(obj);
 
-    await axios.put(
+    const res = await axios.put(
       "/auth/user/updateprofile",
       {
         email,
@@ -53,7 +53,10 @@ export default function ProfileUpdate() {
       { headers: { token } }
     );
 
-    user.profilePicture = uploadedImage || user.profilePicture;
+    dispatch({
+      type: "PROFILE_UPDATE",
+      payload: { auth: res.data.auth, role: "User" },
+    });
   };
 
   return (
@@ -134,7 +137,7 @@ export default function ProfileUpdate() {
               onChangeText={(text) => setEmail(text)}
             />
           </View>
-          <Pressable
+          <TouchableOpacity
             disabled={isLoading}
             onPress={updateProfile}
             style={{
@@ -154,7 +157,7 @@ export default function ProfileUpdate() {
                 Reset Profile
               </Text>
             )}
-          </Pressable>
+          </TouchableOpacity>
         </View>
       </View>
     </View>

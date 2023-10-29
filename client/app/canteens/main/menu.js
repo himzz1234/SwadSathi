@@ -4,7 +4,7 @@ import MenuItem from "../../../components/CanteenComponents/MenuItemComponent";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../../context/AuthContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import AddItemComponenent from "../../../components/CanteenComponents/AddItemComponenent";
+import AddItemComponenent from "../../../components/CanteenComponents/AddItemModalComponent";
 
 export default function Menu() {
   const [openModal, setOpenModal] = useState(false);
@@ -47,7 +47,11 @@ export default function Menu() {
         <MaterialIcon name="add" size={30} color="white" />
       </Pressable>
 
-      <AddItemComponenent {...{ openModal, setOpenModal, setCanteenMenu }} />
+      {openModal ? (
+        <AddItemComponenent {...{ openModal, setOpenModal, setCanteenMenu }} />
+      ) : (
+        ""
+      )}
     </View>
   );
 }

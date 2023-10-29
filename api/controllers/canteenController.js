@@ -62,7 +62,10 @@ const login = async (req, res) => {
   }
   const { email, password } = req.body;
   try {
-    let admin = await Canteen.findOne({ email });
+    let admin = await Canteen.findOne({ email }).populate({
+      path: "menu",
+      select: ["name", "image", "price", "isAvailable", "canteenId"],
+    });
     const passwordCompare = await bcrypt.compare(password, admin.password);
     if (admin && passwordCompare) {
       const authtoken = generateToken(admin._id);
@@ -185,7 +188,7 @@ const addItem = async (req, res) => {
     mycanteen.save();
     res.status(200).json({
       message: "Item added successfully!",
-      newItem
+      newItem,
     });
   } catch (error) {
     return res.status(500).json({ error: "Internal server error!" });
