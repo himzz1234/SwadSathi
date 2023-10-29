@@ -3,15 +3,9 @@ const cookieParser = require("cookie-parser");
 const connectToMongo = require("./config/database.js");
 const cors = require("cors");
 const app = express();
-const server = require("http").createServer(app)
 const port = 8800;
 
-const io = require("socket.io")(server, {
-  perMessageDeflate: false,
-  cors: {
-    origin: "*",
-  }
-})
+
 
 connectToMongo();
 app.use(cors());
@@ -29,23 +23,46 @@ const addNewCanteen = (canteenId, socketId) => {
   !connectedCanteens.some((canteen)=>canteen.canteenId === canteenId) && connectedCanteens.push({canteenId, socketId})
 }
 
-const getUser = (userId) => {
-  return connectedUsers.find((user)=>user.userId === userId)
+const removeUser = (socketId) =>{
+  connectedUsers = connectedUsers.filter((user)=>user.socketId !== socketId)
 }
 
-io.on("connection", (socket)=>{
-  socket.on("newuser", (userId)=>{
-    addnewuser(userId, socket.id)
-  })
-  
-  socket.on("disconnect", ()=>{})
-})
+
+
+
 
 //app.use('/api/items',require('./routes/foodItemRoute'));
 app.use("/api/auth/user", require("./routes/userRoutes"));
 app.use("/api/auth/admin", require("./routes/canteenRoutes"));
 app.use("/api/orders", require("./routes/orderRoutes.js"))
 
-app.listen(port, () => {
+
+
+const server = app.listen(port, () => {
   console.log(`Server running on ${port}`);
 });
+
+const io = require("socket.io")(server, {
+  perMessageDeflate: false,
+  cors: {
+    origin: "*",
+  }
+})
+
+io.on("connection", (socket)=>{
+  io.emit("event", "Working")
+  // socket.on("newuser", (userId)=>{
+  //   addnewuser(userId, socket.id)
+  //   console.log("A user connected")
+  // })
+  
+  socket.on("disconnect", ()=>{
+    // removeUser(socket.id)
+    // console.log("A user disconnected")
+
+  })
+})
+
+
+
+
