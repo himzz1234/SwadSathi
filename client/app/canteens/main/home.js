@@ -8,6 +8,13 @@ import OrderItem from "../../../components/CanteenComponents/OrderItemComponent"
 export default function Home() {
   const [orders, setOrders] = useState([]);
   const { auth: canteen } = useContext(AuthContext);
+  const { socket } = useContext(SocketContext);
+
+  useEffect(() => {
+    socket.on("new-order", (data) => {
+      setOrders((prev) => [...prev, data.order]);
+    });
+  }, []);
 
   useEffect(() => {
     const fetchOrders = async () => {

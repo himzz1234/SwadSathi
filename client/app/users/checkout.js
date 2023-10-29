@@ -16,12 +16,14 @@ import CheckoutModal from "../../components/UserComponents/CheckoutModalComponen
 import axios from "../../axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { SocketContext } from "../../context/SocketContext";
+import { AuthContext } from "../../context/AuthContext";
 
 export default function Checkout() {
   const router = useRouter();
   const { cart } = useContext(CartContext);
   const [openModal, setOpenModal] = useState(false);
   const { socket } = useContext(SocketContext);
+  const { auth: user } = useContext(AuthContext);
 
   const onCheckout = async () => {
     const obj = await AsyncStorage.getItem("auth");
@@ -43,6 +45,11 @@ export default function Checkout() {
       },
       { headers: { token } }
     );
+    socket.emit("order-placed", {
+      senderId: user._id,
+      receiverId: res.data.details.canteen,
+      order: res.data.details,
+    });
 
     socket.emit("order-placed", res.data.details);
     setOpenModal(true);

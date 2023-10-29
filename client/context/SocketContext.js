@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { io } from "socket.io-client";
 import { AuthContext } from "./AuthContext";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const INITIAL_STATE = {
   socket: undefined,
@@ -11,10 +12,13 @@ export const SocketContext = createContext(INITIAL_STATE);
 export default function SocketProvider({ children }) {
   const [socket, setSocket] = useState(null);
   const { auth } = useContext(AuthContext);
+  console.log(auth);
 
   useEffect(() => {
-    if (auth) {
-      setSocket(io("http://192.168.43.173:8800"));
+    if (auth && auth.name) {
+      const sock = io("http://192.168.245.168:8800");
+      sock.emit("newconnection", auth._id);
+      setSocket(sock);
     }
   }, [auth]);
 
