@@ -50,18 +50,21 @@ const io = require("socket.io")(server, {
 })
 
 io.on("connection", (socket)=>{
-  io.emit("event", "Working")
+  console.log("someone has connected")
   // socket.on("newuser", (userId)=>{
   //   addnewuser(userId, socket.id)
   //   console.log("A user connected")
   // })
   
   socket.on("disconnect", ()=>{
+    console.log("someone has left")
     // removeUser(socket.id)
     // console.log("A user disconnected")
 
   })
 })
+
+
 
 
 

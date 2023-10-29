@@ -13,7 +13,7 @@ export default function SocketProvider({ children }) {
   const { auth } = useContext(AuthContext);
 
   useEffect(() => {
-    setSocket(io("https://localhost:8800"));
+    setSocket(io("http://192.168.245.168:8800/api"));
   }, [auth]);
 
   return (
