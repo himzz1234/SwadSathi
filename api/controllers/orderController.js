@@ -113,7 +113,6 @@ const getMyOrders = async (req, res) => {
       .populate(["orderItems.product", "canteen"])
       .exec();
     if (orders) {
-      console.log(orders[0].orderItems);
       return res.status(200).json({ orders });
     } else {
       return res.status(404).json({ message: "No orders found!" });

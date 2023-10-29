@@ -13,7 +13,6 @@ export default function MyOrders() {
       const { token } = JSON.parse(obj);
 
       const res = await axios.get("/orders/myorders", { headers: { token } });
-      console.log(res.data.orders);
       setOrders(res.data.orders);
     };
 

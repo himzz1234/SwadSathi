@@ -9,11 +9,11 @@ const INITIAL_STATE = {
 export const SocketContext = createContext(INITIAL_STATE);
 
 export default function SocketProvider({ children }) {
-  const [socket, setSocket] = useState();
+  const [socket, setSocket] = useState(null);
   const { auth } = useContext(AuthContext);
 
   useEffect(() => {
-    setSocket(io("https://localhost:8800"));
+    setSocket(io("http://192.168.43.173:8800"));
   }, [auth]);
 
   return (

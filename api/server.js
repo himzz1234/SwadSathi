@@ -5,38 +5,32 @@ const cors = require("cors");
 const app = express();
 const port = 8800;
 
-
-
 connectToMongo();
 app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
 
-let connectedUsers = []
-let connectedCanteens = []
+let connectedUsers = [];
+let connectedCanteens = [];
 
 const addnewuser = (userId, socketId) => {
-  !connectedUsers.some((user)=>user.userId === userId) && connectedUsers.push({userId, socketId})
-}
+  !connectedUsers.some((user) => user.userId === userId) &&
+    connectedUsers.push({ userId, socketId });
+};
 
 const addNewCanteen = (canteenId, socketId) => {
-  !connectedCanteens.some((canteen)=>canteen.canteenId === canteenId) && connectedCanteens.push({canteenId, socketId})
-}
+  !connectedCanteens.some((canteen) => canteen.canteenId === canteenId) &&
+    connectedCanteens.push({ canteenId, socketId });
+};
 
-const removeUser = (socketId) =>{
-  connectedUsers = connectedUsers.filter((user)=>user.socketId !== socketId)
-}
-
-
-
-
+const removeUser = (socketId) => {
+  connectedUsers = connectedUsers.filter((user) => user.socketId !== socketId);
+};
 
 //app.use('/api/items',require('./routes/foodItemRoute'));
 app.use("/api/auth/user", require("./routes/userRoutes"));
 app.use("/api/auth/admin", require("./routes/canteenRoutes"));
-app.use("/api/orders", require("./routes/orderRoutes.js"))
-
-
+app.use("/api/orders", require("./routes/orderRoutes.js"));
 
 const server = app.listen(port, () => {
   console.log(`Server running on ${port}`);
@@ -46,23 +40,19 @@ const io = require("socket.io")(server, {
   perMessageDeflate: false,
   cors: {
     origin: "*",
-  }
-})
+  },
+});
 
-io.on("connection", (socket)=>{
-  io.emit("event", "Working")
+io.on("connection", (socket) => {
+  console.log(socket.id);
+  socket.on("event", (data) => console.log(data));
   // socket.on("newuser", (userId)=>{
   //   addnewuser(userId, socket.id)
   //   console.log("A user connected")
   // })
-  
-  socket.on("disconnect", ()=>{
+
+  socket.on("disconnect", () => {
     // removeUser(socket.id)
     // console.log("A user disconnected")
-
-  })
-})
-
-
-
-
+  });
+});

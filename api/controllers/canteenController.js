@@ -157,7 +157,6 @@ const getCanteenAuth = async (req, res) => {
       })
       .exec();
 
-    console.log(admin);
     return res.status(200).json({ auth: admin, role: "Canteen" });
   } catch (error) {
     console.error(error.message);
