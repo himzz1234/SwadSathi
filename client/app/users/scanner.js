@@ -38,7 +38,7 @@ export default function Scanner() {
 
     if (secret == "my-canteen") {
       router.push({
-        pathname: `/canteen/${canteenId}`,
+        pathname: `/users/canteen/${canteenId}`,
         params: { canteenId },
       });
     }
