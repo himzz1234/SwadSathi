@@ -28,7 +28,7 @@ export default function MyOrders() {
           <View style={{ height: 10, width: "100%" }}></View>
         )}
         keyExtractor={(item) => item._id}
-        renderItem={({ item }) => <OrderItem {...{ item }} />}
+        renderItem={({ item }) => <OrderItem _id={item._id} {...{ item }} />}
       />
     </View>
   );

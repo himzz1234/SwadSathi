@@ -64,6 +64,12 @@ const login = async (req, res) => {
     if (user && passwordCompare) {
       const authtoken = generateToken(user._id);
       success = true;
+      user = await user.populate({
+        path: "savedCanteens",
+        select: ["name", "isOpen"],
+      });
+
+      console.log(user);
       res.json({
         success,
         auth: user,
@@ -123,6 +129,7 @@ const getUserAuth = async (req, res) => {
 //@desc update User password
 //@route PUT api/user/password
 const updateUserPassword = async (req, res) => {
+  console.log("hi");
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(500).json({ error: errors.array() });

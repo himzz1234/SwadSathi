@@ -16,12 +16,14 @@ import { useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
 
 export default function Sidebar(props) {
-  const { auth: user } = useContext(AuthContext);
+  const { auth: user, dispatch } = useContext(AuthContext);
   const router = useRouter();
 
   const logout = async () => {
-    await AsyncStorage.setItem("auth", "");
     router.replace("/");
+    await AsyncStorage.setItem("auth", "");
+
+    dispatch({ type: "LOGOUT" });
   };
 
   return (

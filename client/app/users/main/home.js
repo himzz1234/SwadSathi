@@ -11,18 +11,11 @@ import {
 import { AuthContext } from "../../../context/AuthContext";
 import { useRouter } from "expo-router";
 import { SocketContext } from "../../../context/SocketContext";
-//import { Socket } from "socket.io-client/build/esm";
-
 
 export default function Home() {
   const router = useRouter();
   const [input, setInput] = useState("");
   const { auth: user } = useContext(AuthContext);
-  const { socket } = useContext(SocketContext)
-
-  // useEffect(()=>{
-  //   socket.emit("newuser", user._id)
-  // },[socket, user._id])
 
   const navigateCanteen = async (canteenId) => {
     router.push({
@@ -53,10 +46,11 @@ export default function Home() {
       <FlatList
         data={user?.savedCanteens.sort((a, b) => b.isOpen - a.isOpen)}
         style={{ marginTop: 20 }}
-        renderItem={({ item }) => {
+        renderItem={({ item, index }) => {
           if (item.name.toUpperCase().includes(input.toUpperCase())) {
             return (
               <TouchableOpacity
+                _id={item._id}
                 disabled={!item.isOpen}
                 onPress={() => navigateCanteen(item._id)}
                 style={[
@@ -69,6 +63,7 @@ export default function Home() {
             );
           }
         }}
+        keyExtractor={(item) => item._id}
       />
     </View>
   );

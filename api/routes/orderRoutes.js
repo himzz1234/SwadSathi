@@ -18,12 +18,15 @@ const {
   getCanteenOrders,
   checkout_web,
   checkout_native,
+  updateOrderDetails,
   checkout,
 } = require("../controllers/orderController.js");
 
 router.post("/order", userAuth, createOrder);
 
 router.get("/order/:id", getOrderById);
+
+router.put("/order/:id", updateOrderDetails);
 
 router.put("/order/:id/pay", updateOrderToPaid);
 

@@ -89,8 +89,9 @@ export default function Checkout() {
           return <View style={{ height: 10, width: "100%" }}></View>;
         }}
         renderItem={({ item }) => {
-          return <CartItem {...{ item }} />;
+          return <CartItem id={item.id} {...{ item }} />;
         }}
+        keyExtractor={(item) => item.id}
       />
 
       <View
