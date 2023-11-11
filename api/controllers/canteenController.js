@@ -38,12 +38,6 @@ const register = async (req, res) => {
       email: req.body.email,
     });
 
-    // const data = {
-    //   admin: {
-    //     id: admin.id,
-    //   },
-    // };
-
     const authtoken = generateToken(admin._id);
     success = true;
     res.json({ success, token: authtoken, auth: admin });
@@ -94,39 +88,23 @@ const login = async (req, res) => {
 
 // @desc Update canteen profile
 // @route PUT canteen/profile
-const updateProfile = async (req, res) => {
-  const canteenId = req.admin.id;
+const updateCanteenProfile = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(500).json({ error: errors.array() });
+  }
+  const data = req.body;
   try {
-    const canteen = await Canteen.findById(canteenId);
-    // if (req.file) {
-    //   const result = await cloudinary.uploader.upload(req.file.path, {
-    //     public_id: `${canteenId}_profile`,
-    //     width: 500,
-    //     height: 500,
-    //     crop: "fill",
-    //   });
-    // }
-    if (canteen) {
-      (canteen.name = req.body.name),
-        //(canteen.profilePicture = result.url),
-        (canteen.address = req.body.address),
-        (canteen.isOpen = req.body.isOpen),
-        (canteen.phoneNumber = req.body.phoneNumber),
-        (canteen.description = req.body.description);
-      const updatedProfile = await canteen.save();
-      res.status(200).json({
-        message: "Profile updated successfully!",
-        name: updatedProfile.name,
-        address: updatedProfile.address,
-        isOpen: updatedProfile.isOpen,
-        description: updatedProfile.description,
-        phoneNumber: updatedProfile.phoneNumber,
-      });
-    } else {
-      res.status(404).json({ message: "Profile not found!" });
+    const canteenId = req.admin.id;
+    let userdata = await Canteen.findByIdAndUpdate(canteenId, data);
+    if (!userdata) {
+      return res.status(404).json({ error: "User not found!" });
     }
-  } catch (err) {
-    res.status(500).json({ error: "Internal server error!" });
+    return res
+      .status(200)
+      .json({ message: "Profile updated successfully.", auth: data });
+  } catch (error) {
+    return res.status(500).json({ error: "Failed to update profile." });
   }
 };
 
@@ -239,7 +217,7 @@ const deleteItem = async (req, res) => {
 module.exports = {
   register,
   login,
-  updateProfile,
+  updateCanteenProfile,
   canteenDetails,
   getCanteenAuth,
   canteenOrders,

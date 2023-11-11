@@ -3,6 +3,9 @@ const { Schema } = mongoose;
 
 const OrderSchema = new Schema(
   {
+    tokenNumber: {
+      type: Number,
+    },
     user: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,

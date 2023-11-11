@@ -12,7 +12,7 @@ dotenv.config();
 const {
   register,
   login,
-  updateProfile,
+  updateCanteenProfile,
   canteenDetails,
   canteenOrders,
   addItem,
@@ -45,8 +45,14 @@ router.post(
 );
 
 router.get("/getDetails", canteenAuth, getCanteenAuth);
-
-router.put("/profile", canteenAuth, updateProfile);
+ 
+router.put("/profile", canteenAuth,
+[
+  body("name", "Enter a valid name!").isLength({min: 3}),
+  body("phoneNumber", "Not a valid phone number.").isLength({max: 10}),
+  body("address", "Enter a valid address.").isLength({max: 20})
+],
+ updateCanteenProfile);
 
 router.get("/canteens/:id", canteenDetails);
 
