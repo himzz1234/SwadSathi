@@ -9,10 +9,14 @@ import {
 import OctIcon from "react-native-vector-icons/Octicons";
 import MaterialCommunityIcon from "react-native-vector-icons/MaterialCommunityIcons";
 import axios from "../../axios";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { SocketContext } from "../../context/SocketContext";
+import { AuthContext } from "../../context/AuthContext";
 
 export default function OrderItem({ item, orders, setOrders }) {
+  const { socket } = useContext(SocketContext);
   const [status, setStatus] = useState("Pending");
+  const { auth: canteen } = useContext(AuthContext);
 
   const statusColor = () => {
     if (status === "Pending") {
@@ -39,6 +43,12 @@ export default function OrderItem({ item, orders, setOrders }) {
       }
 
       return orderItem;
+    });
+
+    socket.emit("order-accept", {
+      senderId: canteen._id,
+      receiverId: item.user._id,
+      message: "Your order has been accepted!",
     });
 
     setOrders(updatedOrders);

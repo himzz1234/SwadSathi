@@ -12,6 +12,7 @@ cloudinary.config({
   api_key: process.env.API_KEY,
   api_secret: process.env.API_SECRET,
 });
+
 // @desc Canteen Login
 // @route POST canteen/login
 const register = async (req, res) => {

@@ -1,7 +1,7 @@
 import axios from "../../../axios";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../../context/AuthContext";
-import { View, StyleSheet, FlatList, Text } from "react-native";
+import { View, StyleSheet, FlatList } from "react-native";
 import { SocketContext } from "../../../context/SocketContext";
 import OrderItem from "../../../components/CanteenComponents/OrderItemComponent";
 import StatusTab from "../../../components/CanteenComponents/StatusTabComponent";
@@ -14,7 +14,7 @@ export default function Home() {
 
   useEffect(() => {
     socket.on("new-order", (data) => {
-      setOrders((prev) => [...prev, data.order]);
+      setOrders((prev) => [data.order, ...prev]);
     });
   }, []);
 

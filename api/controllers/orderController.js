@@ -66,13 +66,38 @@ const getOrderById = async (req, res) => {
 
 //@desc Update Order By Id(Used by both canteen admin and user)
 //@route GET api/orders/:id
-
 const updateOrderDetails = async (req, res) => {
+  const order = await Order.findById(req.params.id);
   try {
-    const order = await Order.findByIdAndUpdate(req.params.id, { ...req.body });
-    if (order) {
-      console.log(order);
-      return res.status(200).json({ message: "Order Details Updated!", order });
+    if (req.body.status && req.body.status == "Preparing") {
+      const currentDate = new Date();
+
+      const startTime = new Date(currentDate);
+      startTime.setHours(0, 0, 0, 0);
+
+      const endTime = new Date(currentDate);
+      endTime.setHours(23, 59, 59, 999);
+      const total = (
+        await Order.find({
+          status: { $in: ["Ready", "Preparing", "Delivered"] },
+          canteen: order.canteen,
+          createdAt: {
+            $gte: startTime,
+            $lte: endTime,
+          },
+        })
+      ).length;
+
+      console.log(total);
+    }
+
+    const updatedOrder = await Order.findByIdAndUpdate(req.params.id, {
+      ...req.body,
+    });
+    if (updatedOrder) {
+      return res
+        .status(200)
+        .json({ message: "Order Details Updated!", updatedOrder });
     } else return res.status(404).json({ message: "Order Not Updated!" });
   } catch (error) {
     return res.status(500).json({ error: "Internal Server error!" });

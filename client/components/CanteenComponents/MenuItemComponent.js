@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     gap: 10,
   },
-  imageContainer: { width: 80, height: 80 },
+  imageContainer: { width: 90, height: "100%" },
   itemImage: { width: "100%", height: "100%", borderRadius: 5 },
   cardInfoContainer: { flex: 1, rowGap: 5 },
   cardInfoHeader: { display: "flex", flexDirection: "row" },

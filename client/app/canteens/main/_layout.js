@@ -110,6 +110,23 @@ export default function Layout() {
               />
             </TouchableOpacity>
           ),
+          headerRightContainerStyle: {
+            paddingHorizontal: 20,
+          },
+          headerRight: () => (
+            <View
+              style={{
+                display: "flex",
+                alignItems: "center",
+                flexDirection: "row",
+                gap: 10,
+              }}
+            >
+              <TouchableOpacity style={{ position: "relative" }}>
+                <Icon name="notifications-none" size={30} color="black" />
+              </TouchableOpacity>
+            </View>
+          ),
         })}
       ></Drawer.Screen>
     </Drawer>

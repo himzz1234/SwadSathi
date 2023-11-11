@@ -22,8 +22,8 @@ const removeUser = (socketId) => {
   connected = connected.filter((user) => user.socketId !== socketId);
 };
 
-const getUser = (connectedId) => {
-  return connected.find((user) => user.connectedId === connectedId);
+const getSocket = (connectedId) => {
+  return connected.find((socket) => socket.connectedId === connectedId);
 };
 
 //app.use('/api/items',require('./routes/foodItemRoute'));
@@ -49,7 +49,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("order-placed", (data) => {
-    const canteenSocket = getUser(data.receiverId);
+    const canteenSocket = getSocket(data.receiverId);
     if (canteenSocket) {
       io.to(canteenSocket.socketId).emit("new-order", { order: data.order });
     }

@@ -20,8 +20,8 @@ export default function SignUp() {
     emailId: "",
     password: "",
   });
-  const [showPassword, setShowPassword] = useState(false);
 
+  const [showPassword, setShowPassword] = useState(false);
   const register = async () => {
     try {
       const res = await axios.post("/auth/admin/register", {

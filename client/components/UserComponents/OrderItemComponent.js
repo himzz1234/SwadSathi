@@ -51,7 +51,7 @@ export default function OrderItem({ item }) {
             }}
           >
             <Text style={{ fontSize: 13.5 }}>
-              {moment(item.createdAt).calendar()}
+              {moment(item.createdAt).format("MMM Do YY, h:mm a")}
             </Text>
             <MaterialCommunityIcon
               name="dots-vertical"

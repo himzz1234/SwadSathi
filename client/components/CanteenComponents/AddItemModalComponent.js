@@ -12,9 +12,9 @@ import {
 } from "react-native";
 import axios from "../../axios";
 import CustomModal from "../ModalComponent";
-import { AuthContext } from "../../context/AuthContext";
 import * as ImagePicker from "expo-image-picker";
 import useUpload from "../../hooks/useUpload";
+import { AuthContext } from "../../context/AuthContext";
 
 export default function AddItemComponenent({
   openModal,
@@ -35,21 +35,23 @@ export default function AddItemComponenent({
   const { uploadedImage, isLoading } = useUpload(itemData.image);
 
   const addItem = async () => {
-    const res = await axios.post("/auth/admin/item", {
-      ...itemData,
-      image: uploadedImage,
-      canteenId: canteen._id,
-    });
+    if ((itemData.name, itemData.price)) {
+      const res = await axios.post("/auth/admin/item", {
+        ...itemData,
+        image: uploadedImage,
+        canteenId: canteen._id,
+      });
 
-    setCanteenMenu((prev) => [...prev, res.data.newItem]);
-    setItemData({
-      name: "",
-      image: "",
-      price: "",
-      isAvailable: true,
-    });
+      setCanteenMenu((prev) => [...prev, res.data.newItem]);
+      setItemData({
+        name: "",
+        image: "",
+        price: "",
+        isAvailable: true,
+      });
 
-    setOpenModal(false);
+      setOpenModal(false);
+    }
   };
 
   const pickImage = async () => {
@@ -147,11 +149,28 @@ export default function AddItemComponenent({
           }}
         >
           <TouchableOpacity
+            disabled={isLoading}
+            onPress={addItem}
+            style={[
+              {
+                backgroundColor: "#006442",
+                borderColor: "transparent",
+                flex: 0.75,
+              },
+              styles.button,
+            ]}
+          >
+            <Text style={{ color: "white", textAlign: "center", fontSize: 16 }}>
+              Save
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
             onPress={() => setOpenModal(false)}
             style={[
               {
                 backgroundColor: "white",
                 borderColor: "crimson",
+                flex: 0.25,
               },
               styles.button,
             ]}
@@ -160,18 +179,6 @@ export default function AddItemComponenent({
               style={{ color: "crimson", textAlign: "center", fontSize: 16 }}
             >
               Cancel
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            disabled={isLoading}
-            onPress={addItem}
-            style={[
-              { backgroundColor: "#006442", borderColor: "transparent" },
-              styles.button,
-            ]}
-          >
-            <Text style={{ color: "white", textAlign: "center", fontSize: 16 }}>
-              Save
             </Text>
           </TouchableOpacity>
         </View>
@@ -191,6 +198,5 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     paddingVertical: 12.5,
     elevation: 3,
-    flex: 1,
   },
 });
