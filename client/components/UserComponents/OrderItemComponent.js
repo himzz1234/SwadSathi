@@ -1,25 +1,18 @@
-import {
-  View,
-  Text,
-  FlatList,
-  Pressable,
-  TouchableOpacity,
-} from "react-native";
+import { View, Text, FlatList } from "react-native";
 import moment from "moment/moment";
 import OctIcon from "react-native-vector-icons/Octicons";
 import MaterialCommunityIcon from "react-native-vector-icons/MaterialCommunityIcons";
+import { truncate } from "../../utils/index";
 
 export default function OrderItem({ item }) {
   const statusColor = (status) => {
     if (status === "Pending") {
       return "#FAC898";
+    } else if (status == "Preparing") {
+      return "#24963f";
+    } else if (status == "Declined") {
+      return "#ff0b0b";
     }
-  };
-
-  const truncate = (str) => {
-    if (str.length <= 20) {
-      return str;
-    } else return str.slice(0, 10) + "...";
   };
 
   return (
@@ -41,7 +34,7 @@ export default function OrderItem({ item }) {
       >
         <View style={{ gap: 2 }}>
           <Text style={{ fontWeight: "600", fontSize: 16 }}>
-            {item.canteen.name}
+            {item.canteen?.name}
           </Text>
           <Text style={{ fontWeight: "400", fontSize: 13.5 }}>
             {truncate(item.canteen.address)}
@@ -88,6 +81,7 @@ export default function OrderItem({ item }) {
 
       <View
         style={{
+          flex: 1,
           padding: 10,
           borderTopWidth: 1,
           borderBottomWidth: 1,
@@ -102,16 +96,19 @@ export default function OrderItem({ item }) {
           }}
           renderItem={({ item: menuItem }) => {
             return (
-              <View style={{ display: "flex", flexDirection: "row", gap: 10 }}>
+              <View
+                _id={menuItem._id}
+                style={{ display: "flex", flexDirection: "row", gap: 10 }}
+              >
                 <Text style={{ fontSize: 15 }}>{menuItem.qty}x</Text>
                 <Text style={{ flex: 1, fontSize: 15 }}>
-                  {menuItem.product.name}
+                  {menuItem.product?.name}
                 </Text>
                 <Text style={{ fontSize: 15 }}>₹{menuItem.product.price}</Text>
               </View>
             );
           }}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item) => item._id}
         />
       </View>
 

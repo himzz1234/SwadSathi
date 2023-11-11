@@ -10,11 +10,31 @@ import {
   TouchableOpacity,
 } from "react-native";
 import FontAwesome5Icon from "react-native-vector-icons/FontAwesome5";
+import axios from "../../../axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function PasswordUpdate() {
   const router = useRouter();
   const [password, setPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
+
+  const changePassword = async () => {
+    const obj = await AsyncStorage.getItem("auth");
+    const { token } = JSON.parse(obj);
+
+    try {
+      if (password && newPassword) {
+        await axios.put(
+          "/auth/user/updatepassword",
+          {
+            oldpassword: password,
+            newpassword: newPassword,
+          },
+          { headers: { token } }
+        );
+      }
+    } catch (error) {}
+  };
 
   return (
     <View style={styles.container}>
@@ -22,7 +42,7 @@ export default function PasswordUpdate() {
         style={{
           display: "flex",
           flexDirection: "row",
-          paddingHorizontal: 10,
+          paddingHorizontal: 20,
           alignItems: "center",
         }}
       >
@@ -44,36 +64,37 @@ export default function PasswordUpdate() {
       >
         <View style={{ gap: 20 }}>
           <View style={{ gap: 5 }}>
-            <Text>Password</Text>
+            <Text>Current Password</Text>
             <TextInput
               value={password}
               style={styles.input}
-              placeholder="Enter your new password"
+              placeholder="Enter your current password"
               onChangeText={(text) => setPassword(text)}
             />
           </View>
           <View style={{ gap: 5 }}>
-            <Text>Confirm password</Text>
+            <Text>New password</Text>
             <TextInput
               value={newPassword}
               style={styles.input}
-              placeholder="Enter your new password again"
+              placeholder="Enter your new password"
               onChangeText={(text) => setNewPassword(text)}
             />
           </View>
-          <Pressable
+          <TouchableOpacity
+            onPress={changePassword}
             style={{
               height: 45,
-              borderRadius: 5,
-              backgroundColor: "#FF4136",
               display: "flex",
-              width: Dimensions.get("screen").width - 60,
+              borderRadius: 5,
+              backgroundColor: "#006442",
+              width: Dimensions.get("screen").width - 40,
               alignItems: "center",
               justifyContent: "center",
             }}
           >
-            <Text style={{ color: "white", fontSize: 16 }}>Reset Password</Text>
-          </Pressable>
+            <Text style={{ color: "white", fontSize: 16 }}>Save</Text>
+          </TouchableOpacity>
         </View>
       </View>
     </View>

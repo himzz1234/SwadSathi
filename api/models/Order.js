@@ -39,12 +39,12 @@ const OrderSchema = new Schema(
     status: {
       type: String,
       enum: [
-        "Rejected",
-        "Accepted",
-        "Preparing",
         "Ready",
-        "Delivered",
         "Pending",
+        "Declined",
+        "Preparing",
+        "Delivered",
+        "No Response",
       ],
       default: "Pending",
     },

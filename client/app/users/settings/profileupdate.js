@@ -65,7 +65,7 @@ export default function ProfileUpdate() {
         style={{
           display: "flex",
           flexDirection: "row",
-          paddingHorizontal: 10,
+          paddingHorizontal: 20,
           alignItems: "center",
         }}
       >
@@ -153,9 +153,7 @@ export default function ProfileUpdate() {
             {isLoading ? (
               <ActivityIndicator size="small" />
             ) : (
-              <Text style={{ color: "white", fontSize: 16 }}>
-                Reset Profile
-              </Text>
+              <Text style={{ color: "white", fontSize: 16 }}>Save</Text>
             )}
           </TouchableOpacity>
         </View>

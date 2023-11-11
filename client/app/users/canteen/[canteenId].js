@@ -13,6 +13,7 @@ import Icon from "react-native-vector-icons/FontAwesome5";
 import MenuItem from "../../../components/UserComponents/MenuItemComponent";
 import { CartContext } from "../../../context/CartContext";
 import * as Animatable from "react-native-animatable";
+import { truncate } from "../../../utils";
 
 AnimatedPressable = Animatable.createAnimatableComponent(Pressable);
 
@@ -25,8 +26,7 @@ const CanteenDetails = () => {
   useEffect(() => {
     async function fetchDetails() {
       const res = await axios.get(`/auth/admin/canteens/${canteenId}`);
-
-      setCanteen(res.data);
+      setCanteen(res.data.canteen);
     }
 
     fetchDetails();
@@ -58,15 +58,15 @@ const CanteenDetails = () => {
           >
             {canteen.name}
           </Text>
-          <Text style={{ fontSize: 16, textAlign: "center", marginTop: 5 }}>
-            {canteen.address}
+          <Text style={{ fontSize: 15, textAlign: "center", marginTop: 5 }}>
+            {truncate(canteen.address)}
           </Text>
         </View>
       </View>
       <View style={{ marginTop: 10, flex: 1 }}>
         <View>
           <FlatList
-            data={canteen.menu}
+            data={canteen.menu?.filter((menuItem) => menuItem.isAvailable)}
             style={{ marginTop: 20 }}
             numColumns={2}
             columnWrapperStyle={{ justifyContent: "space-between" }}
@@ -75,8 +75,9 @@ const CanteenDetails = () => {
               return <View style={{ height: 10, width: "100%" }}></View>;
             }}
             renderItem={({ item }) => {
-              return <MenuItem {...{ item }} />;
+              return <MenuItem _id={item._id} {...{ item }} />;
             }}
+            keyExtractor={(item) => item._id}
           />
         </View>
       </View>

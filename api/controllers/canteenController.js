@@ -62,10 +62,12 @@ const login = async (req, res) => {
   }
   const { email, password } = req.body;
   try {
-    let admin = await Canteen.findOne({ email }).populate({
-      path: "menu",
-      select: ["name", "image", "price", "isAvailable", "canteenId"],
-    });
+    let admin = await Canteen.findOne({ email })
+      .populate({
+        path: "menu",
+        select: ["name", "image", "price", "isAvailable", "canteenId"],
+      })
+      .sort({ createdAt: -1 });
     const passwordCompare = await bcrypt.compare(password, admin.password);
     if (admin && passwordCompare) {
       const authtoken = generateToken(admin._id);
@@ -139,7 +141,7 @@ const canteenDetails = async (req, res) => {
         select: ["name", "image", "price", "isAvailable", "canteenId"],
       })
       .exec();
-    res.send(canteen);
+    res.status(200).json({ canteen });
   } catch (error) {
     console.error(error.message);
     res.status(500).send("Some error occured.");
@@ -199,19 +201,14 @@ const addItem = async (req, res) => {
 const updateItem = async (req, res) => {
   try {
     const itemId = req.params.id;
-    const item = await Item.findById(itemId);
-    if (item) {
-      (item.name = req.body.name),
-        (item.image = req.body.image),
-        (item.price = req.body.price),
-        (item.isAvailable = req.body.isAvailable);
-      const updatedItem = await item.save();
-      res
-        .status(200)
-        .json({ message: "Item updated successfully!", updatedItem });
-    } else {
-      res.status(404).json({ error: "Item not found!" });
-    }
+    const updatedItem = await Item.findByIdAndUpdate(itemId, req.body, {
+      new: true,
+    });
+
+    console.log(updatedItem);
+    res
+      .status(200)
+      .json({ message: "Item updated successfully!", updatedItem });
   } catch (err) {
     res.status(500).json({ error: "Internal Server Error" });
   }

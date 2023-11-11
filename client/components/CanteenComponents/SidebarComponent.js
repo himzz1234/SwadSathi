@@ -17,11 +17,13 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function Sidebar(props) {
   const router = useRouter();
-  const { auth: canteen } = useContext(AuthContext);
+  const { auth: canteen, dispatch } = useContext(AuthContext);
 
   const logout = async () => {
-    await AsyncStorage.setItem("auth", "");
     router.replace("/");
+    await AsyncStorage.setItem("auth", "");
+
+    dispatch({ type: "LOGOUT" });
   };
 
   return (

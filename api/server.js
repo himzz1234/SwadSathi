@@ -14,8 +14,8 @@ let connected = [];
 
 /// User connection
 const addnewuser = (connectedId, socketId) => {
-  !connected.some((user) => user.connectedId === connectedId) && connected.push({ connectedId, socketId });
-
+  !connected.some((user) => user.connectedId === connectedId) &&
+    connected.push({ connectedId, socketId });
 };
 
 const removeUser = (socketId) => {
@@ -58,21 +58,20 @@ const io = require("socket.io")(server, {
 });
 
 io.on("connection", (socket) => {
-  socket.on("newconnection", (connectedId)=>{
-    addnewuser(connectedId, socket.id)
-    console.log("Someone connected!",connected)
-  })
+  socket.on("newconnection", (connectedId) => {
+    addnewuser(connectedId, socket.id);
+    console.log("Someone connected!", connected);
+  });
 
-  socket.on('order-placed', (data)=>{
-    const canteenSocket = getUser(data.receiverId)
-    if(canteenSocket){
-      io.to(canteenSocket.socketId).emit("new-order", {order: data.order})
-    }    
-  })
-  
+  socket.on("order-placed", (data) => {
+    const canteenSocket = getUser(data.receiverId);
+    if (canteenSocket) {
+      io.to(canteenSocket.socketId).emit("new-order", { order: data.order });
+    }
+  });
 
   socket.on("disconnect", () => {
-    removeUser(socket.id)
-    console.log("someone disconnected", connected)
+    removeUser(socket.id);
+    console.log("someone disconnected", connected);
   });
 });

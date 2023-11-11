@@ -1,19 +1,65 @@
+import moment from "moment/moment";
 import {
   Text,
   View,
   FlatList,
-  Pressable,
   TouchableOpacity,
+  StyleSheet,
 } from "react-native";
 import OctIcon from "react-native-vector-icons/Octicons";
 import MaterialCommunityIcon from "react-native-vector-icons/MaterialCommunityIcons";
-import moment from "moment/moment";
+import axios from "../../axios";
+import { useEffect, useState } from "react";
 
-export default function OrderItem({ item }) {
-  const statusColor = (status) => {
+export default function OrderItem({ item, orders, setOrders }) {
+  const [status, setStatus] = useState("Pending");
+
+  const statusColor = () => {
     if (status === "Pending") {
       return "#FAC898";
+    } else if (status == "Preparing") {
+      return "#24963f";
+    } else if (status == "Declined") {
+      return "#ff0b0b";
     }
+  };
+
+  useEffect(() => {
+    setStatus(item.status);
+  }, []);
+
+  const acceptOrder = async () => {
+    await axios.put(`/orders/order/${item._id}`, {
+      status: "Preparing",
+    });
+
+    const updatedOrders = orders.map((orderItem) => {
+      if (orderItem._id === item._id) {
+        return { ...orderItem, status: "Preparing" };
+      }
+
+      return orderItem;
+    });
+
+    setOrders(updatedOrders);
+    setStatus("Preparing");
+  };
+
+  const declineOrder = async () => {
+    await axios.put(`/orders/order/${item._id}`, {
+      status: "Declined",
+    });
+
+    const updatedOrders = orders.map((orderItem) => {
+      if (orderItem._id === item._id) {
+        return { ...orderItem, status: "Declined" };
+      }
+
+      return orderItem;
+    });
+
+    setOrders(updatedOrders);
+    setStatus("Declined");
   };
 
   return (
@@ -68,18 +114,15 @@ export default function OrderItem({ item }) {
               justifyContent: "flex-end",
             }}
           >
-            <OctIcon
-              name="dot-fill"
-              color={statusColor(item.status)}
-              size={10}
-            />
-            <Text style={{ fontSize: 13 }}>{item.status}</Text>
+            <OctIcon name="dot-fill" color={statusColor(status)} size={10} />
+            <Text style={{ fontSize: 13 }}>{status}</Text>
           </View>
         </View>
       </View>
 
       <View
         style={{
+          flex: 1,
           padding: 10,
           borderTopWidth: 1,
           borderBottomWidth: 1,
@@ -94,7 +137,10 @@ export default function OrderItem({ item }) {
           }}
           renderItem={({ item: menuItem }) => {
             return (
-              <View style={{ display: "flex", flexDirection: "row", gap: 10 }}>
+              <View
+                _id={item._id}
+                style={{ display: "flex", flexDirection: "row", gap: 10 }}
+              >
                 <Text style={{ fontSize: 15 }}>{menuItem.qty}x</Text>
                 <Text style={{ flex: 1, fontSize: 15 }}>
                   {menuItem.product.name}
@@ -103,7 +149,7 @@ export default function OrderItem({ item }) {
               </View>
             );
           }}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item) => item._id}
         />
       </View>
 
@@ -112,44 +158,53 @@ export default function OrderItem({ item }) {
           Total bill:{" "}
           <Text style={{ fontWeight: "600" }}>₹{item.totalPrice}</Text>
         </Text>
-        <View
-          style={{
-            gap: 10,
-            marginTop: 10,
-            display: "flex",
-            alignItems: "center",
-            flexDirection: "row",
-          }}
-        >
-          <TouchableOpacity
+        {status == "Pending" && (
+          <View
             style={{
-              flex: 1.5,
-              borderRadius: 4,
-              borderWidth: 2,
-              borderColor: "transparent",
-              paddingVertical: 7.5,
-              backgroundColor: "#006442",
+              gap: 10,
+              marginTop: 10,
+              display: "flex",
+              alignItems: "center",
+              flexDirection: "row",
             }}
           >
-            <Text style={{ textAlign: "center", color: "white", fontSize: 15 }}>
-              ACCEPT
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{
-              flex: 0.5,
-              borderRadius: 4,
-              borderWidth: 2,
-              borderColor: "red",
-              paddingVertical: 7.5,
-            }}
-          >
-            <Text style={{ textAlign: "center", color: "red", fontSize: 15 }}>
-              DECLINE
-            </Text>
-          </TouchableOpacity>
-        </View>
+            <TouchableOpacity onPress={acceptOrder} style={styles.aceeptButton}>
+              <Text
+                style={{ textAlign: "center", color: "white", fontSize: 15 }}
+              >
+                ACCEPT
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={declineOrder}
+              style={styles.declineButton}
+            >
+              <Text style={{ textAlign: "center", color: "red", fontSize: 15 }}>
+                DECLINE
+              </Text>
+            </TouchableOpacity>
+          </View>
+        )}
       </View>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {},
+  aceeptButton: {
+    flex: 1.5,
+    borderRadius: 4,
+    borderWidth: 2,
+    borderColor: "transparent",
+    paddingVertical: 7.5,
+    backgroundColor: "#006442",
+  },
+  declineButton: {
+    flex: 0.5,
+    borderRadius: 4,
+    borderWidth: 2,
+    borderColor: "red",
+    paddingVertical: 7.5,
+  },
+});

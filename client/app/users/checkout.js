@@ -22,8 +22,8 @@ export default function Checkout() {
   const router = useRouter();
   const { cart } = useContext(CartContext);
   const [openModal, setOpenModal] = useState(false);
-  const {socket} = useContext(SocketContext)
-  const {auth: user} = useContext(AuthContext)
+  const { socket } = useContext(SocketContext);
+  const { auth: user } = useContext(AuthContext);
 
   const onCheckout = async () => {
     const obj = await AsyncStorage.getItem("auth");
@@ -45,12 +45,13 @@ export default function Checkout() {
       },
       { headers: { token } }
     );
-      socket.emit('order-placed', {
-        senderId: user._id,
-        receiverId: res.data.details.canteen,
-        order: res.data.details
-      })
+    socket.emit("order-placed", {
+      senderId: user._id,
+      receiverId: res.data.details.canteen,
+      order: res.data.details,
+    });
 
+    socket.emit("order-placed", res.data.details);
     setOpenModal(true);
   };
 
@@ -88,8 +89,9 @@ export default function Checkout() {
           return <View style={{ height: 10, width: "100%" }}></View>;
         }}
         renderItem={({ item }) => {
-          return <CartItem {...{ item }} />;
+          return <CartItem id={item.id} {...{ item }} />;
         }}
+        keyExtractor={(item) => item.id}
       />
 
       <View

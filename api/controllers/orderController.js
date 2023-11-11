@@ -33,6 +33,8 @@ const createOrder = async (req, res) => {
         .save()
         .then((order) => order.populate({ path: "orderItems.product" }))
         .then((order) => order);
+
+      console.log(createdOrder);
       res.status(201).json({
         success: true,
         message: "Order created!",
@@ -62,6 +64,21 @@ const getOrderById = async (req, res) => {
   }
 };
 
+//@desc Update Order By Id(Used by both canteen admin and user)
+//@route GET api/orders/:id
+
+const updateOrderDetails = async (req, res) => {
+  try {
+    const order = await Order.findByIdAndUpdate(req.params.id, { ...req.body });
+    if (order) {
+      console.log(order);
+      return res.status(200).json({ message: "Order Details Updated!", order });
+    } else return res.status(404).json({ message: "Order Not Updated!" });
+  } catch (error) {
+    return res.status(500).json({ error: "Internal Server error!" });
+  }
+};
+
 //@desc Update Order to delivered(Used by canteen admin)
 //@route PUT
 const updateOrderToDelivered = async (req, res) => {
@@ -85,6 +102,7 @@ const updateOrderToDelivered = async (req, res) => {
 //@route PUT
 const updateOrderToPaid = async (req, res) => {
   try {
+    a;
     const order = await Order.findById(req.params.id);
     if (order) {
       order.isPaid = true;
@@ -131,8 +149,10 @@ const getCanteenOrders = async (req, res) => {
         path: "user",
         select: ["name"],
       })
+      .sort({ createdAt: -1 })
       .exec();
     if (orders) {
+      console.log(orders);
       return res.status(200).json(orders);
     } else {
       return res.status(404).json({ message: "No orders found!" });
@@ -260,4 +280,5 @@ module.exports = {
   checkout_web,
   checkout_native,
   checkout,
+  updateOrderDetails,
 };
