@@ -90,10 +90,16 @@ export default function OrderItem({ item, orders, setOrders }) {
         }}
       >
         <View>
-          <Text style={{ fontWeight: "600", fontSize: 16.5 }}>
-            ID: {item._id.slice(-4)}
+          {item.tokenNumber ? (
+            <Text style={{ fontWeight: "600", fontSize: 16.5 }}>
+              Token: {item.tokenNumber}
+            </Text>
+          ) : (
+            ""
+          )}
+          <Text style={item.tokenNumber && { marginTop: 5 }}>
+            {item.user.name}'s order
           </Text>
-          <Text style={{ marginTop: 5 }}>{item.user.name}'s order</Text>
         </View>
 
         <View>

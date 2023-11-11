@@ -88,7 +88,7 @@ const updateOrderDetails = async (req, res) => {
         })
       ).length;
 
-      console.log(total);
+      req.body = { ...req.body, tokenNumber: total + 1 };
     }
 
     const updatedOrder = await Order.findByIdAndUpdate(req.params.id, {

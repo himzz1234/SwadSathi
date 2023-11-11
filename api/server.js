@@ -22,23 +22,9 @@ const removeUser = (socketId) => {
   connected = connected.filter((user) => user.socketId !== socketId);
 };
 
-const getUser = (connectedId) => {
+const getSocket = (connectedId) => {
   return connected.find((user) => user.connectedId === connectedId);
 };
-
-/// Canteen Connection
-// const addNewCanteen = (canteenId, socketId) => {
-//   !connectedCanteens.some((canteen) => canteen.canteenId === canteenId) &&
-//     connectedCanteens.push({ canteenId, socketId });
-// };
-
-// const removeCanteen = (socketId) =>{
-//   connectedCanteens = connectedCanteens.filter((canteen)=>canteen.socketId !== socketId)
-// }
-
-// const getCanteen = (socketId) =>{
-//   return connectedCanteens.find((canteen)=>canteen.canteenId === canteenId)
-// }
 
 //app.use('/api/items',require('./routes/foodItemRoute'));
 app.use("/api/auth/user", require("./routes/userRoutes"));
