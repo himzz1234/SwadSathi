@@ -30,12 +30,14 @@ const createOrder = async (req, res) => {
         isPaid: isPaid,
         status: status,
       });
+
       const createdOrder = await order
         .save()
-        .then((order) => order.populate({ path: "orderItems.product" }))
+        .then((order) =>
+          order.populate([{ path: "orderItems.product" }, { path: "user" }])
+        )
         .then((order) => order);
 
-      console.log(createdOrder);
       res.status(201).json({
         success: true,
         message: "Order created!",
@@ -92,13 +94,17 @@ const updateOrderDetails = async (req, res) => {
       req.body = { ...req.body, tokenNumber: total + 1 };
     }
 
-    const updatedOrder = await Order.findByIdAndUpdate(req.params.id, {
-      ...req.body,
-    });
+    const updatedOrder = await Order.findByIdAndUpdate(
+      req.params.id,
+      {
+        ...req.body,
+      },
+      { new: true }
+    );
     if (updatedOrder) {
       return res
         .status(200)
-        .json({ message: "Order Details Updated!", updatedOrder });
+        .json({ message: "Order Details Updated!", order: updatedOrder });
     } else return res.status(404).json({ message: "Order Not Updated!" });
   } catch (error) {
     return res.status(500).json({ error: "Internal Server error!" });

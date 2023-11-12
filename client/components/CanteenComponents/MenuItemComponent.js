@@ -11,11 +11,9 @@ export default function MenuItem({ item }) {
   useEffect(() => {
     const updateItemAvailability = async () => {
       try {
-        console.log(isEnabled);
         const res = await axios.put(`/auth/admin/item/${item._id}`, {
           isAvailable: isEnabled,
         });
-        console.log(res.data);
       } catch (error) {
         console.error(error);
       }

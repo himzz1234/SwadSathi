@@ -53,7 +53,7 @@ export default function Checkout() {
     );
     
     socket.emit("order-placed", {
-      senderId: user._id,
+      senderId: res.data.details.user._id,
       receiverId: res.data.details.canteen,
       order: res.data.details,
     });

@@ -5,6 +5,7 @@ import MaterialCommunityIcon from "react-native-vector-icons/MaterialCommunityIc
 import { truncate } from "../../utils/index";
 
 export default function OrderItem({ item }) {
+  console.log(item);
   const statusColor = (status) => {
     if (status === "Pending") {
       return "#FAC898";
@@ -112,11 +113,24 @@ export default function OrderItem({ item }) {
         />
       </View>
 
-      <View style={{ padding: 10 }}>
+      <View
+        style={{
+          padding: 10,
+          display: "flex",
+          alignItems: "center",
+          flexDirection: "row",
+          justifyContent: "space-between",
+        }}
+      >
         <Text style={{ fontSize: 16 }}>
           Total bill:{" "}
           <Text style={{ fontWeight: "600" }}>₹{item.totalPrice}</Text>
         </Text>
+        {item.tokenNumber && (
+          <Text style={{ fontSize: 16 }}>
+            Token: <Text style={{ fontWeight: "600" }}>{item.tokenNumber}</Text>
+          </Text>
+        )}
       </View>
     </View>
   );

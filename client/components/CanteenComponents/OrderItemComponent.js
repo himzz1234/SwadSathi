@@ -33,7 +33,7 @@ export default function OrderItem({ item, orders, setOrders }) {
   }, []);
 
   const acceptOrder = async () => {
-    await axios.put(`/orders/order/${item._id}`, {
+    const res = await axios.put(`/orders/order/${item._id}`, {
       status: "Preparing",
     });
 
@@ -49,6 +49,7 @@ export default function OrderItem({ item, orders, setOrders }) {
       senderId: canteen._id,
       receiverId: item.user._id,
       message: "Your order has been accepted!",
+      order: res.data.order,
     });
 
     setOrders(updatedOrders);
@@ -56,7 +57,7 @@ export default function OrderItem({ item, orders, setOrders }) {
   };
 
   const declineOrder = async () => {
-    await axios.put(`/orders/order/${item._id}`, {
+    const res = await axios.put(`/orders/order/${item._id}`, {
       status: "Declined",
     });
 
@@ -66,6 +67,13 @@ export default function OrderItem({ item, orders, setOrders }) {
       }
 
       return orderItem;
+    });
+
+    socket.emit("order-decline", {
+      senderId: canteen._id,
+      receiverId: item.user._id,
+      message: "Your order has been declined!",
+      order: res.data.order,
     });
 
     setOrders(updatedOrders);
@@ -112,7 +120,7 @@ export default function OrderItem({ item, orders, setOrders }) {
             }}
           >
             <Text style={{ fontSize: 13.5 }}>
-              {moment(item.createdAt).calendar()}
+              {moment(item.createdAt).format("MMM Do YY, h:mm a")}
             </Text>
             <MaterialCommunityIcon
               name="dots-vertical"
