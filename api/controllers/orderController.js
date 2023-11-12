@@ -1,4 +1,5 @@
 const { body, validationResult } = require("express-validator");
+const Razorpay = require('razorpay')
 const dotenv = require("dotenv");
 const Order = require("../models/Order");
 const stripe = require("stripe")(process.env.SECRETKEY);
@@ -187,113 +188,129 @@ const getCanteenOrders = async (req, res) => {
   }
 };
 
-const checkout_web = async (req, res) => {
-  try {
-    const userId = req.user.id;
-    const {
-      orderItems,
-      paymentMethod,
-      paymentResult,
-      totalPrice,
-      isPaid,
-      paidAt,
-      isDelivered,
-      deliveredAt,
-    } = req.body;
-    if (orderItems && orderItems.length === 0) {
-      return res.status(400).json({ message: "No order items!" });
-    } else {
-      const session = await stripe.checkout.sessions.create({
-        line_items: orderItems,
-        mode: "payment",
-        success_url: "",
-        cancel_url: "",
-      });
-      if (session) {
-        const order = new Order({
-          userId,
-          orderItems,
-          paymentMethod,
-          paymentResult,
-          totalPrice,
-          isPaid,
-          paidAt,
-          isDelivered,
-          deliveredAt,
-        });
-        const createdOrder = await order.save();
-        res
-          .status(201)
-          .json({ success: true, message: "Order created!", createdOrder });
-      }
-    }
-  } catch (error) {
-    return res.status(500).json({ error: "Internal Server error." });
+// const checkout_web = async (req, res) => {
+//   try {
+//     const userId = req.user.id;
+//     const {
+//       orderItems,
+//       paymentMethod,
+//       paymentResult,
+//       totalPrice,
+//       isPaid,
+//       paidAt,
+//       isDelivered,
+//       deliveredAt,
+//     } = req.body;
+//     if (orderItems && orderItems.length === 0) {
+//       return res.status(400).json({ message: "No order items!" });
+//     } else {
+//       const session = await stripe.checkout.sessions.create({
+//         line_items: orderItems,
+//         mode: "payment",
+//         success_url: "",
+//         cancel_url: "",
+//       });
+//       if (session) {
+//         const order = new Order({
+//           userId,
+//           orderItems,
+//           paymentMethod,
+//           paymentResult,
+//           totalPrice,
+//           isPaid,
+//           paidAt,
+//           isDelivered,
+//           deliveredAt,
+//         });
+//         const createdOrder = await order.save();
+//         res
+//           .status(201)
+//           .json({ success: true, message: "Order created!", createdOrder });
+//       }
+//     }
+//   } catch (error) {
+//     return res.status(500).json({ error: "Internal Server error." });
+//   }
+// };
+
+// const checkout_native = async (req, res) => {
+//   const customer = await stripe.customers.create();
+//   const ephemeralKey = await stripe.ephemeralKeys.create(
+//     { customer: customer.id },
+//     { apiVersion: "2023-08-16" }
+//   );
+//   const paymentIntent = await stripe.paymentIntents.create({
+//     amount: 1099,
+//     currency: "inr",
+//     customer: customer.id,
+//     automatic_payment_methods: {
+//       enabled: true,
+//     },
+//   });
+//   if (paymentIntent) {
+//     const order = new Order({
+//       userId,
+//       orderItems,
+//       paymentMethod,
+//       paymentResult,
+//       totalPrice,
+//       isPaid,
+//       paidAt,
+//       isDelivered,
+//       deliveredAt,
+//     });
+//     const createdOrder = await order.save();
+//     res
+//       .status(201)
+//       .json({ success: true, message: "Order created!", createdOrder });
+//   }
+//   res.json({
+//     paymentIntent: paymentIntent.client_secret,
+//     ephemeralKey: ephemeralKey.secret,
+//     customer: customer.id,
+//     publishableKey: process.env.PUBLISHABLE_KEY,
+//   });
+// };
+
+const checkout = async (req, res)=>{
+  const {totalAmount} = req.body
+  const customer = new Razorpay({
+    key_id: 'rzp_test_PcxhieGrBs8lON',
+    key_secret: '83Bd4X8JzoWps23LubCHKlgi'
+  })
+  const options = {
+    amount: totalAmount,
+    currency: "INR",
+    receipt: "order_rcptid_11"
   }
-};
+customer.orders.create(options, function(err, order){
+  res.send(order);
+})
+}
 
-const checkout_native = async (req, res) => {
-  const customer = await stripe.customers.create();
-  const ephemeralKey = await stripe.ephemeralKeys.create(
-    { customer: customer.id },
-    { apiVersion: "2023-08-16" }
-  );
-  const paymentIntent = await stripe.paymentIntents.create({
-    amount: 1099,
-    currency: "inr",
-    customer: customer.id,
-    automatic_payment_methods: {
-      enabled: true,
-    },
-  });
-  if (paymentIntent) {
-    const order = new Order({
-      userId,
-      orderItems,
-      paymentMethod,
-      paymentResult,
-      totalPrice,
-      isPaid,
-      paidAt,
-      isDelivered,
-      deliveredAt,
-    });
-    const createdOrder = await order.save();
-    res
-      .status(201)
-      .json({ success: true, message: "Order created!", createdOrder });
-  }
-  res.json({
-    paymentIntent: paymentIntent.client_secret,
-    ephemeralKey: ephemeralKey.secret,
-    customer: customer.id,
-    publishableKey: process.env.PUBLISHABLE_KEY,
-  });
-};
+// const checkout = async (req, res) => {
+//   const customer = await stripe.customers.create();
+//   const ephemeralKey = await stripe.ephemeralKeys.create(
+//     { customer: customer.id },
+//     { apiVersion: "2023-08-16" }
+//   );
+//   const paymentIntent = await stripe.paymentIntents.create({
+//     amount: 1099,
+//     currency: "eur",
+//     customer: customer.id,
+//     // In the latest version of the API, specifying the `automatic_payment_methods` parameter is optional because Stripe enables its functionality by default.
+//     automatic_payment_methods: {
+//       enabled: true,
+//     },
+//   });
 
-const checkout = async (req, res) => {
-  const customer = await stripe.customers.create();
-  const ephemeralKey = await stripe.ephemeralKeys.create(
-    { customer: customer.id },
-    { apiVersion: "2023-08-16" }
-  );
-  const paymentIntent = await stripe.paymentIntents.create({
-    amount: 1099,
-    currency: "eur",
-    customer: customer.id,
-    // In the latest version of the API, specifying the `automatic_payment_methods` parameter is optional because Stripe enables its functionality by default.
-    automatic_payment_methods: {
-      enabled: true,
-    },
-  });
-
-  res.json({
-    paymentIntent: paymentIntent.client_secret,
-    ephemeralKey: ephemeralKey.secret,
-    customer: customer.id,
-    publishableKey: process.env.PUBLISHABLEKEY,
-  });
-};
+//   res.json({
+//     paymentIntent: paymentIntent.client_secret,
+//     ephemeralKey: ephemeralKey.secret,
+//     customer: customer.id,
+//     publishableKey: process.env.PUBLISHABLEKEY,
+//   });
+// };
 
 module.exports = {
   createOrder,
@@ -302,8 +319,8 @@ module.exports = {
   updateOrderToDelivered,
   getMyOrders,
   getCanteenOrders,
-  checkout_web,
-  checkout_native,
+  //checkout_web,
+  //checkout_native,
   checkout,
   updateOrderDetails,
 };

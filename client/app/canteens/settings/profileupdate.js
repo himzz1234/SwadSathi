@@ -48,10 +48,12 @@ export default function ProfileUpdate() {
     const { token } = JSON.parse(obj);
 
     const res = await axios.put(
-      "/auth/user/updateprofile",
+      "/auth/admin/profile",
       {
         email,
         name: username,
+        address,
+        phoneNumber: Number(phoneNumber),
         profilePicture: uploadedImage || canteen.profilePicture,
       },
       { headers: { token } }

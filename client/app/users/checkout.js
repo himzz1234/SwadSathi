@@ -30,21 +30,28 @@ export default function Checkout() {
     const { token } = JSON.parse(obj);
 
     const res = await axios.post(
-      "/orders/order",
+      "/orders/checkout",
       {
-        canteen: cart[0].cId,
-        orderItems: cart.map((cartItem) => ({
-          qty: cartItem.qty,
-          product: cartItem.id,
-        })),
-        totalPrice: cart.reduce(
+        totalAmount:  cart.reduce(
           (total, cartItem) => total + cartItem.qty * cartItem.price,
           0
         ),
-        isPaid: true,
       },
+      // {
+      //   canteen: cart[0].cId,
+      //   orderItems: cart.map((cartItem) => ({
+      //     qty: cartItem.qty,
+      //     product: cartItem.id,
+      //   })),
+      //   totalPrice: cart.reduce(
+      //     (total, cartItem) => total + cartItem.qty * cartItem.price,
+      //     0
+      //   ),
+      //   isPaid: true,
+      // },
       { headers: { token } }
     );
+    
     socket.emit("order-placed", {
       senderId: user._id,
       receiverId: res.data.details.canteen,
@@ -54,7 +61,7 @@ export default function Checkout() {
     socket.emit("order-placed", res.data.details);
     setOpenModal(true);
   };
-
+   
   return (
     <View style={styles.container}>
       <View

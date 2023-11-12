@@ -35,6 +35,6 @@ router.put("/order/:id/delivered", updateOrderToDelivered);
 router.get("/myorders", userAuth, getMyOrders);
 
 router.get("/canteenOrders/:id", getCanteenOrders);
-router.post("/checkout", checkout);
+router.post("/checkout", userAuth, checkout);
 
 module.exports = router;
