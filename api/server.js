@@ -55,6 +55,26 @@ io.on("connection", (socket) => {
     }
   });
 
+  socket.on("order-accept", (data) => {
+    const userSocket = getSocket(data.receiverId);
+    if (userSocket) {
+      io.to(userSocket.socketId).emit("order-accepted", {
+        message: data.message,
+        order: data.order,
+      });
+    }
+  });
+
+  socket.on("order-decline", (data) => {
+    const userSocket = getSocket(data.receiverId);
+    if (userSocket) {
+      io.to(userSocket.socketId).emit("order-declined", {
+        message: data.message,
+        order: data.order,
+      });
+    }
+  });
+
   socket.on("disconnect", () => {
     removeUser(socket.id);
     console.log("someone disconnected", connected);

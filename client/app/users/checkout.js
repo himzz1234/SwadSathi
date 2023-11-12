@@ -45,8 +45,9 @@ export default function Checkout() {
       },
       { headers: { token } }
     );
+
     socket.emit("order-placed", {
-      senderId: user._id,
+      senderId: res.data.details.user._id,
       receiverId: res.data.details.canteen,
       order: res.data.details,
     });
