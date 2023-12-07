@@ -1,5 +1,7 @@
 # SwadSathi
 
+![logo2](https://github.com/himzz1234/SwadSathi/assets/99206527/2880b106-98a5-44d3-be86-b06a286c5c5a)
+
 ## Introduction
 
 Welcome to the SwadSathi app repository! An innovative canteen solution: Food ordering, payment, and collection processes have been streamlined, resulting in less crowding, delays, and wait times for clients. Built a seamless experience using React Native, Express, Node.js, MongoDB, and Socket.io, enhancing
