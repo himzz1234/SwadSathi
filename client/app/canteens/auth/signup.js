@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import {
   Text,
   View,
@@ -7,7 +8,6 @@ import {
   Pressable,
 } from "react-native";
 import { Link } from "expo-router";
-import { useState } from "react";
 import axios from "../../../axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Ionicon from "react-native-vector-icons/Ionicons";
@@ -22,30 +22,63 @@ export default function SignUp() {
   });
 
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState("");
+
+  const validation = () => {
+    const validEmail = "^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$";
+    const validPassword = " /^(?=.*[d])(?=.*[!@#$%^&*])[w!@#$%^&*]{6,16}$/";
+
+    if (!formData.name) {
+      setError("Name is required!");
+    }
+    if (!formData.address) {
+      setError("Address is required!");
+    }
+    if (!formData.phone) {
+      setError("Phone Number is required!");
+    } else if (formData.phone.length != 10) {
+      setError("Enter a valid phone number!");
+    }
+    if (!formData.emailId) {
+      setError("Email is required!");
+    } else if (!formData.emailId.match(validEmail)) {
+      setError("Enter a valid email!");
+    }
+    if (!formData.password) {
+      setError("Password is required!");
+    } else if (!formData.password.match(validPassword)) {
+      setError("Enter a valid password!");
+    }
+  };
+
   const register = async () => {
+    validation();
+
     try {
-      const res = await axios.post("/auth/admin/register", {
-        ...formData,
-        phoneNumber: formData.phone,
-        email: formData.emailId,
-        description: "",
-      });
-
-      if (res.status == 200) {
-        await AsyncStorage.setItem(
-          "auth",
-          JSON.stringify({
-            token: res.data.token,
-            role: "Canteen",
-          })
-        );
-
-        dispatch({
-          type: "LOGIN_SUCCESS",
-          payload: { auth: res.data.auth, role: "Canteen" },
+      if (!error) {
+        const res = await axios.post("/auth/admin/register", {
+          ...formData,
+          phoneNumber: formData.phone,
+          email: formData.emailId,
+          description: "",
         });
 
-        router.replace("/canteens/main/home");
+        if (res.status == 200) {
+          await AsyncStorage.setItem(
+            "auth",
+            JSON.stringify({
+              token: res.data.token,
+              role: "Canteen",
+            })
+          );
+
+          dispatch({
+            type: "LOGIN_SUCCESS",
+            payload: { auth: res.data.auth, role: "Canteen" },
+          });
+
+          router.replace("/canteens/main/home");
+        }
       }
     } catch (error) {
       console.log(error);
@@ -54,25 +87,25 @@ export default function SignUp() {
 
   return (
     <View style={styles.container}>
-      <Text style={{ fontSize: 30, fontWeight: 600 }}>Sign Up</Text>
+      <Text style={styles.title}>Sign Up</Text>
 
-      <View style={{ display: "flex", gap: 10, marginVertical: 32 }}>
+      <View style={styles.inputContainer}>
         <TextInput
           value={formData.name}
           placeholder="Canteen Name"
-          style={styles.inputContainer}
+          style={styles.input}
           onChangeText={(e) => setFormData({ ...formData, name: e })}
         />
         <TextInput
           value={formData.address}
           placeholder="Canteen Address"
-          style={styles.inputContainer}
+          style={styles.input}
           onChangeText={(e) => setFormData({ ...formData, address: e })}
         />
         <TextInput
           value={formData.phone}
           placeholder="Phone Number"
-          style={styles.inputContainer}
+          style={styles.input}
           onChangeText={(e) =>
             setFormData({ ...formData, phone: e.replace(/[^0-9]/g, "") })
           }
@@ -80,23 +113,15 @@ export default function SignUp() {
         <TextInput
           value={formData.emailId}
           placeholder="Email ID"
-          style={styles.inputContainer}
+          style={styles.input}
           onChangeText={(e) => setFormData({ ...formData, emailId: e })}
         />
-        <View
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            backgroundColor: "#efeeea",
-            paddingRight: 10,
-          }}
-        >
+        <View style={styles.passwordContainer}>
           <TextInput
             value={formData.password}
             placeholder="Password"
             secureTextEntry={showPassword}
-            style={[styles.inputContainer, { flex: 1 }]}
+            style={[styles.input, styles.passwordInput]}
             onChangeText={(e) => setFormData({ ...formData, password: e })}
           />
           {!showPassword ? (
@@ -111,15 +136,15 @@ export default function SignUp() {
         </View>
       </View>
 
+      <Text style={styles.errorText}>{error}</Text>
+
       <TouchableOpacity style={styles.button} onPress={register}>
-        <Text style={{ color: "white", textAlign: "center", fontSize: 16 }}>
-          Continue
-        </Text>
+        <Text style={styles.buttonText}>Continue</Text>
       </TouchableOpacity>
 
-      <Text style={{ textAlign: "center", marginTop: 15, fontSize: 16 }}>
+      <Text style={styles.loginText}>
         Already have an account?{" "}
-        <Link href="/canteens/auth/login" style={{ color: "#006442" }}>
+        <Link href="/canteens/auth/login" style={styles.loginLink}>
           Login
         </Link>
       </Text>
@@ -130,20 +155,54 @@ export default function SignUp() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    display: "flex",
     justifyContent: "center",
     paddingHorizontal: 20,
   },
-
+  title: {
+    fontSize: 30,
+    fontWeight: "600",
+  },
   inputContainer: {
+    marginTop: 32,
+    gap: 10,
+  },
+  input: {
     padding: 10,
     backgroundColor: "#efeeea",
     borderRadius: 5,
   },
+  passwordContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#efeeea",
+    paddingRight: 10,
+    borderRadius: 5,
+  },
+  passwordInput: {
+    flex: 1,
+  },
+  errorText: {
+    marginVertical: 10,
+    color: "#e40613",
+    fontWeight: "500",
+  },
   button: {
-    backgroundColor: "#006442",
+    backgroundColor: "#fe724c",
     borderRadius: 5,
     paddingVertical: 12.5,
     elevation: 3,
+  },
+  buttonText: {
+    color: "white",
+    textAlign: "center",
+    fontSize: 16,
+  },
+  loginText: {
+    textAlign: "center",
+    marginTop: 15,
+    fontSize: 16,
+  },
+  loginLink: {
+    color: "#fe724c",
   },
 });

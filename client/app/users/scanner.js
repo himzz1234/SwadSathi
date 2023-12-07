@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -31,31 +31,28 @@ export default function Scanner() {
   const handleBarCodeScanned = async ({ type, data }) => {
     setScanned(true);
 
-    const { canteenId, secret } = JSON.parse(data);
-    await axios.post(`/auth/user/saveCanteenId/${canteenId}`, {
-      userId: user._id,
-    });
-
-    if (secret == "my-canteen") {
-      router.push({
-        pathname: `/users/canteen/${canteenId}`,
-        params: { canteenId },
+    try {
+      const { canteenId, secret } = JSON.parse(data);
+      await axios.post(`/auth/user/saveCanteenId/${canteenId}`, {
+        userId: user._id,
       });
+
+      if (secret == "my-canteen") {
+        router.push({
+          pathname: `/users/canteen/${canteenId}`,
+          params: { canteenId },
+        });
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 
   return (
     <View style={styles.container}>
-      <View
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          paddingHorizontal: 10,
-          alignItems: "center",
-        }}
-      >
+      <View style={styles.header}>
         <TouchableOpacity
-          style={{ width: "20%" }}
+          style={styles.backButton}
           onPress={() => {
             router.replace("/");
             setStopAnimation(true);
@@ -63,32 +60,13 @@ export default function Scanner() {
         >
           <Icon name="arrow-left" size={15} color="black" />
         </TouchableOpacity>
-        <Text
-          style={{
-            textAlign: "center",
-            width: "60%",
-            fontSize: 20,
-            fontWeight: 600,
-          }}
-        >
-          Scan QR code
-        </Text>
+        <Text style={styles.headerText}>Scan QR code</Text>
       </View>
-      <View
-        style={{
-          marginTop: 40,
-          alignSelf: "center",
-          position: "relative",
-          width: Dimensions.get("screen").width - 20,
-        }}
-      >
+      <View style={styles.scannerContainer}>
         <ScannerFrame {...stopAnimation} />
         <BarCodeScanner
           onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
-          style={[
-            StyleSheet.absoluteFillObject,
-            { height: 500, borderRadius: 20 },
-          ]}
+          style={[styles.barCodeScanner, { borderRadius: 20 }]}
         />
       </View>
     </View>
@@ -101,5 +79,30 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     paddingTop: 40,
     display: "flex",
+  },
+  header: {
+    flexDirection: "row",
+    paddingHorizontal: 20,
+    alignItems: "center",
+  },
+  backButton: {
+    width: "20%",
+  },
+  headerText: {
+    textAlign: "center",
+    width: "60%",
+    fontSize: 20,
+    fontWeight: "600",
+  },
+  scannerContainer: {
+    marginTop: 40,
+    alignSelf: "center",
+    position: "relative",
+    width: Dimensions.get("screen").width - 40,
+    height: 500,
+  },
+  barCodeScanner: {
+    ...StyleSheet.absoluteFillObject,
+    height: "100%",
   },
 });

@@ -1,5 +1,5 @@
 const { body, validationResult } = require("express-validator");
-const Razorpay = require('razorpay')
+const Razorpay = require("razorpay");
 const dotenv = require("dotenv");
 const Order = require("../models/Order");
 const stripe = require("stripe")(process.env.SECRETKEY);
@@ -278,21 +278,21 @@ const getCanteenOrders = async (req, res) => {
 //   });
 // };
 
-const checkout = async (req, res)=>{
-  const {totalAmount} = req.body
+const checkout = async (req, res) => {
+  const { totalAmount } = req.body;
   const customer = new Razorpay({
-    key_id: 'rzp_test_PcxhieGrBs8lON',
-    key_secret: '83Bd4X8JzoWps23LubCHKlgi'
-  })
+    key_id: "rzp_test_PcxhieGrBs8lON",
+    key_secret: "83Bd4X8JzoWps23LubCHKlgi",
+  });
   const options = {
     amount: totalAmount,
     currency: "INR",
-    receipt: "order_rcptid_11"
-  }
-customer.orders.create(options, function(err, order){
-  res.send(order);
-})
-}
+    receipt: "order_rcptid_11",
+  };
+  customer.orders.create(options, function (err, order) {
+    res.status(200).json({ order });
+  });
+};
 
 // const checkout = async (req, res) => {
 //   const customer = await stripe.customers.create();

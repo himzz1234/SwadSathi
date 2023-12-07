@@ -9,49 +9,40 @@ import {
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import { useRouter } from "expo-router";
-import Payment from "../../components/UserComponents/PaymentComponent";
 import CartItem from "../../components/UserComponents/CartItemComponent";
 import { CartContext } from "../../context/CartContext";
 import CheckoutModal from "../../components/UserComponents/CheckoutModalComponent";
 import axios from "../../axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { SocketContext } from "../../context/SocketContext";
-import { AuthContext } from "../../context/AuthContext";
 
 export default function Checkout() {
   const router = useRouter();
   const { cart } = useContext(CartContext);
   const [openModal, setOpenModal] = useState(false);
   const { socket } = useContext(SocketContext);
-  const { auth: user } = useContext(AuthContext);
 
   const onCheckout = async () => {
     const obj = await AsyncStorage.getItem("auth");
     const { token } = JSON.parse(obj);
 
     const res = await axios.post(
-      "/orders/checkout",
+      "/orders/order",
       {
-        totalAmount:  cart.reduce(
+        canteen: cart[0].cId,
+        orderItems: cart.map((cartItem) => ({
+          qty: cartItem.qty,
+          product: cartItem.id,
+        })),
+        totalPrice: cart.reduce(
           (total, cartItem) => total + cartItem.qty * cartItem.price,
           0
         ),
+        isPaid: true,
       },
-      // {
-      //   canteen: cart[0].cId,
-      //   orderItems: cart.map((cartItem) => ({
-      //     qty: cartItem.qty,
-      //     product: cartItem.id,
-      //   })),
-      //   totalPrice: cart.reduce(
-      //     (total, cartItem) => total + cartItem.qty * cartItem.price,
-      //     0
-      //   ),
-      //   isPaid: true,
-      // },
       { headers: { token } }
     );
-    
+
     socket.emit("order-placed", {
       senderId: res.data.details.user._id,
       receiverId: res.data.details.canteen,
@@ -61,7 +52,7 @@ export default function Checkout() {
     socket.emit("order-placed", res.data.details);
     setOpenModal(true);
   };
-   
+
   return (
     <View style={styles.container}>
       <View
@@ -131,11 +122,12 @@ export default function Checkout() {
         style={[
           !cart.length
             ? { backgroundColor: "gray" }
-            : { backgroundColor: "#FF6347" },
+            : { backgroundColor: "#fe724c" },
           {
             width: "100%",
             paddingVertical: 15,
             borderRadius: 5,
+            elevation: 2,
           },
         ]}
       >

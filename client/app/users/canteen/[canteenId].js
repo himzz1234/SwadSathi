@@ -88,9 +88,10 @@ const CanteenDetails = () => {
           onPress={() => router.push("/users/checkout")}
           style={{
             width: "100%",
-            backgroundColor: "#FF6347",
+            backgroundColor: "#fe724c",
             paddingVertical: 15,
             borderRadius: 5,
+            elevation: 2,
           }}
         >
           <Text style={{ textAlign: "center", fontSize: 16, color: "white" }}>

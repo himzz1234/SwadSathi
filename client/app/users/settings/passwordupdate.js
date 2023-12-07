@@ -1,17 +1,16 @@
-import { useRouter } from "expo-router";
-import { useState } from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
   TextInput,
   StyleSheet,
   Dimensions,
-  Pressable,
   TouchableOpacity,
 } from "react-native";
 import FontAwesome5Icon from "react-native-vector-icons/FontAwesome5";
 import axios from "../../../axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useRouter } from "expo-router";
 
 export default function PasswordUpdate() {
   const router = useRouter();
@@ -38,14 +37,7 @@ export default function PasswordUpdate() {
 
   return (
     <View style={styles.container}>
-      <View
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          paddingHorizontal: 20,
-          alignItems: "center",
-        }}
-      >
+      <View style={styles.header}>
         <TouchableOpacity
           onPress={() => {
             router.back();
@@ -54,17 +46,10 @@ export default function PasswordUpdate() {
           <FontAwesome5Icon name="arrow-left" size={15} color="black" />
         </TouchableOpacity>
       </View>
-      <View
-        style={{
-          marginTop: 40,
-          gap: 20,
-          display: "flex",
-          alignItems: "center",
-        }}
-      >
-        <View style={{ gap: 20 }}>
-          <View style={{ gap: 5 }}>
-            <Text>Current Password</Text>
+      <View style={styles.content}>
+        <View style={styles.formContainer}>
+          <View style={styles.formItem}>
+            <Text style={styles.label}>Current Password</Text>
             <TextInput
               value={password}
               style={styles.input}
@@ -72,8 +57,8 @@ export default function PasswordUpdate() {
               onChangeText={(text) => setPassword(text)}
             />
           </View>
-          <View style={{ gap: 5 }}>
-            <Text>New password</Text>
+          <View style={styles.formItem}>
+            <Text style={styles.label}>New Password</Text>
             <TextInput
               value={newPassword}
               style={styles.input}
@@ -81,19 +66,8 @@ export default function PasswordUpdate() {
               onChangeText={(text) => setNewPassword(text)}
             />
           </View>
-          <TouchableOpacity
-            onPress={changePassword}
-            style={{
-              height: 45,
-              display: "flex",
-              borderRadius: 5,
-              backgroundColor: "#006442",
-              width: Dimensions.get("screen").width - 40,
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <Text style={{ color: "white", fontSize: 16 }}>Save</Text>
+          <TouchableOpacity onPress={changePassword} style={styles.saveButton}>
+            <Text style={styles.saveButtonText}>Save</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -107,6 +81,25 @@ const styles = StyleSheet.create({
     paddingTop: 40,
     backgroundColor: "white",
   },
+  header: {
+    flexDirection: "row",
+    paddingHorizontal: 20,
+    alignItems: "center",
+  },
+  content: {
+    marginTop: 40,
+    gap: 20,
+    alignItems: "center",
+  },
+  formContainer: {
+    gap: 20,
+  },
+  formItem: {
+    gap: 5,
+  },
+  label: {
+    fontSize: 16,
+  },
   input: {
     height: 50,
     borderRadius: 5,
@@ -114,5 +107,18 @@ const styles = StyleSheet.create({
     backgroundColor: "#f6f6f6",
     fontWeight: "600",
     width: Dimensions.get("screen").width - 40,
+  },
+  saveButton: {
+    height: 45,
+    borderRadius: 5,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#fe724c",
+    width: Dimensions.get("screen").width - 40,
+    elevation: 3,
+  },
+  saveButtonText: {
+    color: "white",
+    fontSize: 16,
   },
 });

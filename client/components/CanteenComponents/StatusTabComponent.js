@@ -15,7 +15,7 @@ export default function StatusTab({ activeTab, setActiveTab }) {
           <TouchableOpacity onPress={() => setActiveTab(item)} key={index}>
             <Text
               style={[
-                activeTab === item && { fontWeight: "600", color: "#006442" },
+                activeTab === item && { fontWeight: "600", color: "#fe724c" },
                 { fontSize: 18.5 },
               ]}
             >
@@ -26,7 +26,7 @@ export default function StatusTab({ activeTab, setActiveTab }) {
                 activeTab === item && {
                   height: 2,
                   width: "40%",
-                  backgroundColor: "#006442",
+                  backgroundColor: "#fe724c",
                 }
               }
             ></View>

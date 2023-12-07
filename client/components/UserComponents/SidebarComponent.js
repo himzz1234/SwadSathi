@@ -1,18 +1,18 @@
+import React, { useContext } from "react";
 import {
   SafeAreaView,
   View,
   Image,
   Text,
   TouchableOpacity,
+  StyleSheet,
 } from "react-native";
-
 import {
   DrawerContentScrollView,
   DrawerItemList,
 } from "@react-navigation/drawer";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
-import { useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
 
 export default function Sidebar(props) {
@@ -27,50 +27,74 @@ export default function Sidebar(props) {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <DrawerContentScrollView style={{ display: "flex", flex: 1 }}>
-        <View
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            gap: 10,
-            marginBottom: 10,
-            paddingHorizontal: 10,
-          }}
-        >
+    <SafeAreaView style={styles.container}>
+      <DrawerContentScrollView style={styles.scrollView}>
+        <View style={styles.userInfoContainer}>
           <Image
-            style={{ width: 40, height: 40 }}
+            style={styles.profileImage}
             source={{ uri: user.profilePicture }}
             borderRadius={999}
           />
-          <Text style={{ fontSize: 18, fontWeight: 600 }}>{user.name}</Text>
+          <View>
+            <Text style={styles.userName}>{user.name}</Text>
+            <Text style={styles.email}>{user.email}</Text>
+          </View>
         </View>
 
         <DrawerItemList {...props} />
       </DrawerContentScrollView>
 
-      <TouchableOpacity
-        onPress={logout}
-        style={{
-          marginHorizontal: 10,
-          marginVertical: 20,
-          paddingVertical: 10,
-          borderRadius: 4,
-          backgroundColor: "hsl(1,83%,85%)",
-        }}
-      >
-        <Text
-          style={{
-            fontSize: 16,
-            color: "red",
-            fontWeight: 600,
-            textAlign: "center",
-          }}
-        >
-          Logout
-        </Text>
+      <TouchableOpacity onPress={logout} style={styles.logoutButton}>
+        <Text style={styles.logoutButtonText}>Logout</Text>
       </TouchableOpacity>
     </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#fb6a43",
+  },
+  scrollView: {
+    display: "flex",
+    flex: 1,
+  },
+  userInfoContainer: {
+    gap: 10,
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 10,
+    paddingHorizontal: 10,
+  },
+  profileImage: {
+    width: 60,
+    height: 60,
+    borderWidth: 2,
+    borderColor: "white",
+  },
+  userName: {
+    fontSize: 18,
+    fontWeight: "600",
+    color: "white",
+  },
+  email: {
+    fontSize: 14,
+    color: "white",
+    marginTop: 3,
+  },
+  logoutButton: {
+    padding: 10,
+    marginHorizontal: 10,
+    marginVertical: 20,
+    borderRadius: 4,
+    borderTopWidth: 1,
+    borderColor: "white",
+    color: "#fb6a43",
+  },
+  logoutButtonText: {
+    fontSize: 16,
+    color: "white",
+    fontWeight: "600",
+  },
+});

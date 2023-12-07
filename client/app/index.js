@@ -10,12 +10,44 @@ import {
   Text,
   TouchableOpacity,
   ActivityIndicator,
+  Image,
 } from "react-native";
+import * as Animatable from "react-native-animatable";
 
 export default function Page() {
   const router = useRouter();
-  const { auth, dispatch } = useContext(AuthContext);
+  const { dispatch } = useContext(AuthContext);
   const [loading, setLoading] = useState(false);
+
+  const btnanimation = {
+    0: {
+      opacity: 0,
+      translateY: -20,
+    },
+    1: {
+      opacity: 1,
+      translateY: 0,
+    },
+  };
+
+  const logoanimation = {
+    0: {
+      scale: 1.5,
+      opacity: 1,
+      translateY: 60,
+    },
+    0.8: {
+      scale: 1,
+      opacity: 1,
+      translateY: 60,
+    },
+
+    1: {
+      scale: 1,
+      opacity: 1,
+      translateY: 0,
+    },
+  };
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -76,11 +108,17 @@ export default function Page() {
       {loading ? (
         <ActivityIndicator size="large" />
       ) : (
-        <>
-          <AppLogo />
-
+        <View style={styles.containerContent}>
+          <Animatable.Image
+            duration={2000}
+            source={require("../assets/images/logo2.png")}
+            animation={logoanimation}
+            style={{ alignSelf: "center", width: 240, height: 50 }}
+          />
           <View style={{ flex: 1 }}></View>
-          <View
+          <Animatable.View
+            delay={1000}
+            animation={btnanimation}
             style={{
               gap: 10,
               marginTop: 40,
@@ -100,8 +138,8 @@ export default function Page() {
             >
               <Text style={styles.buttonText}>Sign up as a canteen</Text>
             </TouchableOpacity>
-          </View>
-        </>
+          </Animatable.View>
+        </View>
       )}
     </View>
   );
@@ -113,11 +151,15 @@ const styles = StyleSheet.create({
     display: "flex",
     paddingVertical: 40,
     paddingHorizontal: 30,
+    justifyContent: "center",
+  },
+  containerContent: {
+    display: "flex",
+    gap: 10,
   },
   button: {
     borderWidth: 2,
     paddingVertical: 15,
-    elevation: 3,
     borderRadius: 5,
   },
   buttonPrimary: {

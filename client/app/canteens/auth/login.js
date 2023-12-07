@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   View,
   Text,
@@ -14,21 +14,19 @@ import axios from "../../../axios";
 import { Link, useRouter } from "expo-router";
 
 export default function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+
   const { dispatch } = useContext(AuthContext);
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState("");
 
   const router = useRouter();
-
   const login = async () => {
-    const credentials = {
-      email,
-      password,
-    };
-
-    const res = await axios.post("/auth/admin/login", credentials);
-    if (res.status == 200) {
+    try {
+      const res = await axios.post("/auth/admin/login", formData);
       await AsyncStorage.setItem(
         "auth",
         JSON.stringify({
@@ -43,36 +41,31 @@ export default function Login() {
       });
 
       router.replace("/canteens/main/home");
-    } else {
-      console.log("Something went wrong!");
+    } catch (error) {
+      setError("Invalid username or password!");
     }
   };
+
   return (
     <View style={styles.container}>
-      <Text style={{ fontSize: 30, fontWeight: 600 }}>Login</Text>
+      <Text style={styles.title}>Login</Text>
 
-      <View style={{ display: "flex", gap: 10, marginVertical: 32 }}>
+      <View style={styles.inputContainer}>
         <TextInput
-          value={email}
-          onChangeText={(text) => setEmail(text)}
+          value={formData.email}
           placeholder="Email ID"
-          style={styles.inputContainer}
+          style={styles.input}
+          onChangeText={(text) => setFormData({ ...formData, email: text })}
         />
-        <View
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            backgroundColor: "#efeeea",
-            paddingRight: 10,
-          }}
-        >
+        <View style={styles.passwordContainer}>
           <TextInput
-            value={password}
+            value={formData.password}
             placeholder="Password"
             secureTextEntry={showPassword}
-            style={[styles.inputContainer, { flex: 1 }]}
-            onChangeText={(e) => setPassword(e)}
+            style={[styles.input, styles.passwordInput]}
+            onChangeText={(text) =>
+              setFormData({ ...formData, password: text })
+            }
           />
           {!showPassword ? (
             <Pressable onPress={() => setShowPassword(true)}>
@@ -86,15 +79,15 @@ export default function Login() {
         </View>
       </View>
 
+      <Text style={styles.errorText}>{error}</Text>
+
       <TouchableOpacity style={styles.button} onPress={login}>
-        <Text style={{ color: "white", textAlign: "center", fontSize: 16 }}>
-          Login
-        </Text>
+        <Text style={styles.buttonText}>Login</Text>
       </TouchableOpacity>
 
-      <Text style={{ textAlign: "center", marginTop: 15, fontSize: 16 }}>
+      <Text style={styles.signupText}>
         Don't have an account?{" "}
-        <Link href="/canteens/auth/signup" style={{ color: "#006442" }}>
+        <Link href="/canteens/auth/signup" style={styles.signupLink}>
           Signup
         </Link>
       </Text>
@@ -105,20 +98,54 @@ export default function Login() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    display: "flex",
     justifyContent: "center",
     paddingHorizontal: 20,
   },
-
+  title: {
+    fontSize: 30,
+    fontWeight: "600",
+  },
   inputContainer: {
+    marginTop: 32,
+    gap: 10,
+  },
+  input: {
     padding: 10,
     backgroundColor: "#efeeea",
     borderRadius: 5,
   },
+  passwordContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#efeeea",
+    paddingRight: 10,
+    borderRadius: 5,
+  },
+  passwordInput: {
+    flex: 1,
+  },
+  errorText: {
+    marginVertical: 10,
+    color: "#e40613",
+    fontWeight: "500",
+  },
   button: {
-    backgroundColor: "#006442",
+    backgroundColor: "#fe724c",
     borderRadius: 5,
     paddingVertical: 12.5,
     elevation: 3,
+  },
+  buttonText: {
+    color: "white",
+    textAlign: "center",
+    fontSize: 16,
+  },
+  signupText: {
+    textAlign: "center",
+    marginTop: 15,
+    fontSize: 16,
+  },
+  signupLink: {
+    color: "#fe724c",
   },
 });

@@ -1,80 +1,43 @@
-import { useContext, useState } from "react";
-import { AuthContext } from "../../../context/AuthContext";
-import { TextInput, TouchableOpacity } from "react-native";
-import MaterialIcon from "react-native-vector-icons/MaterialIcons";
-import FontAwesome5Icon from "react-native-vector-icons/FontAwesome5";
-import * as ImagePicker from "expo-image-picker";
+import React, { useState } from "react";
 import {
   View,
   Text,
-  Image,
+  TextInput,
   StyleSheet,
   Dimensions,
-  Pressable,
-  ActivityIndicator,
+  TouchableOpacity,
 } from "react-native";
-import { useRouter } from "expo-router";
-import useUpload from "../../../hooks/useUpload";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import FontAwesome5Icon from "react-native-vector-icons/FontAwesome5";
 import axios from "../../../axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useRouter } from "expo-router";
 
-export default function ProfileUpdate() {
+export default function PasswordUpdate() {
   const router = useRouter();
-  const { auth: canteen, dispatch } = useContext(AuthContext);
-  const [image, setImage] = useState(null);
-  const [email, setEmail] = useState(canteen?.email);
-  const [username, setUsername] = useState(canteen?.name);
-  const [address, setAddress] = useState(canteen?.address);
-  const [phoneNumber, setPhoneNumber] = useState(
-    canteen?.phoneNumber.toString()
-  );
+  const [password, setPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
 
-  const { uploadedImage, isLoading } = useUpload(image);
-  const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
-
-    if (result.assets[0].uri) {
-      setImage(result.assets[0].uri);
-    }
-  };
-
-  const updateProfile = async () => {
+  const changePassword = async () => {
     const obj = await AsyncStorage.getItem("auth");
     const { token } = JSON.parse(obj);
 
-    const res = await axios.put(
-      "/auth/admin/profile",
-      {
-        email,
-        name: username,
-        address,
-        phoneNumber: Number(phoneNumber),
-        profilePicture: uploadedImage || canteen.profilePicture,
-      },
-      { headers: { token } }
-    );
-
-    dispatch({
-      type: "PROFILE_UPDATE",
-      payload: { auth: res.data.auth, role: "Canteen" },
-    });
+    try {
+      if (password && newPassword) {
+        await axios.put(
+          "/auth/user/updatepassword",
+          {
+            oldpassword: password,
+            newpassword: newPassword,
+          },
+          { headers: { token } }
+        );
+      }
+    } catch (error) {}
   };
 
   return (
     <View style={styles.container}>
-      <View
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          paddingHorizontal: 20,
-          alignItems: "center",
-        }}
-      >
+      <View style={styles.header}>
         <TouchableOpacity
           onPress={() => {
             router.back();
@@ -83,104 +46,28 @@ export default function ProfileUpdate() {
           <FontAwesome5Icon name="arrow-left" size={15} color="black" />
         </TouchableOpacity>
       </View>
-
-      <View
-        style={{
-          gap: 40,
-          marginTop: 40,
-          display: "flex",
-          alignItems: "center",
-        }}
-      >
-        <View style={{ position: "relative" }}>
-          <Image
-            style={{ width: 80, height: 80 }}
-            source={
-              !uploadedImage
-                ? { uri: canteen.profilePicture }
-                : { uri: uploadedImage }
-            }
-            borderRadius={999}
-          ></Image>
-          <Pressable
-            onPress={pickImage}
-            style={{
-              position: "absolute",
-              right: 0,
-              width: 25,
-              bottom: 0,
-              height: 25,
-              display: "flex",
-              borderRadius: 999,
-              alignItems: "center",
-              justifyContent: "center",
-              backgroundColor: "#FF4136",
-              borderWidth: 2,
-              borderColor: "white",
-            }}
-          >
-            <MaterialIcon name="edit" color="white" size={14} />
-          </Pressable>
-        </View>
-        <View style={{ gap: 20 }}>
-          <View style={{ gap: 5 }}>
-            <Text style={{ textTransform: "uppercase", fontSize: 13 }}>
-              Username
-            </Text>
+      <View style={styles.content}>
+        <View style={styles.formContainer}>
+          <View style={styles.formItem}>
+            <Text style={styles.label}>Current Password</Text>
             <TextInput
-              value={username}
+              value={password}
               style={styles.input}
-              onChangeText={(text) => setUsername(text)}
+              placeholder="Enter your current password"
+              onChangeText={(text) => setPassword(text)}
             />
           </View>
-          <View style={{ gap: 5 }}>
-            <Text style={{ textTransform: "uppercase", fontSize: 13 }}>
-              Email
-            </Text>
+          <View style={styles.formItem}>
+            <Text style={styles.label}>New password</Text>
             <TextInput
-              value={email}
+              value={newPassword}
               style={styles.input}
-              onChangeText={(text) => setEmail(text)}
+              placeholder="Enter your new password"
+              onChangeText={(text) => setNewPassword(text)}
             />
           </View>
-          <View style={{ gap: 5 }}>
-            <Text style={{ textTransform: "uppercase", fontSize: 13 }}>
-              Address
-            </Text>
-            <TextInput
-              value={address}
-              style={styles.input}
-              onChangeText={(text) => setAddress(text)}
-            />
-          </View>
-          <View style={{ gap: 5 }}>
-            <Text style={{ textTransform: "uppercase", fontSize: 13 }}>
-              Phone Number
-            </Text>
-            <TextInput
-              value={phoneNumber}
-              style={styles.input}
-              onChangeText={(text) => setPhoneNumber(text)}
-            />
-          </View>
-          <TouchableOpacity
-            disabled={isLoading}
-            onPress={updateProfile}
-            style={{
-              height: 45,
-              borderRadius: 5,
-              display: "flex",
-              width: Dimensions.get("screen").width - 40,
-              alignItems: "center",
-              justifyContent: "center",
-              backgroundColor: "#006442",
-            }}
-          >
-            {isLoading ? (
-              <ActivityIndicator size="small" />
-            ) : (
-              <Text style={{ color: "white", fontSize: 16 }}>Save</Text>
-            )}
+          <TouchableOpacity onPress={changePassword} style={styles.saveButton}>
+            <Text style={styles.saveButtonText}>Save</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -194,6 +81,25 @@ const styles = StyleSheet.create({
     paddingTop: 40,
     backgroundColor: "white",
   },
+  header: {
+    flexDirection: "row",
+    paddingHorizontal: 20,
+    alignItems: "center",
+  },
+  content: {
+    marginTop: 40,
+    gap: 20,
+    alignItems: "center",
+  },
+  formContainer: {
+    gap: 20,
+  },
+  formItem: {
+    gap: 5,
+  },
+  label: {
+    fontSize: 16,
+  },
   input: {
     height: 50,
     borderRadius: 5,
@@ -201,5 +107,18 @@ const styles = StyleSheet.create({
     backgroundColor: "#f6f6f6",
     fontWeight: "600",
     width: Dimensions.get("screen").width - 40,
+  },
+  saveButton: {
+    height: 45,
+    borderRadius: 5,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#fe724c",
+    width: Dimensions.get("screen").width - 40,
+    elevation: 3,
+  },
+  saveButtonText: {
+    color: "white",
+    fontSize: 16,
   },
 });

@@ -1,12 +1,23 @@
-import { Dimensions } from "react-native";
-import { useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
+import { Dimensions, StyleSheet } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import * as Animatable from "react-native-animatable";
 
-AnimatedLinearGradient = Animatable.createAnimatableComponent(LinearGradient);
+const AnimatedLinearGradient =
+  Animatable.createAnimatableComponent(LinearGradient);
+
+const loopAnimation = {
+  0: {
+    translateY: 20,
+  },
+  1: {
+    translateY: 350,
+  },
+};
 
 export default function ScannerFrame() {
   const animationRef = useRef(null);
+
   useEffect(() => {
     return () => {
       animationRef.current?.stopAnimation();
@@ -19,24 +30,18 @@ export default function ScannerFrame() {
       animation={loopAnimation}
       iterationCount="infinite"
       direction="alternate"
-      style={{
-        height: 100,
-        zIndex: 1,
-        borderTopWidth: 5,
-        borderTopColor: "rgb(128, 210, 247)",
-        width: Dimensions.get("screen").width - 20,
-      }}
-      colors={["rgba(128, 210, 247, 0.8)", "transparent"]}
+      style={styles.scannerFrame}
+      colors={["rgba(254,114,76, 0.8)", "transparent"]}
     ></AnimatedLinearGradient>
   );
 }
 
-const loopAnimation = {
-  0: {
-    translateY: 0,
+const styles = StyleSheet.create({
+  scannerFrame: {
+    height: 100,
+    zIndex: 1,
+    borderTopWidth: 5,
+    borderTopColor: "rgb(254,114,76)",
+    width: Dimensions.get("screen").width - 40,
   },
-
-  1: {
-    translateY: 400,
-  },
-};
+});

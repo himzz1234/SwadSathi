@@ -1,13 +1,15 @@
-import { useContext, useEffect, useState } from "react";
-import { View, StyleSheet, FlatList } from "react-native";
+import React, { useContext, useEffect, useState } from "react";
+import { View, StyleSheet, FlatList, TextInput } from "react-native";
 import axios from "../../../axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import OrderItem from "../../../components/UserComponents/OrderItemComponent";
 import { SocketContext } from "../../../context/SocketContext";
+import Ionicon from "react-native-vector-icons/Ionicons";
 
 export default function MyOrders() {
   const [orders, setOrders] = useState([]);
   const { socket } = useContext(SocketContext);
+  const [input, setInput] = useState("");
 
   useEffect(() => {
     socket.on("order-accepted", (data) => {
@@ -58,14 +60,42 @@ export default function MyOrders() {
 
   return (
     <View style={styles.container}>
+      <View
+        style={{
+          display: "flex",
+          alignItems: "center",
+          flexDirection: "row",
+          backgroundColor: "#f6f6f6",
+          paddingHorizontal: 10,
+          gap: 10,
+        }}
+      >
+        <Ionicon name="search-outline" size={20} color="#fe724c" />
+        <TextInput
+          value={input}
+          placeholder="Search by canteen"
+          onChangeText={(text) => setInput(text)}
+          style={{
+            backgroundColor: "transparent",
+            borderRadius: 5,
+            height: 50,
+            fontSize: 16,
+            flex: 1,
+          }}
+        />
+      </View>
+
       <FlatList
         data={orders}
+        style={{ marginTop: 20 }}
         showsVerticalScrollIndicator={false}
-        ItemSeparatorComponent={() => (
-          <View style={{ height: 10, width: "100%" }}></View>
-        )}
+        ItemSeparatorComponent={() => <View style={styles.separator}></View>}
         keyExtractor={(item) => item._id}
-        renderItem={({ item }) => <OrderItem _id={item._id} {...{ item }} />}
+        renderItem={({ item }) => {
+          if (item.canteen.name.toUpperCase().includes(input.toUpperCase())) {
+            return <OrderItem _id={item._id} {...{ item }} />;
+          }
+        }}
       />
     </View>
   );
@@ -76,5 +106,9 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "white",
     padding: 20,
+  },
+  separator: {
+    height: 10,
+    width: "100%",
   },
 });

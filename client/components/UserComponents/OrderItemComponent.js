@@ -1,111 +1,71 @@
-import { View, Text, FlatList } from "react-native";
+import React from "react";
+import { View, Text, FlatList, StyleSheet } from "react-native";
 import moment from "moment/moment";
 import OctIcon from "react-native-vector-icons/Octicons";
 import MaterialCommunityIcon from "react-native-vector-icons/MaterialCommunityIcons";
 import { truncate } from "../../utils/index";
 
-export default function OrderItem({ item }) {
-  console.log(item);
+const OrderItem = ({ item }) => {
   const statusColor = (status) => {
     if (status === "Pending") {
       return "#FAC898";
-    } else if (status == "Preparing") {
+    } else if (status === "Preparing") {
       return "#24963f";
-    } else if (status == "Declined") {
+    } else if (status === "Declined") {
       return "#ff0b0b";
     }
   };
 
   return (
-    <View
-      style={{
-        width: "100%",
-        minHeight: 200,
-        borderRadius: 5,
-        backgroundColor: "#F5F5F5",
-      }}
-    >
-      <View
-        style={{
-          padding: 10,
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "space-between",
-        }}
-      >
-        <View style={{ gap: 2 }}>
-          <Text style={{ fontWeight: "600", fontSize: 16 }}>
-            {item.canteen?.name}
-          </Text>
-          <Text style={{ fontWeight: "400", fontSize: 13.5 }}>
+    <View style={styles.container}>
+      <View style={styles.infoContainer}>
+        <View style={styles.canteenInfo}>
+          <Text style={styles.canteenName}>{item.canteen?.name}</Text>
+          <Text style={styles.canteenAddress}>
             {truncate(item.canteen.address)}
           </Text>
         </View>
 
-        <View>
-          <View
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "space-between",
-            }}
-          >
-            <Text style={{ fontSize: 13.5 }}>
+        <View style={styles.dateTimeContainer}>
+          <View style={styles.dateTimeRow}>
+            <Text style={styles.dateTimeText}>
               {moment(item.createdAt).format("MMM Do YY, h:mm a")}
             </Text>
             <MaterialCommunityIcon
               name="dots-vertical"
               size={19}
-              style={{ marginRight: -6 }}
+              style={styles.dotsIcon}
             />
           </View>
-          <View
-            style={{
-              gap: 5,
-              marginTop: 5,
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "flex-end",
-            }}
-          >
+
+          <View style={styles.statusContainer}>
             <OctIcon
               name="dot-fill"
               color={statusColor(item.status)}
               size={10}
+              style={styles.dotIcon}
             />
-            <Text style={{ fontSize: 13 }}>{item.status}</Text>
+            <Text style={styles.statusText}>{item.status}</Text>
           </View>
         </View>
       </View>
 
-      <View
-        style={{
-          flex: 1,
-          padding: 10,
-          borderTopWidth: 1,
-          borderBottomWidth: 1,
-          borderTopColor: "#E5E4E2",
-          borderBottomColor: "#E5E4E2",
-        }}
-      >
+      <View style={styles.orderItemsContainer}>
         <FlatList
           data={item.orderItems}
           ItemSeparatorComponent={() => {
-            return <View style={{ height: 10, width: "100%" }}></View>;
+            return <View style={styles.itemSeparator}></View>;
           }}
           renderItem={({ item: menuItem }) => {
             return (
-              <View
-                _id={menuItem._id}
-                style={{ display: "flex", flexDirection: "row", gap: 10 }}
-              >
-                <Text style={{ fontSize: 15 }}>{menuItem.qty}x</Text>
-                <Text style={{ flex: 1, fontSize: 15 }}>
+              <View style={styles.menuItemContainer} key={menuItem._id}>
+                <Text style={styles.menuItemQty}>{menuItem.qty}x</Text>
+                <Text style={styles.menuItemName}>
                   {menuItem.product?.name}
                 </Text>
-                <Text style={{ fontSize: 15 }}>₹{menuItem.product.price}</Text>
+                <Text style={styles.menuItemPrice}>
+                  ₹{menuItem.product.price}
+                </Text>
               </View>
             );
           }}
@@ -113,25 +73,114 @@ export default function OrderItem({ item }) {
         />
       </View>
 
-      <View
-        style={{
-          padding: 10,
-          display: "flex",
-          alignItems: "center",
-          flexDirection: "row",
-          justifyContent: "space-between",
-        }}
-      >
-        <Text style={{ fontSize: 16 }}>
+      <View style={styles.totalBillContainer}>
+        <Text style={styles.totalBillText}>
           Total bill:{" "}
-          <Text style={{ fontWeight: "600" }}>₹{item.totalPrice}</Text>
+          <Text style={styles.totalBillAmount}>₹{item.totalPrice}</Text>
         </Text>
         {item.tokenNumber && (
-          <Text style={{ fontSize: 16 }}>
-            Token: <Text style={{ fontWeight: "600" }}>{item.tokenNumber}</Text>
+          <Text style={styles.tokenNumberText}>
+            Token: <Text style={styles.tokenNumber}>{item.tokenNumber}</Text>
           </Text>
         )}
       </View>
     </View>
   );
-}
+};
+
+const styles = StyleSheet.create({
+  container: {
+    width: "100%",
+    minHeight: 200,
+    borderRadius: 5,
+    backgroundColor: "#F5F5F5",
+  },
+  infoContainer: {
+    padding: 10,
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  canteenInfo: {
+    gap: 2,
+  },
+  canteenName: {
+    fontWeight: "600",
+    fontSize: 16,
+  },
+  canteenAddress: {
+    fontWeight: "400",
+    fontSize: 13.5,
+  },
+  dateTimeContainer: {},
+  dateTimeRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  dateTimeText: {
+    fontSize: 13.5,
+  },
+  dotsIcon: {
+    marginRight: -6,
+  },
+  statusContainer: {
+    gap: 5,
+    marginTop: 5,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-end",
+  },
+  dotIcon: {
+    marginRight: 1,
+  },
+  statusText: {
+    fontSize: 13,
+  },
+  orderItemsContainer: {
+    flex: 1,
+    padding: 10,
+    borderTopWidth: 1,
+    borderBottomWidth: 1,
+    borderTopColor: "#E5E4E2",
+    borderBottomColor: "#E5E4E2",
+    borderStyle: "dashed",
+  },
+  itemSeparator: {
+    height: 10,
+    width: "100%",
+  },
+  menuItemContainer: {
+    flexDirection: "row",
+    gap: 10,
+  },
+  menuItemQty: {
+    fontSize: 15,
+  },
+  menuItemName: {
+    flex: 1,
+    fontSize: 15,
+  },
+  menuItemPrice: {
+    fontSize: 15,
+  },
+  totalBillContainer: {
+    padding: 10,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  totalBillText: {
+    fontSize: 16,
+  },
+  totalBillAmount: {
+    fontWeight: "600",
+  },
+  tokenNumberText: {
+    fontSize: 16,
+  },
+  tokenNumber: {
+    fontWeight: "600",
+  },
+});
+
+export default OrderItem;
