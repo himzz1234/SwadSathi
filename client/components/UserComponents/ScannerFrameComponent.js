@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import { Dimensions, StyleSheet } from "react-native";
+import { Dimensions, StyleSheet, View } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import * as Animatable from "react-native-animatable";
 
@@ -25,14 +25,56 @@ export default function ScannerFrame() {
   }, []);
 
   return (
-    <AnimatedLinearGradient
-      ref={animationRef}
-      animation={loopAnimation}
-      iterationCount="infinite"
-      direction="alternate"
-      style={styles.scannerFrame}
-      colors={["rgba(254,114,76, 0.8)", "transparent"]}
-    ></AnimatedLinearGradient>
+    <>
+      <View
+        style={{
+          width: 20,
+          height: 20,
+          borderTopWidth: 5,
+          borderLeftWidth: 5,
+          position: "absolute",
+          top: 20,
+          left: 20,
+          borderColor: "#355e4c",
+        }}
+      ></View>
+      <View
+        style={{
+          width: 20,
+          height: 20,
+          borderTopWidth: 5,
+          borderRightWidth: 5,
+          position: "absolute",
+          top: 20,
+          right: 20,
+          borderColor: "#355e4c",
+        }}
+      ></View>
+      <View
+        style={{
+          width: 20,
+          height: 20,
+          borderBottomWidth: 5,
+          borderRightWidth: 5,
+          position: "absolute",
+          bottom: 20,
+          right: 20,
+          borderColor: "#355e4c",
+        }}
+      ></View>
+      <View
+        style={{
+          width: 20,
+          height: 20,
+          borderBottomWidth: 5,
+          borderLeftWidth: 5,
+          position: "absolute",
+          bottom: 20,
+          left: 20,
+          borderColor: "#355e4c",
+        }}
+      ></View>
+    </>
   );
 }
 
@@ -42,6 +84,6 @@ const styles = StyleSheet.create({
     zIndex: 1,
     borderTopWidth: 5,
     borderTopColor: "rgb(254,114,76)",
-    width: Dimensions.get("screen").width - 40,
+    width: Dimensions.get("screen").width,
   },
 });

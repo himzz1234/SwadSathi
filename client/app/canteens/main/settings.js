@@ -27,7 +27,7 @@ export default function Settings() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "white",
+    backgroundColor: "#f3f3f3",
     padding: 20,
     gap: 20,
   },
@@ -37,11 +37,12 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#f6f6f6",
+    backgroundColor: "white",
   },
   text: {
     borderBottomColor: "#000000",
     fontSize: 16,
     flex: 1,
+    fontWeight: "500",
   },
 });

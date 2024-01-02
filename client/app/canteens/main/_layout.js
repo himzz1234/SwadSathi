@@ -2,67 +2,99 @@ import React, { useContext } from "react";
 import { View, Image, TouchableOpacity, Text, StyleSheet } from "react-native";
 import { Drawer } from "expo-router/drawer";
 import Icon from "react-native-vector-icons/MaterialIcons";
-import { truncate } from "../../../utils";
 import Sidebar from "../../../components/CanteenComponents/SidebarComponent";
-import { AuthContext } from "../../../context/AuthContext";
 
 export default function Layout() {
-  const { auth: canteen } = useContext(AuthContext);
-
   const CommonHeaderOptions = ({ navigation }) => ({
     headerTitle: "",
     headerLeftContainerStyle: styles.headerLeftContainer,
-    headerLeft: () => (
-      <View style={styles.headerLeft}>
-        <TouchableOpacity onPress={() => navigation.openDrawer()}>
-          <Image
-            style={styles.profileImage}
-            source={require("../../../assets/images/canteen.jpg")}
-            borderRadius={999}
-          />
-        </TouchableOpacity>
-        <View style={styles.profileInfo}>
-          <Text style={styles.profileName}>{canteen?.name}</Text>
-          <Text style={styles.profileAddress}>
-            {truncate(canteen?.address)}
-          </Text>
-        </View>
-      </View>
-    ),
+
+    headerStyle: { backgroundColor: "#f3f3f3" },
     headerRightContainerStyle: styles.headerRightContainer,
     headerRight: () => (
       <View style={styles.headerRight}>
         <TouchableOpacity style={styles.notificationIcon}>
-          <Icon name="notifications-none" size={30} color="black" />
+          <Icon name="notifications-none" size={24} color="black" />
         </TouchableOpacity>
       </View>
     ),
-    drawerActiveTintColor: "#fb6a43",
+    drawerActiveTintColor: "#87986b",
     drawerInactiveTintColor: "white",
     drawerActiveBackgroundColor: "white",
+    drawerLabelStyle: { fontSize: 15 },
   });
 
   return (
     <Drawer drawerContent={(props) => <Sidebar {...props} />}>
       <Drawer.Screen
         name="home"
-        options={({ navigation }) => ({
-          ...CommonHeaderOptions({ navigation }),
-          drawerLabel: "Home",
-        })}
+        options={({ navigation }) => {
+          return {
+            ...CommonHeaderOptions({ navigation }),
+            headerLeft: () => (
+              <View style={styles.headerLeft}>
+                <TouchableOpacity onPress={() => navigation.openDrawer()}>
+                  <Icon name="menu" size={24} />
+                </TouchableOpacity>
+                <Text style={{ fontSize: 20, fontWeight: "600" }}>Home</Text>
+              </View>
+            ),
+            drawerLabel: "Home",
+            drawerIcon: () => (
+              <Icon
+                name="home"
+                size={20}
+                style={{ marginRight: -20 }}
+                color={navigation.isFocused() ? "#87986b" : "white"}
+              />
+            ),
+          };
+        }}
       ></Drawer.Screen>
       <Drawer.Screen
         name="menu"
         options={({ navigation }) => ({
           ...CommonHeaderOptions({ navigation }),
+          headerLeft: () => (
+            <View style={styles.headerLeft}>
+              <TouchableOpacity onPress={() => navigation.openDrawer()}>
+                <Icon name="menu" size={24} />
+              </TouchableOpacity>
+              <Text style={{ fontSize: 20, fontWeight: "600" }}>Menu</Text>
+            </View>
+          ),
           drawerLabel: "Menu",
+          drawerIcon: () => (
+            <Icon
+              name="fastfood"
+              size={20}
+              style={{ marginRight: -20 }}
+              color={navigation.isFocused() ? "#87986b" : "white"}
+            />
+          ),
         })}
       ></Drawer.Screen>
       <Drawer.Screen
         name="settings"
         options={({ navigation }) => ({
           ...CommonHeaderOptions({ navigation }),
+          headerLeft: () => (
+            <View style={styles.headerLeft}>
+              <TouchableOpacity onPress={() => navigation.openDrawer()}>
+                <Icon name="menu" size={24} />
+              </TouchableOpacity>
+              <Text style={{ fontSize: 20, fontWeight: "600" }}>Settings</Text>
+            </View>
+          ),
           drawerLabel: "Settings",
+          drawerIcon: () => (
+            <Icon
+              name="settings"
+              size={20}
+              style={{ marginRight: -20 }}
+              color={navigation.isFocused() ? "#87986b" : "white"}
+            />
+          ),
         })}
       ></Drawer.Screen>
     </Drawer>

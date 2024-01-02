@@ -1,9 +1,7 @@
 import React, { useContext, useState } from "react";
-import Ionicon from "react-native-vector-icons/Ionicons";
 import {
   View,
   Text,
-  Dimensions,
   StyleSheet,
   TouchableOpacity,
   TextInput,
@@ -11,20 +9,19 @@ import {
   Image,
 } from "react-native";
 import axios from "../../axios";
-import CustomModal from "../ModalComponent";
 import * as ImagePicker from "expo-image-picker";
 import useUpload from "../../hooks/useUpload";
 import { AuthContext } from "../../context/AuthContext";
+import MaterialCommunityIcon from "react-native-vector-icons/MaterialCommunityIcons";
+import { useBottomSheetModal } from "@gorhom/bottom-sheet";
+import { LinearGradient } from "expo-linear-gradient";
 
-export default function AddItemComponenent({
-  openModal,
-  setOpenModal,
-  setCanteenMenu,
-}) {
+export default function AddItemComponenent({ setCanteenMenu }) {
   const { auth: canteen } = useContext(AuthContext);
   const [isEnabled, setIsEnabled] = useState(true);
   const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
 
+  const { dismissAll } = useBottomSheetModal();
   const [itemData, setItemData] = useState({
     name: "",
     image: "",
@@ -50,7 +47,7 @@ export default function AddItemComponenent({
         isAvailable: true,
       });
 
-      setOpenModal(false);
+      dismissAll();
     }
   };
 
@@ -72,131 +69,188 @@ export default function AddItemComponenent({
   };
 
   return (
-    <CustomModal openFn={openModal}>
-      <View
-        style={{
-          gap: 40,
-          height: 500,
-          display: "flex",
-          borderRadius: 5,
-          paddingVertical: 30,
-          alignItems: "center",
-          paddingHorizontal: 20,
-          backgroundColor: "white",
-          width: Dimensions.get("screen").width - 40,
-        }}
-      >
-        <TouchableOpacity
-          onPress={pickImage}
-          style={{
-            width: 100,
-            height: 100,
-            borderRadius: 999,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            backgroundColor: "#eef5ca",
-          }}
-        >
-          {!uploadedImage ? (
-            <Ionicon name="camera" size={40} color="#2d7262" />
-          ) : (
-            <Image
-              source={{ uri: uploadedImage }}
-              style={{ width: "100%", height: "100%", borderRadius: 999 }}
-            />
-          )}
-        </TouchableOpacity>
-        <View style={{ width: "100%", flex: 1, gap: 15 }}>
+    <View style={styles.container}>
+      <Text style={styles.headerText}>Add Item</Text>
+      <View>
+        <Text style={styles.label}>Image</Text>
+        <View style={styles.imageRow}>
+          <View style={styles.imageContainer}>
+            {!uploadedImage ? (
+              <MaterialCommunityIcon
+                name="food-variant"
+                size={40}
+                color="gray"
+              />
+            ) : (
+              <Image source={{ uri: uploadedImage }} style={styles.image} />
+            )}
+          </View>
+          <View style={styles.uploadContainer}>
+            <TouchableOpacity onPress={pickImage} style={styles.uploadButton}>
+              <Text style={styles.uploadButtonText}>Upload Image</Text>
+            </TouchableOpacity>
+            <View style={styles.uploadInfo}>
+              <Text style={styles.uploadInfoText}>
+                At least 800x800 px recommended.
+              </Text>
+              <Text style={styles.uploadInfoText}>JPG or PNG is allowed</Text>
+            </View>
+          </View>
+        </View>
+      </View>
+      <View style={styles.formContainer}>
+        <View style={styles.formItem}>
+          <Text style={styles.label}>Name</Text>
           <TextInput
-            placeholder="Name"
+            placeholder="Enter Item Name"
             value={itemData.name}
             style={styles.inputContainer}
             onChangeText={(e) => setItemData({ ...itemData, name: e })}
           />
-          <TextInput
-            placeholder="Price"
-            value={itemData.price}
-            style={styles.inputContainer}
-            onChangeText={(e) => setItemData({ ...itemData, price: e })}
-          />
-
-          <View
-            style={{
-              gap: 5,
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-            }}
-          >
-            <Switch
-              style={{ width: 40 }}
-              trackColor={{ false: "#767577", true: "#ff9e8c" }}
-              thumbColor={isEnabled ? "#FF6347" : "#f4f3f4"}
-              onValueChange={toggleSwitch}
-              value={isEnabled}
-            />
-            <Text>In stock</Text>
-          </View>
         </View>
-
         <View
           style={{
             display: "flex",
-            flexDirection: "row",
             alignItems: "center",
-            gap: 10,
+            flexDirection: "row",
+            gap: 20,
           }}
         >
-          <TouchableOpacity
-            disabled={isLoading}
-            onPress={addItem}
-            style={[
-              {
-                backgroundColor: "#006442",
-                borderColor: "transparent",
-                flex: 0.75,
-              },
-              styles.button,
-            ]}
-          >
-            <Text style={{ color: "white", textAlign: "center", fontSize: 16 }}>
-              Save
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => setOpenModal(false)}
-            style={[
-              {
-                backgroundColor: "white",
-                borderColor: "crimson",
-                flex: 0.25,
-              },
-              styles.button,
-            ]}
-          >
-            <Text
-              style={{ color: "crimson", textAlign: "center", fontSize: 16 }}
-            >
-              Cancel
-            </Text>
-          </TouchableOpacity>
+          <View style={[styles.formItem, { flex: 1 }]}>
+            <Text style={styles.label}>Price</Text>
+            <TextInput
+              placeholder="Enter Item Price"
+              value={itemData.price}
+              style={styles.inputContainer}
+              onChangeText={(e) => setItemData({ ...itemData, price: e })}
+            />
+          </View>
+
+          <View style={[styles.switchContainer, { flex: 0.5 }]}>
+            <Text style={{ fontWeight: "500" }}>Available</Text>
+            <Switch
+              style={styles.switch}
+              trackColor={{ false: "#767577", true: "#cfe1b9" }}
+              thumbColor={isEnabled ? "#355e4c" : "#f4f3f4"}
+              onValueChange={toggleSwitch}
+              value={isEnabled}
+            />
+          </View>
         </View>
       </View>
-    </CustomModal>
+
+      <LinearGradient
+        colors={["#2e7653", "#355e4c"]}
+        disabled={isLoading}
+        style={[styles.button, styles.saveButton]}
+      >
+        <TouchableOpacity onPress={addItem}>
+          <Text style={styles.saveButtonText}>Save</Text>
+        </TouchableOpacity>
+      </LinearGradient>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    gap: 20,
+    flex: 1,
+    display: "flex",
+    borderRadius: 5,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    backgroundColor: "white",
+  },
+  headerText: {
+    fontWeight: "600",
+    fontSize: 24,
+    borderBottomWidth: 1,
+    borderBottomColor: "lightgray",
+    paddingBottom: 7.5,
+  },
+  label: {
+    fontWeight: "600",
+    fontSize: 14.5,
+  },
+  imageRow: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 20,
+    gap: 20,
+  },
+  imageContainer: {
+    width: 100,
+    height: 100,
+    borderRadius: 999,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#f3f3f3",
+  },
+  image: {
+    width: "100%",
+    height: "100%",
+    borderRadius: 999,
+  },
+  uploadContainer: {
+    gap: 10,
+  },
+  uploadButton: {
+    borderWidth: 1,
+    borderColor: "lightgray",
+    padding: 5,
+    width: 140,
+    borderRadius: 5,
+  },
+  uploadButtonText: {
+    textAlign: "center",
+    fontWeight: "500",
+  },
+  uploadInfo: {
+    gap: 5,
+  },
+  uploadInfoText: {
+    fontSize: 12,
+  },
+  formContainer: {
+    width: "100%",
+    flex: 1,
+    gap: 15,
+  },
+  formItem: {
+    gap: 10,
+  },
+  switchContainer: {
+    gap: 2,
+  },
+  switch: {
+    width: 35,
+  },
   inputContainer: {
     padding: 10,
-    backgroundColor: "#efeeea",
+    backgroundColor: "#f3f3f3",
     borderRadius: 5,
+  },
+  buttonContainer: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
   },
   button: {
     borderWidth: 2,
-    borderRadius: 5,
-    paddingVertical: 12.5,
-    elevation: 3,
+    borderRadius: 10,
+    paddingVertical: 15,
+    elevation: 5,
+  },
+  saveButton: {
+    borderColor: "transparent",
+  },
+  saveButtonText: {
+    color: "white",
+    textAlign: "center",
+    fontSize: 16,
   },
 });

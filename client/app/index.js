@@ -1,6 +1,5 @@
 import axios from "../axios";
 import { useRouter } from "expo-router";
-import AppLogo from "../components/AppLogo";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -10,9 +9,9 @@ import {
   Text,
   TouchableOpacity,
   ActivityIndicator,
-  Image,
 } from "react-native";
 import * as Animatable from "react-native-animatable";
+import { LinearGradient } from "expo-linear-gradient";
 
 export default function Page() {
   const router = useRouter();
@@ -124,14 +123,19 @@ export default function Page() {
               marginTop: 40,
             }}
           >
-            <TouchableOpacity
-              onPress={() => router.push("/users/auth/signup")}
-              style={[styles.button, styles.buttonPrimary]}
+            <LinearGradient
+              colors={["#2e7653", "#355e4c"]}
+              style={styles.buttonPrimary}
             >
-              <Text style={[styles.buttonText, { color: "white" }]}>
-                Sign up as a user
-              </Text>
-            </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => router.push("/users/auth/signup")}
+                style={[styles.button]}
+              >
+                <Text style={[styles.buttonText, { color: "white" }]}>
+                  Sign up as a user
+                </Text>
+              </TouchableOpacity>
+            </LinearGradient>
             <TouchableOpacity
               onPress={() => router.push("/canteens/auth/signup")}
               style={[styles.button, styles.buttonSecondary]}
@@ -152,27 +156,25 @@ const styles = StyleSheet.create({
     paddingVertical: 40,
     paddingHorizontal: 30,
     justifyContent: "center",
+    backgroundColor: "#f3f3f3",
   },
   containerContent: {
     display: "flex",
     gap: 10,
   },
   button: {
-    borderWidth: 2,
     paddingVertical: 15,
     borderRadius: 5,
   },
   buttonPrimary: {
-    borderColor: "transparent",
-    backgroundColor: "#006442",
+    borderRadius: 7.5,
+    borderWidth: 0,
   },
   buttonSecondary: {
-    borderWidth: 2,
-    borderColor: "#006442",
-    backgroundColor: "white",
+    backgroundColor: "#e3e9e7",
   },
   buttonText: {
-    color: "#006442",
+    color: "#355e4c",
     fontSize: 18,
     textAlign: "center",
   },

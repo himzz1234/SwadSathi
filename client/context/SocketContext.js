@@ -15,7 +15,7 @@ export default function SocketProvider({ children }) {
 
   useEffect(() => {
     if (auth && auth.name) {
-      const sock = io("http://192.168.1.133:8800");
+      const sock = io("http://192.168.0.175:8800");
       sock.emit("newconnection", auth._id);
       setSocket(sock);
     }

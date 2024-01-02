@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   View,
   Text,
@@ -15,6 +15,7 @@ import CheckoutModal from "../../components/UserComponents/CheckoutModalComponen
 import axios from "../../axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { SocketContext } from "../../context/SocketContext";
+import { LinearGradient } from "expo-linear-gradient";
 
 export default function Checkout() {
   const router = useRouter();
@@ -55,86 +56,48 @@ export default function Checkout() {
 
   return (
     <View style={styles.container}>
-      <View
-        style={{
-          display: "flex",
-          flexDirection: "row",
-        }}
-      >
+      <View style={styles.headerContainer}>
         <TouchableOpacity
-          style={{ width: "20%" }}
-          onPress={() => {
-            router.back();
-          }}
+          onPress={() => router.back()}
+          style={styles.backButtonContainer}
         >
-          <Icon name="arrow-left" size={15} color="black" />
+          <Icon name="angle-left" size={20} style={styles.backButtonIcon} />
         </TouchableOpacity>
-        <Text
-          style={{
-            textAlign: "center",
-            width: "60%",
-            fontSize: 20,
-            fontWeight: 600,
-          }}
-        >
-          Cart
-        </Text>
+        <Text style={styles.headerText}>Cart</Text>
       </View>
-      <FlatList
-        data={cart}
-        style={{ marginTop: 30 }}
-        ItemSeparatorComponent={() => {
-          return <View style={{ height: 10, width: "100%" }}></View>;
-        }}
-        renderItem={({ item }) => {
-          return <CartItem id={item.id} {...{ item }} />;
-        }}
-        keyExtractor={(item) => item.id}
-      />
 
-      <View
-        style={{
-          paddingTop: 10,
-          marginBottom: 20,
-          borderTopWidth: 1,
-          borderTopColor: "#E5E4E2",
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
-      >
-        <Text style={{ fontWeight: "500", fontSize: 16, color: "#9e9ea0" }}>
-          Subtotal
-        </Text>
-        <Text style={{ fontWeight: "600", fontSize: 18 }}>
-          ₹
-          {cart.reduce(
-            (total, cartItem) => total + cartItem.qty * cartItem.price,
-            0
+      <View style={styles.contentContainer}>
+        <FlatList
+          data={cart}
+          style={styles.flatList}
+          ItemSeparatorComponent={() => (
+            <View style={styles.itemSeparator}></View>
           )}
-        </Text>
-      </View>
+          renderItem={({ item }) => <CartItem id={item.id} {...{ item }} />}
+          keyExtractor={(item) => item.id}
+        />
 
-      <Pressable
-        disabled={!cart.length}
-        onPress={onCheckout}
-        style={[
-          !cart.length
-            ? { backgroundColor: "gray" }
-            : { backgroundColor: "#fe724c" },
-          {
-            width: "100%",
-            paddingVertical: 15,
-            borderRadius: 5,
-            elevation: 2,
-          },
-        ]}
-      >
-        <Text style={{ textAlign: "center", fontSize: 16, color: "white" }}>
-          Checkout
-        </Text>
-      </Pressable>
+        <View style={styles.summaryContainer}>
+          <View style={styles.summaryRow}>
+            <Text style={styles.summaryLabel}>Subtotal</Text>
+            <Text style={styles.summaryValue}>
+              ₹
+              {cart.reduce(
+                (total, cartItem) => total + cartItem.qty * cartItem.price,
+                0
+              )}
+            </Text>
+          </View>
+          <LinearGradient
+            colors={cart.length ? ["#2e7653", "#355e4c"] : ["gray", "gray"]}
+            style={[styles.button, styles.checkoutButton]}
+          >
+            <Pressable disabled={!cart.length} onPress={onCheckout}>
+              <Text style={styles.checkoutButtonText}>Checkout</Text>
+            </Pressable>
+          </LinearGradient>
+        </View>
+      </View>
 
       <CheckoutModal {...{ openModal }} />
     </View>
@@ -145,7 +108,85 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: 40,
-    paddingBottom: 20,
+    backgroundColor: "#f3f3f3",
+  },
+  headerContainer: {
+    position: "absolute",
+    top: 30,
+    left: 20,
+    zIndex: 40,
+    display: "flex",
+    alignItems: "center",
+    flexDirection: "row",
+    width: "100%",
+    gap: 15,
+  },
+  backButtonContainer: {
+    width: 30,
+    height: 30,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 999,
+    borderColor: "#e3e9e7",
+    borderWidth: 2,
+  },
+  backButtonIcon: {
+    color: "black",
+  },
+  headerText: {
+    fontSize: 20,
+    fontWeight: "600",
+  },
+  contentContainer: {
+    flex: 1,
+    marginTop: 20,
+  },
+  flatList: {
+    marginTop: 30,
     paddingHorizontal: 20,
+  },
+  itemSeparator: {
+    height: 10,
+    width: "100%",
+  },
+  summaryContainer: {
+    backgroundColor: "white",
+    paddingBottom: 10,
+    paddingTop: 15,
+    gap: 10,
+    borderRadius: 5,
+    paddingHorizontal: 20,
+  },
+  summaryRow: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    borderBottomWidth: 2,
+    borderBottomColor: "#e3e9e7",
+    paddingBottom: 20,
+  },
+  summaryLabel: {
+    fontWeight: "500",
+    fontSize: 16,
+    color: "#9e9ea0",
+  },
+  summaryValue: {
+    fontWeight: "600",
+    fontSize: 18,
+  },
+  button: {
+    borderRadius: 7.5,
+    paddingVertical: 15,
+    elevation: 5,
+  },
+  checkoutButton: {
+    marginTop: 10,
+  },
+  checkoutButtonText: {
+    textAlign: "center",
+    fontSize: 16,
+    color: "white",
   },
 });

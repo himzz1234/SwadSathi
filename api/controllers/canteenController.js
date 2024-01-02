@@ -117,7 +117,14 @@ const canteenDetails = async (req, res) => {
       .select(["-phoneNumber", "-password", "-email", "-dateCreated"])
       .populate({
         path: "menu",
-        select: ["name", "image", "price", "isAvailable", "canteenId"],
+        select: [
+          "name",
+          "image",
+          "price",
+          "isAvailable",
+          "canteenId",
+          "address",
+        ],
       })
       .exec();
     res.status(200).json({ canteen });
@@ -200,10 +207,13 @@ const deleteItem = async (req, res) => {
     const item = await Item.findById(req.params.id);
 
     if (item) {
-      const canteen = await Canteen.findById(req.admin.admin.id);
-      canteen.menu.pop(item._id);
-      await canteen.save();
-      await Item.findByIdAndDelete(item);
+      const canteen = await Canteen.findByIdAndDelete(req.admin.id);
+      const index = canteen.menu.findIndex((menuItem) => menuItem == item._id);
+
+      console.log(canteen, index);
+      // canteen.menu.splice(index, 1);
+      // await canteen.save();
+      // await Item.findByIdAndDelete(item._id);
 
       return res.status(200).json({ message: "Item removed successfully!" });
     } else {

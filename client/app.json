@@ -1,6 +1,7 @@
 {
   "expo": {
     "scheme": "acme",
+
     "web": {
       "bundler": "metro"
     },
@@ -13,9 +14,7 @@
       ]
     ],
     "android": {
-      "permissions": [
-        "android.permission.RECORD_AUDIO"
-      ],
+      "permissions": ["android.permission.RECORD_AUDIO"],
       "package": "com.himzz123.canteenproject"
     }
   }

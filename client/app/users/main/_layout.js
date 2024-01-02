@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { View, Image, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Image, TouchableOpacity, StyleSheet, Text } from "react-native";
 import { Drawer } from "expo-router/drawer";
 import Icon from "react-native-vector-icons/MaterialIcons";
 
@@ -13,7 +13,7 @@ const Layout = () => {
 
   const commonHeaderOptions = (navigation) => ({
     headerTitle: "",
-    headerStyle: { height: 95 },
+    headerStyle: { backgroundColor: "#f3f3f3" },
     headerLeftContainerStyle: styles.headerLeftContainer,
     headerLeft: () => (
       <TouchableOpacity onPress={() => navigation.openDrawer()}>
@@ -25,9 +25,10 @@ const Layout = () => {
       </TouchableOpacity>
     ),
     headerRightContainerStyle: styles.headerRightContainer,
-    drawerActiveTintColor: "#fb6a43",
+    drawerActiveTintColor: "#87986b",
     drawerInactiveTintColor: "white",
     drawerActiveBackgroundColor: "white",
+    drawerLabelStyle: { fontSize: 15 },
   });
 
   return (
@@ -36,30 +37,31 @@ const Layout = () => {
         name="home"
         options={({ navigation }) => ({
           ...commonHeaderOptions(navigation),
-          drawerItemStyle: { fontSize: 20 },
+          headerLeft: () => (
+            <View style={styles.headerLeft}>
+              <TouchableOpacity onPress={() => navigation.openDrawer()}>
+                <Icon name="menu" size={24} />
+              </TouchableOpacity>
+              <Text style={{ fontSize: 20, fontWeight: "600" }}>Home</Text>
+            </View>
+          ),
           drawerLabel: "Home",
+          drawerIcon: () => (
+            <Icon
+              name="home"
+              size={20}
+              style={{ marginRight: -20 }}
+              color={navigation.isFocused() ? "#87986b" : "white"}
+            />
+          ),
           headerRight: () => (
             <View style={styles.headerRightContainer}>
               <TouchableOpacity style={styles.notificationIconContainer}>
-                <Icon name="notifications-none" size={30} color="black" />
+                <Icon name="notifications-none" size={24} color="black" />
               </TouchableOpacity>
 
               <TouchableOpacity onPress={() => router.push("/users/scanner")}>
-                <Icon name="qr-code-scanner" size={30} color="black" />
-              </TouchableOpacity>
-            </View>
-          ),
-        })}
-      ></Drawer.Screen>
-      <Drawer.Screen
-        name="settings"
-        options={({ navigation }) => ({
-          ...commonHeaderOptions(navigation),
-          drawerLabel: "Settings",
-          headerRight: () => (
-            <View style={styles.headerRightContainer}>
-              <TouchableOpacity style={styles.notificationIconContainer}>
-                <Icon name="notifications-none" size={30} color="black" />
+                <Icon name="qr-code-scanner" size={24} color="black" />
               </TouchableOpacity>
             </View>
           ),
@@ -70,6 +72,52 @@ const Layout = () => {
         options={({ navigation }) => ({
           ...commonHeaderOptions(navigation),
           drawerLabel: "My Orders",
+          drawerIcon: () => (
+            <Icon
+              name="shopping-cart"
+              size={20}
+              style={{ marginRight: -20 }}
+              color={navigation.isFocused() ? "#87986b" : "white"}
+            />
+          ),
+          headerLeft: () => (
+            <View style={styles.headerLeft}>
+              <TouchableOpacity onPress={() => navigation.openDrawer()}>
+                <Icon name="menu" size={24} />
+              </TouchableOpacity>
+              <Text style={{ fontSize: 20, fontWeight: "600" }}>My Orders</Text>
+            </View>
+          ),
+          headerRight: () => (
+            <View style={styles.headerRightContainer}>
+              <TouchableOpacity style={styles.notificationIconContainer}>
+                <Icon name="notifications-none" size={30} color="black" />
+              </TouchableOpacity>
+            </View>
+          ),
+        })}
+      ></Drawer.Screen>
+      <Drawer.Screen
+        name="settings"
+        options={({ navigation }) => ({
+          ...commonHeaderOptions(navigation),
+          headerLeft: () => (
+            <View style={styles.headerLeft}>
+              <TouchableOpacity onPress={() => navigation.openDrawer()}>
+                <Icon name="menu" size={24} />
+              </TouchableOpacity>
+              <Text style={{ fontSize: 20, fontWeight: "600" }}>Settings</Text>
+            </View>
+          ),
+          drawerLabel: "Settings",
+          drawerIcon: () => (
+            <Icon
+              name="settings"
+              size={20}
+              style={{ marginRight: -20 }}
+              color={navigation.isFocused() ? "#87986b" : "white"}
+            />
+          ),
           headerRight: () => (
             <View style={styles.headerRightContainer}>
               <TouchableOpacity style={styles.notificationIconContainer}>
@@ -87,6 +135,11 @@ const styles = StyleSheet.create({
   headerLeftContainer: {
     paddingHorizontal: 20,
     flex: 1,
+  },
+  headerLeft: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
   },
   headerRightContainer: {
     paddingHorizontal: 10,

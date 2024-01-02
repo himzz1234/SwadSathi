@@ -1,7 +1,15 @@
-import { Dimensions, Modal, Pressable, View, Text } from "react-native";
+import React, { useState, useEffect } from "react";
+import {
+  Dimensions,
+  Modal,
+  Pressable,
+  View,
+  Text,
+  Alert,
+  StyleSheet,
+} from "react-native";
 import { CardField, useStripe } from "@stripe/stripe-react-native";
 import axios from "../../axios";
-import { useState, useEffect } from "react";
 
 export default function Payment({ showPayment }) {
   const { initPaymentSheet, presentPaymentSheet } = useStripe();
@@ -50,22 +58,8 @@ export default function Payment({ showPayment }) {
         console.log("Modal has been closed.");
       }}
     >
-      <View
-        style={{
-          flex: 1,
-          justifyContent: "flex-end",
-          alignItems: "center",
-          backgroundColor: "rgba(0, 0, 0, 0.6)",
-        }}
-      >
-        <View
-          style={{
-            width: Dimensions.get("screen").width,
-            height: 300,
-            backgroundColor: "white",
-            padding: 20,
-          }}
-        >
+      <View style={styles.modalContainer}>
+        <View style={styles.paymentContainer}>
           <CardField
             postalCodeEnabled={false}
             placeholders={{
@@ -75,11 +69,7 @@ export default function Payment({ showPayment }) {
               backgroundColor: "#FFFFFF",
               textColor: "#000000",
             }}
-            style={{
-              width: "100%",
-              height: 50,
-              marginVertical: 30,
-            }}
+            style={styles.cardField}
             onCardChange={(cardDetails) => {
               console.log("cardDetails", cardDetails);
             }}
@@ -88,16 +78,41 @@ export default function Payment({ showPayment }) {
             }}
           />
 
-          <Pressable
-            onPress={openPaymentSheet}
-            style={{ backgroundColor: "#FF4136", padding: 15, borderRadius: 5 }}
-          >
-            <Text style={{ textAlign: "center", fontSize: 16, color: "white" }}>
-              Make your payment
-            </Text>
+          <Pressable onPress={openPaymentSheet} style={styles.paymentButton}>
+            <Text style={styles.paymentButtonText}>Make your payment</Text>
           </Pressable>
         </View>
       </View>
     </Modal>
   );
 }
+
+const styles = StyleSheet.create({
+  modalContainer: {
+    flex: 1,
+    justifyContent: "flex-end",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.6)",
+  },
+  paymentContainer: {
+    width: Dimensions.get("screen").width,
+    height: 300,
+    backgroundColor: "white",
+    padding: 20,
+  },
+  cardField: {
+    width: "100%",
+    height: 50,
+    marginVertical: 30,
+  },
+  paymentButton: {
+    backgroundColor: "#FF4136",
+    padding: 15,
+    borderRadius: 5,
+  },
+  paymentButtonText: {
+    textAlign: "center",
+    fontSize: 16,
+    color: "white",
+  },
+});

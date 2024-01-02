@@ -15,11 +15,11 @@ export default function Home() {
   const { auth: canteen } = useContext(AuthContext);
   const [categories, setCategories] = useState([]);
 
-  useEffect(() => {
-    socket.on("new-order", (data) => {
-      setOrders((prev) => [data.order, ...prev]);
-    });
-  }, []);
+  // useEffect(() => {
+  //   socket.on("new-order", (data) => {
+  //     setOrders((prev) => [data.order, ...prev]);
+  //   });
+  // }, []);
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -88,7 +88,7 @@ export default function Home() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "white",
+    backgroundColor: "#f3f3f3",
     paddingVertical: 20,
     paddingHorizontal: 20,
   },

@@ -12,6 +12,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import Ionicon from "react-native-vector-icons/Ionicons";
 import axios from "../../../axios";
 import { Link, useRouter } from "expo-router";
+import { LinearGradient } from "expo-linear-gradient";
+import Icon from "react-native-vector-icons/FontAwesome5";
 
 export default function Login() {
   const [formData, setFormData] = useState({
@@ -48,6 +50,14 @@ export default function Login() {
 
   return (
     <View style={styles.container}>
+      <View style={styles.headerContainer}>
+        <TouchableOpacity
+          onPress={() => router.replace("/")}
+          style={styles.backButtonContainer}
+        >
+          <Icon name="angle-left" size={20} style={styles.backButtonIcon} />
+        </TouchableOpacity>
+      </View>
       <Text style={styles.title}>Login</Text>
 
       <View style={styles.inputContainer}>
@@ -81,9 +91,14 @@ export default function Login() {
 
       <Text style={styles.errorText}>{error}</Text>
 
-      <TouchableOpacity style={styles.button} onPress={login}>
-        <Text style={styles.buttonText}>Login</Text>
-      </TouchableOpacity>
+      <LinearGradient
+        colors={["#2e7653", "#355e4c"]}
+        style={[styles.button, styles.saveButton]}
+      >
+        <TouchableOpacity onPress={login}>
+          <Text style={styles.buttonText}>Login</Text>
+        </TouchableOpacity>
+      </LinearGradient>
 
       <Text style={styles.signupText}>
         Don't have an account?{" "}
@@ -100,6 +115,31 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     paddingHorizontal: 20,
+    backgroundColor: "#f3f3f3",
+  },
+  headerContainer: {
+    position: "absolute",
+    top: 30,
+    left: 20,
+    zIndex: 40,
+    display: "flex",
+    alignItems: "center",
+    flexDirection: "row",
+    width: "100%",
+    gap: 15,
+  },
+  backButtonContainer: {
+    width: 30,
+    height: 30,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 999,
+    borderColor: "#e3e9e7",
+    borderWidth: 2,
+  },
+  backButtonIcon: {
+    color: "black",
   },
   title: {
     fontSize: 30,
@@ -111,13 +151,13 @@ const styles = StyleSheet.create({
   },
   input: {
     padding: 10,
-    backgroundColor: "#efeeea",
+    backgroundColor: "white",
     borderRadius: 5,
   },
   passwordContainer: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#efeeea",
+    backgroundColor: "white",
     paddingRight: 10,
     borderRadius: 5,
   },
@@ -130,10 +170,9 @@ const styles = StyleSheet.create({
     fontWeight: "500",
   },
   button: {
-    backgroundColor: "#fe724c",
-    borderRadius: 5,
-    paddingVertical: 12.5,
-    elevation: 3,
+    borderRadius: 7.5,
+    paddingVertical: 15,
+    elevation: 5,
   },
   buttonText: {
     color: "white",
@@ -146,6 +185,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   signupLink: {
-    color: "#fe724c",
+    color: "#355e4c",
+    fontWeight: "500",
   },
 });

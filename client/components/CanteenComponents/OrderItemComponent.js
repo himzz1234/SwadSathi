@@ -1,4 +1,4 @@
-import moment from "moment/moment";
+import React, { useState, useEffect, useContext } from "react";
 import {
   Text,
   View,
@@ -9,7 +9,6 @@ import {
 import OctIcon from "react-native-vector-icons/Octicons";
 import MaterialCommunityIcon from "react-native-vector-icons/MaterialCommunityIcons";
 import axios from "../../axios";
-import { useContext, useEffect, useState } from "react";
 import { SocketContext } from "../../context/SocketContext";
 import { AuthContext } from "../../context/AuthContext";
 
@@ -81,95 +80,47 @@ export default function OrderItem({ item, orders, setOrders }) {
   };
 
   return (
-    <View
-      style={{
-        width: "100%",
-        minHeight: 200,
-        borderRadius: 5,
-        backgroundColor: "#F5F5F5",
-      }}
-    >
-      <View
-        style={{
-          padding: 10,
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "space-between",
-        }}
-      >
+    <View style={styles.container}>
+      <View style={styles.headerContainer}>
         <View>
           {item.tokenNumber ? (
-            <Text style={{ fontWeight: "600", fontSize: 16.5 }}>
-              Token: {item.tokenNumber}
-            </Text>
-          ) : (
-            ""
-          )}
-          <Text style={item.tokenNumber && { marginTop: 5 }}>
+            <Text style={styles.tokenText}>Token: {item.tokenNumber}</Text>
+          ) : null}
+          <Text style={item.tokenNumber && styles.orderUserText}>
             {item.user.name}'s order
           </Text>
         </View>
 
         <View>
-          <View
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "space-between",
-            }}
-          >
-            <Text style={{ fontSize: 13.5 }}>
+          <View style={styles.detailsContainer}>
+            <Text style={styles.timestampText}>
               {moment(item.createdAt).format("MMM Do YY, h:mm a")}
             </Text>
             <MaterialCommunityIcon
               name="dots-vertical"
               size={19}
-              style={{ marginRight: -6 }}
+              style={styles.dotsIcon}
             />
           </View>
-          <View
-            style={{
-              gap: 5,
-              marginTop: 5,
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "flex-end",
-            }}
-          >
+          <View style={styles.statusContainer}>
             <OctIcon name="dot-fill" color={statusColor(status)} size={10} />
-            <Text style={{ fontSize: 13 }}>{status}</Text>
+            <Text style={styles.statusText}>{status}</Text>
           </View>
         </View>
       </View>
 
-      <View
-        style={{
-          flex: 1,
-          padding: 10,
-          borderTopWidth: 1,
-          borderBottomWidth: 1,
-          borderTopColor: "#E5E4E2",
-          borderBottomColor: "#E5E4E2",
-        }}
-      >
+      <View style={styles.orderItemsContainer}>
         <FlatList
           data={item.orderItems}
           ItemSeparatorComponent={() => {
-            return <View style={{ height: 10, width: "100%" }}></View>;
+            return <View style={styles.separator} />;
           }}
           renderItem={({ item: menuItem }) => {
             return (
-              <View
-                _id={item._id}
-                style={{ display: "flex", flexDirection: "row", gap: 10 }}
-              >
-                <Text style={{ fontSize: 15 }}>{menuItem.qty}x</Text>
-                <Text style={{ flex: 1, fontSize: 15 }}>
-                  {menuItem.product.name}
-                </Text>
-                <Text style={{ fontSize: 15 }}>₹{menuItem.product.price}</Text>
+              <View style={styles.menuItemContainer}>
+                <Text style={styles.quantityText}>{menuItem.qty}x</Text>
+                <Text style={styles.menuItemText}>{menuItem.product.name}</Text>
+                <Text style={styles.priceText}>₹{menuItem.product.price}</Text>
               </View>
             );
           }}
@@ -177,35 +128,21 @@ export default function OrderItem({ item, orders, setOrders }) {
         />
       </View>
 
-      <View style={{ padding: 10 }}>
-        <Text style={{ fontSize: 16 }}>
+      <View style={styles.totalBillContainer}>
+        <Text style={styles.totalBillText}>
           Total bill:{" "}
-          <Text style={{ fontWeight: "600" }}>₹{item.totalPrice}</Text>
+          <Text style={styles.totalBillAmount}>₹{item.totalPrice}</Text>
         </Text>
         {status == "Pending" && (
-          <View
-            style={{
-              gap: 10,
-              marginTop: 10,
-              display: "flex",
-              alignItems: "center",
-              flexDirection: "row",
-            }}
-          >
-            <TouchableOpacity onPress={acceptOrder} style={styles.aceeptButton}>
-              <Text
-                style={{ textAlign: "center", color: "white", fontSize: 15 }}
-              >
-                ACCEPT
-              </Text>
+          <View style={styles.buttonsContainer}>
+            <TouchableOpacity onPress={acceptOrder} style={styles.acceptButton}>
+              <Text style={styles.acceptButtonText}>ACCEPT</Text>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={declineOrder}
               style={styles.declineButton}
             >
-              <Text style={{ textAlign: "center", color: "red", fontSize: 15 }}>
-                DECLINE
-              </Text>
+              <Text style={styles.declineButtonText}>DECLINE</Text>
             </TouchableOpacity>
           </View>
         )}
@@ -215,8 +152,87 @@ export default function OrderItem({ item, orders, setOrders }) {
 }
 
 const styles = StyleSheet.create({
-  container: {},
-  aceeptButton: {
+  container: {
+    width: "100%",
+    minHeight: 200,
+    borderRadius: 5,
+    backgroundColor: "#F5F5F5",
+  },
+  headerContainer: {
+    padding: 10,
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  tokenText: {
+    fontWeight: "600",
+    fontSize: 16.5,
+  },
+  orderUserText: {
+    marginTop: 5,
+  },
+  detailsContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  timestampText: {
+    fontSize: 13.5,
+  },
+  dotsIcon: {
+    marginRight: -6,
+  },
+  statusContainer: {
+    gap: 5,
+    marginTop: 5,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-end",
+  },
+  statusText: {
+    fontSize: 13,
+  },
+  orderItemsContainer: {
+    flex: 1,
+    padding: 10,
+    borderTopWidth: 1,
+    borderBottomWidth: 1,
+    borderTopColor: "#E5E4E2",
+    borderBottomColor: "#E5E4E2",
+  },
+  separator: {
+    height: 10,
+    width: "100%",
+  },
+  menuItemContainer: {
+    flexDirection: "row",
+    gap: 10,
+  },
+  quantityText: {
+    fontSize: 15,
+  },
+  menuItemText: {
+    flex: 1,
+    fontSize: 15,
+  },
+  priceText: {
+    fontSize: 15,
+  },
+  totalBillContainer: {
+    padding: 10,
+  },
+  totalBillText: {
+    fontSize: 16,
+  },
+  totalBillAmount: {
+    fontWeight: "600",
+  },
+  buttonsContainer: {
+    gap: 10,
+    marginTop: 10,
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  acceptButton: {
     flex: 1.5,
     borderRadius: 4,
     borderWidth: 2,
@@ -230,5 +246,15 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: "red",
     paddingVertical: 7.5,
+  },
+  acceptButtonText: {
+    textAlign: "center",
+    color: "white",
+    fontSize: 15,
+  },
+  declineButtonText: {
+    textAlign: "center",
+    color: "red",
+    fontSize: 15,
   },
 });

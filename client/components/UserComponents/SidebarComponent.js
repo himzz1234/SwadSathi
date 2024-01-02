@@ -14,6 +14,7 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 import { AuthContext } from "../../context/AuthContext";
+import Icon from "react-native-vector-icons/MaterialIcons";
 
 export default function Sidebar(props) {
   const { auth: user, dispatch } = useContext(AuthContext);
@@ -45,6 +46,8 @@ export default function Sidebar(props) {
       </DrawerContentScrollView>
 
       <TouchableOpacity onPress={logout} style={styles.logoutButton}>
+        <Icon name="logout" size={20} color="white" />
+
         <Text style={styles.logoutButtonText}>Logout</Text>
       </TouchableOpacity>
     </SafeAreaView>
@@ -54,7 +57,8 @@ export default function Sidebar(props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fb6a43",
+    backgroundColor: "#355e4c",
+    paddingHorizontal: 10,
   },
   scrollView: {
     display: "flex",
@@ -62,35 +66,38 @@ const styles = StyleSheet.create({
   },
   userInfoContainer: {
     gap: 10,
-    flexDirection: "row",
-    alignItems: "center",
     marginBottom: 10,
     paddingHorizontal: 10,
   },
   profileImage: {
-    width: 60,
-    height: 60,
+    width: 55,
+    height: 55,
     borderWidth: 2,
     borderColor: "white",
+    resizeMode: "contain",
   },
   userName: {
     fontSize: 18,
     fontWeight: "600",
     color: "white",
+    paddingLeft: 5,
   },
   email: {
     fontSize: 14,
     color: "white",
     marginTop: 3,
+    marginBottom: 20,
+    paddingLeft: 5,
   },
   logoutButton: {
+    display: "flex",
+    alignItems: "center",
+    flexDirection: "row",
+    gap: 10,
     padding: 10,
-    marginHorizontal: 10,
     marginVertical: 20,
-    borderRadius: 4,
     borderTopWidth: 1,
-    borderColor: "white",
-    color: "#fb6a43",
+    borderTopColor: "#e3e9e7",
   },
   logoutButtonText: {
     fontSize: 16,

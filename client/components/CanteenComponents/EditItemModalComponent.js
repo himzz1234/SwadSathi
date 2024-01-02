@@ -7,40 +7,77 @@ import {
   StyleSheet,
   TouchableOpacity,
   TextInput,
+  Switch,
   Image,
 } from "react-native";
 import axios from "../../axios";
-import CustomModal from "../ModalComponent";
-import { AuthContext } from "../../context/AuthContext";
 import * as ImagePicker from "expo-image-picker";
 import useUpload from "../../hooks/useUpload";
+import { AuthContext } from "../../context/AuthContext";
+import MaterialCommunityIcon from "react-native-vector-icons/MaterialCommunityIcons";
+import { useBottomSheetModal } from "@gorhom/bottom-sheet";
+import { LinearGradient } from "expo-linear-gradient";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export default function EditItemComponenent({ openModal, setOpenModal, item }) {
+export default function EditItemComponenent({ item, setCanteenMenu }) {
   const { auth: canteen } = useContext(AuthContext);
+  const [isEnabled, setIsEnabled] = useState(true);
+  const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
 
+  const { dismissAll } = useBottomSheetModal();
   const [itemData, setItemData] = useState({
     name: item.name,
     image: item.image,
     price: String(item.price),
+    isAvailable: true,
   });
 
   const { uploadedImage, isLoading } = useUpload(itemData.image);
 
-  const addItem = async () => {
-    const res = await axios.post("/auth/admin/item", {
-      ...itemData,
-      image: uploadedImage,
-      canteenId: canteen._id,
-    });
+  const editItem = async () => {
+    console.log("kideijij");
+    if ((itemData.name, itemData.price)) {
+      const res = await axios.put(`/auth/admin/item/${item._id}`, {
+        ...itemData,
+        image: uploadedImage,
+        canteenId: canteen._id,
+        price: Number(itemData.price),
+      });
 
-    // setCanteenMenu((prev) => [...prev, res.data.newItem]);
-    setItemData({
-      name: "",
-      image: "",
-      price: "",
-    });
+      setCanteenMenu((prev) => {
+        const index = prev.findIndex((prevItem) => prevItem._id == item._id);
+        const updatedOrders = [...prev];
 
-    setOpenModal(false);
+        updatedOrders[index] = res.data.updatedItem;
+        return updatedOrders;
+      });
+
+      setItemData({
+        name: "",
+        image: "",
+        price: "",
+        isAvailable: true,
+      });
+    }
+
+    dismissAll();
+  };
+
+  const deleteItem = async () => {
+    const obj = await AsyncStorage.getItem("auth");
+    const { token } = JSON.parse(obj);
+
+    try {
+      await axios.delete(`/auth/admin/item/${item._id}`, {
+        headers: { token },
+      });
+    } catch (error) {}
+
+    setCanteenMenu((prev) =>
+      prev.filter((prevItem) => prevItem._id != item._id)
+    );
+
+    dismissAll();
   };
 
   const pickImage = async () => {
@@ -61,109 +98,191 @@ export default function EditItemComponenent({ openModal, setOpenModal, item }) {
   };
 
   return (
-    <CustomModal openFn={openModal}>
-      <View
-        style={{
-          gap: 40,
-          height: 500,
-          display: "flex",
-          borderRadius: 5,
-          paddingVertical: 30,
-          alignItems: "center",
-          paddingHorizontal: 20,
-          backgroundColor: "white",
-          width: Dimensions.get("screen").width - 40,
-        }}
-      >
-        <TouchableOpacity
-          onPress={pickImage}
-          style={{
-            width: 100,
-            height: 100,
-            borderRadius: 999,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            backgroundColor: "#eef5ca",
-          }}
-        >
-          {!uploadedImage ? (
-            <Ionicon name="camera" size={40} color="#2d7262" />
-          ) : (
-            <Image
-              source={{ uri: uploadedImage }}
-              style={{ width: "100%", height: "100%", borderRadius: 999 }}
-            />
-          )}
-        </TouchableOpacity>
-        <View style={{ width: "100%", flex: 1, gap: 15 }}>
+    <View style={styles.container}>
+      <Text style={styles.headerText}>Edit Item</Text>
+      <View>
+        <Text style={styles.label}>Image</Text>
+        <View style={styles.imageRow}>
+          <View style={styles.imageContainer}>
+            {!uploadedImage && !item.image ? (
+              <MaterialCommunityIcon
+                name="food-variant"
+                size={40}
+                color="gray"
+              />
+            ) : (
+              <Image
+                source={{ uri: uploadedImage ? uploadedImage : item.image }}
+                style={styles.image}
+              />
+            )}
+          </View>
+          <View style={styles.uploadContainer}>
+            <TouchableOpacity onPress={pickImage} style={styles.uploadButton}>
+              <Text style={styles.uploadButtonText}>Upload new Image</Text>
+            </TouchableOpacity>
+            <View style={styles.uploadInfo}>
+              <Text style={styles.uploadInfoText}>
+                At least 800x800 px recommended.
+              </Text>
+              <Text style={styles.uploadInfoText}>
+                JPG or PNG and GIF is allowed
+              </Text>
+            </View>
+          </View>
+        </View>
+      </View>
+      <View style={styles.formContainer}>
+        <View style={styles.formItem}>
+          <Text style={styles.label}>Name</Text>
           <TextInput
-            placeholder="Name"
+            placeholder="Enter Item Name"
             value={itemData.name}
             style={styles.inputContainer}
             onChangeText={(e) => setItemData({ ...itemData, name: e })}
           />
+        </View>
+        <View style={styles.formItem}>
+          <Text style={styles.label}>Price</Text>
           <TextInput
-            placeholder="Price"
+            placeholder="Enter Item Price"
             value={itemData.price}
             style={styles.inputContainer}
             onChangeText={(e) => setItemData({ ...itemData, price: e })}
           />
         </View>
 
-        <View
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            gap: 10,
-          }}
-        >
-          <TouchableOpacity
-            onPress={() => setOpenModal(false)}
-            style={[
-              {
-                backgroundColor: "white",
-                borderColor: "crimson",
-              },
-              styles.button,
-            ]}
-          >
-            <Text
-              style={{ color: "crimson", textAlign: "center", fontSize: 16 }}
-            >
-              Cancel
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            disabled={isLoading}
-            onPress={addItem}
-            style={[
-              { backgroundColor: "#006442", borderColor: "transparent" },
-              styles.button,
-            ]}
-          >
-            <Text style={{ color: "white", textAlign: "center", fontSize: 16 }}>
-              Save
-            </Text>
-          </TouchableOpacity>
-        </View>
+        {/* <View style={styles.switchContainer}>
+          <Switch
+            style={styles.switch}
+            trackColor={{ false: "#767577", true: "#ff9e8c" }}
+            thumbColor={isEnabled ? "#FF6347" : "#f4f3f4"}
+            onValueChange={toggleSwitch}
+            value={isEnabled}
+          />
+          <Text style={{ fontWeight: "500" }}>In stock</Text>
+        </View> */}
       </View>
-    </CustomModal>
+
+      <LinearGradient
+        colors={["#2e7653", "#355e4c"]}
+        disabled={isLoading}
+        style={[styles.button, styles.saveButton]}
+      >
+        <TouchableOpacity onPress={editItem}>
+          <Text style={styles.saveButtonText}>Save Changes</Text>
+        </TouchableOpacity>
+      </LinearGradient>
+      {/* <TouchableOpacity
+        onPress={deleteItem}
+        style={{
+          paddingVertical: 15,
+          borderRadius: 10,
+          borderWidth: 2,
+          borderColor: "red",
+        }}
+      >
+        <Text style={{ textAlign: "center" }}>Delete Item</Text>
+      </TouchableOpacity> */}
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    gap: 10,
+    flex: 1,
+    display: "flex",
+    borderRadius: 5,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    backgroundColor: "white",
+  },
+  headerText: {
+    fontWeight: "600",
+    fontSize: 24,
+    borderBottomWidth: 1,
+    borderBottomColor: "lightgray",
+    paddingBottom: 7.5,
+  },
+  label: {
+    fontWeight: "600",
+    fontSize: 14.5,
+  },
+  imageRow: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 20,
+    gap: 20,
+  },
+  imageContainer: {
+    width: 100,
+    height: 100,
+    borderRadius: 999,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#f3f3f3",
+  },
+  image: {
+    width: "100%",
+    resizeMode: "contain",
+    flex: 1,
+  },
+  uploadContainer: {
+    gap: 10,
+  },
+  uploadButton: {
+    borderWidth: 1,
+    borderColor: "lightgray",
+    padding: 5,
+    width: 140,
+    borderRadius: 5,
+  },
+  uploadButtonText: {
+    textAlign: "center",
+    fontWeight: "500",
+  },
+  uploadInfo: {
+    gap: 5,
+  },
+  uploadInfoText: {
+    fontSize: 12,
+  },
+  formContainer: {
+    width: "100%",
+    flex: 1,
+    gap: 15,
+  },
+  formItem: {
+    gap: 10,
+  },
+  switchContainer: {
+    gap: 5,
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  switch: {
+    width: 40,
+  },
   inputContainer: {
     padding: 10,
-    backgroundColor: "#efeeea",
+    backgroundColor: "#f3f3f3",
     borderRadius: 5,
   },
   button: {
-    borderWidth: 2,
     borderRadius: 5,
-    paddingVertical: 12.5,
-    elevation: 3,
-    flex: 1,
+    paddingVertical: 15,
+    elevation: 5,
+  },
+  saveButton: {
+    borderColor: "transparent",
+  },
+  saveButtonText: {
+    color: "white",
+    textAlign: "center",
+    fontSize: 16,
   },
 });

@@ -4,6 +4,8 @@ import { View, StyleSheet } from "react-native";
 import CartProvider from "../context/CartContext";
 import { StripeProvider } from "@stripe/stripe-react-native";
 import SocketProvider from "../context/SocketContext";
+import { StatusBar } from "expo-status-bar";
+import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 
 export default function Root() {
   return (
@@ -15,7 +17,11 @@ export default function Root() {
               urlScheme="/checkout"
               publishableKey="pk_test_51NtbHCSBOdrddaflpOZuSvJt0q5KZ77dKK4bMUwZfpXhGlzga4MBQUdrrCsJ59ozDAWVBUeT9APWsq9AK7EAMKXW00q6nGrm2M"
             >
-              <Slot />
+              <StatusBar style="light" backgroundColor="#355e4c" />
+
+              <BottomSheetModalProvider>
+                <Slot />
+              </BottomSheetModalProvider>
             </StripeProvider>
           </View>
         </SocketProvider>

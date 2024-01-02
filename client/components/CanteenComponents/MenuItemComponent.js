@@ -1,12 +1,40 @@
-import React, { useEffect, useState } from "react";
-import { View, Text, Image, Switch, Pressable, StyleSheet } from "react-native";
-import MaterialIcon from "react-native-vector-icons/MaterialIcons";
+import React, {
+  useEffect,
+  useState,
+  useRef,
+  useCallback,
+  useMemo,
+} from "react";
+import {
+  View,
+  Text,
+  Image,
+  Switch,
+  Pressable,
+  StyleSheet,
+  TouchableOpacity,
+} from "react-native";
 import EditItemComponenent from "./EditItemModalComponent";
 import axios from "../../axios";
+import {
+  BottomSheetModal,
+  BottomSheetModalProvider,
+  useBottomSheetModal,
+} from "@gorhom/bottom-sheet";
+import CustomBackdrop from "../CustomBackdropComponent";
 
-export default function MenuItem({ item }) {
-  const [openModal, setOpenModal] = useState(false);
+export default function MenuItem({ item, setCanteenMenu }) {
   const [isEnabled, setIsEnabled] = useState(item.isAvailable);
+
+  const bottomSheetModalRef = useRef(null);
+  const snapPoints = useMemo(() => ["10%", "78.5%"], []);
+
+  const handlePresentModalPress = useCallback(() => {
+    bottomSheetModalRef.current?.present();
+  }, []);
+  const handleSheetChanges = useCallback((index) => {
+    console.log("handleSheetChanges", index);
+  }, []);
 
   useEffect(() => {
     const updateItemAvailability = async () => {
@@ -28,10 +56,31 @@ export default function MenuItem({ item }) {
 
   return (
     <View style={styles.cardContainer}>
-      <View style={styles.imageContainer}>
-        {item.image && (
-          <Image source={{ uri: `${item.image}` }} style={styles.itemImage} />
-        )}
+      <View>
+        <View style={styles.imageContainer}>
+          {item.image && (
+            <Image source={{ uri: `${item.image}` }} style={styles.itemImage} />
+          )}
+        </View>
+        <TouchableOpacity
+          onPress={handlePresentModalPress}
+          style={{
+            backgroundColor: "#e8f5db",
+            marginTop: 10,
+            padding: 5,
+            borderRadius: 2,
+          }}
+        >
+          <Text
+            style={{
+              color: "#355e4c",
+              textAlign: "center",
+              fontWeight: "600",
+            }}
+          >
+            Edit
+          </Text>
+        </TouchableOpacity>
       </View>
       <View style={styles.cardInfoContainer}>
         <View style={styles.cardInfoHeader}>
@@ -45,49 +94,24 @@ export default function MenuItem({ item }) {
                 height: 10,
                 transform: [{ scaleX: 0.85 }, { scaleY: 0.85 }],
               }}
-              trackColor={{ false: "#767577", true: "#ff9e8c" }}
-              thumbColor={isEnabled ? "#FF6347" : "#f4f3f4"}
+              trackColor={{ false: "#767577", true: "#cfe1b9" }}
+              thumbColor={isEnabled ? "#355e4c" : "#f4f3f4"}
             />
             {/* <Text style={{ color: "darkgray" }}>Available</Text> */}
           </View>
         </View>
-        <Text style={{ fontSize: 15 }}>₹{item.price}</Text>
+        <Text style={{ fontSize: 15, fontWeight: "500" }}>₹{item.price}</Text>
       </View>
 
-      {/* <View
-        style={{
-          borderTopWidth: 1,
-          borderTopColor: "#E5E4E2",
-          paddingVertical: 5,
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
+      <BottomSheetModal
+        ref={bottomSheetModalRef}
+        index={1}
+        snapPoints={snapPoints}
+        onChange={handleSheetChanges}
+        backdropComponent={CustomBackdrop}
       >
-        <TouchableOpacity
-          onPress={() => setOpenModal(true)}
-          style={{
-            gap: 5,
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            backgroundColor: "#FF6347",
-            paddingHorizontal: 10,
-            paddingVertical: 5,
-            borderRadius: 4,
-          }}
-        >
-          <MaterialIcon name="edit" size={16} color="white" />
-          <Text style={{ color: "white" }}>Edit</Text>
-        </TouchableOpacity>
-      </View> */}
-
-      {openModal ? (
-        <EditItemComponenent {...{ openModal, setOpenModal, item }} />
-      ) : (
-        ""
-      )}
+        <EditItemComponenent {...{ item, setCanteenMenu }} />
+      </BottomSheetModal>
     </View>
   );
 }
@@ -96,18 +120,17 @@ const styles = StyleSheet.create({
   cardContainer: {
     gap: 10,
     padding: 7.5,
-    height: 100,
-    borderRadius: 5,
-    backgroundColor: "#F8F8F8",
+    borderRadius: 10,
+    backgroundColor: "white",
     display: "flex",
     flexDirection: "row",
     gap: 10,
   },
-  imageContainer: { width: 90, height: "100%" },
+  imageContainer: { width: 100, height: 80 },
   itemImage: { width: "100%", height: "100%", borderRadius: 5 },
   cardInfoContainer: { flex: 1, rowGap: 5 },
   cardInfoHeader: { display: "flex", flexDirection: "row" },
-  cardInfoName: { fontSize: 16, fontWeight: "600", flex: 1 },
+  cardInfoName: { fontSize: 17, fontWeight: "600", flex: 1 },
   cardInfoSwitchContainer: {
     gap: 5,
     display: "flex",

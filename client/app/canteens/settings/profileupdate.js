@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   View,
   Text,
@@ -6,69 +6,141 @@ import {
   StyleSheet,
   Dimensions,
   TouchableOpacity,
+  Pressable,
 } from "react-native";
-import FontAwesome5Icon from "react-native-vector-icons/FontAwesome5";
 import axios from "../../../axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
+import { LinearGradient } from "expo-linear-gradient";
+import { Image } from "react-native";
+import useUpload from "../../../hooks/useUpload";
+import { AuthContext } from "../../../context/AuthContext";
+import MaterialIcon from "react-native-vector-icons/MaterialIcons";
+import Icon from "react-native-vector-icons/FontAwesome5";
+import * as ImagePicker from "expo-image-picker";
 
 export default function PasswordUpdate() {
+  const { auth: canteen } = useContext(AuthContext);
   const router = useRouter();
-  const [password, setPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
+  const [formData, setFormData] = useState({
+    name: canteen.name,
+    email: canteen.email,
+    address: canteen.address,
+    phoneNumber: String(canteen.phoneNumber),
+  });
 
-  const changePassword = async () => {
+  const [image, setImage] = useState("");
+  const { uploadedImage, isLoading } = useUpload(image);
+
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (result.assets[0].uri) {
+      setImage(result.assets[0].uri);
+    }
+  };
+
+  const updateProfile = async () => {
     const obj = await AsyncStorage.getItem("auth");
     const { token } = JSON.parse(obj);
 
-    try {
-      if (password && newPassword) {
-        await axios.put(
-          "/auth/user/updatepassword",
-          {
-            oldpassword: password,
-            newpassword: newPassword,
-          },
-          { headers: { token } }
-        );
-      }
-    } catch (error) {}
+    const res = await axios.put(
+      "/auth/admin/profile",
+      {
+        formData,
+        profilePicture: uploadedImage || canteen.profilePicture,
+      },
+      { headers: { token } }
+    );
+
+    dispatch({
+      type: "PROFILE_UPDATE",
+      payload: { auth: res.data.auth, role: "Canteen" },
+    });
   };
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
+      <View style={styles.headerContainer}>
         <TouchableOpacity
-          onPress={() => {
-            router.back();
-          }}
+          onPress={() => router.replace("/")}
+          style={styles.backButtonContainer}
         >
-          <FontAwesome5Icon name="arrow-left" size={15} color="black" />
+          <Icon name="angle-left" size={20} style={styles.backButtonIcon} />
         </TouchableOpacity>
       </View>
       <View style={styles.content}>
-        <View style={styles.formContainer}>
-          <View style={styles.formItem}>
-            <Text style={styles.label}>Current Password</Text>
+        <View style={styles.imageContainer}>
+          <View style={styles.profileImage}>
+            <Image
+              style={styles.image}
+              source={
+                !uploadedImage
+                  ? require("../../../assets/images/default-restaurant.jpg")
+                  : { uri: uploadedImage }
+              }
+              borderRadius={999}
+            ></Image>
+            <Pressable onPress={pickImage} style={styles.editIconContainer}>
+              <MaterialIcon name="edit" color="white" size={14} />
+            </Pressable>
+          </View>
+        </View>
+
+        <View style={styles.profileInfo}>
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Name</Text>
             <TextInput
-              value={password}
+              value={formData.name}
               style={styles.input}
-              placeholder="Enter your current password"
-              onChangeText={(text) => setPassword(text)}
+              placeholder="Enter canteen's name"
+              onChangeText={(text) => setFormData({ ...formData, name: text })}
             />
           </View>
-          <View style={styles.formItem}>
-            <Text style={styles.label}>New password</Text>
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Email</Text>
             <TextInput
-              value={newPassword}
+              value={formData.email}
               style={styles.input}
-              placeholder="Enter your new password"
-              onChangeText={(text) => setNewPassword(text)}
+              placeholder="Enter canteen's email"
+              onChangeText={(text) => setFormData({ ...formData, email: text })}
             />
           </View>
-          <TouchableOpacity onPress={changePassword} style={styles.saveButton}>
-            <Text style={styles.saveButtonText}>Save</Text>
-          </TouchableOpacity>
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Address</Text>
+            <TextInput
+              value={formData.address}
+              style={styles.input}
+              placeholder="Enter canteen's address"
+              onChangeText={(text) =>
+                setFormData({ ...formData, address: text })
+              }
+            />
+          </View>
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Phone Number</Text>
+            <TextInput
+              value={formData.phoneNumber}
+              style={styles.input}
+              placeholder="Enter canteen's phone number"
+              onChangeText={(text) =>
+                setFormData({ ...formData, phoneNumber: text })
+              }
+            />
+          </View>
+          <LinearGradient
+            colors={["#2e7653", "#355e4c"]}
+            style={[styles.button]}
+          >
+            <TouchableOpacity onPress={updateProfile} style={styles.saveButton}>
+              <Text style={styles.saveButtonText}>Save Changes</Text>
+            </TouchableOpacity>
+          </LinearGradient>
         </View>
       </View>
     </View>
@@ -79,46 +151,90 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: 40,
-    backgroundColor: "white",
+    backgroundColor: "#f3f3f3",
   },
-  header: {
-    flexDirection: "row",
-    paddingHorizontal: 20,
+  headerContainer: {
+    position: "absolute",
+    top: 30,
+    left: 20,
+    zIndex: 40,
+    display: "flex",
     alignItems: "center",
+    flexDirection: "row",
+    width: "100%",
+    gap: 15,
+  },
+  backButtonContainer: {
+    width: 30,
+    height: 30,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 999,
+    borderColor: "#e3e9e7",
+    borderWidth: 2,
+  },
+  backButtonIcon: {
+    color: "black",
   },
   content: {
     marginTop: 40,
-    gap: 20,
     alignItems: "center",
+    paddingHorizontal: 20,
   },
-  formContainer: {
+  imageContainer: {
+    position: "relative",
+    marginBottom: 40,
+  },
+  profileImage: {
+    position: "relative",
+  },
+  image: {
+    width: 80,
+    height: 80,
+  },
+  editIconContainer: {
+    position: "absolute",
+    right: 0,
+    bottom: 0,
+    width: 25,
+    height: 25,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#FF4136",
+    borderRadius: 999,
+    borderWidth: 2,
+    borderColor: "white",
+  },
+  profileInfo: {
     gap: 20,
   },
-  formItem: {
+  inputContainer: {
     gap: 5,
   },
   label: {
-    fontSize: 16,
+    fontSize: 15,
+    fontWeight: "500",
   },
   input: {
     height: 50,
     borderRadius: 5,
     paddingHorizontal: 15,
-    backgroundColor: "#f6f6f6",
-    fontWeight: "600",
+    backgroundColor: "white",
     width: Dimensions.get("screen").width - 40,
   },
   saveButton: {
-    height: 45,
-    borderRadius: 5,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#fe724c",
     width: Dimensions.get("screen").width - 40,
-    elevation: 3,
   },
   saveButtonText: {
     color: "white",
     fontSize: 16,
+  },
+  button: {
+    borderRadius: 5,
+    paddingVertical: 15,
+    elevation: 5,
   },
 });
