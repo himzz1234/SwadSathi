@@ -191,7 +191,6 @@ const updateItem = async (req, res) => {
       new: true,
     });
 
-    console.log(updatedItem);
     res
       .status(200)
       .json({ message: "Item updated successfully!", updatedItem });

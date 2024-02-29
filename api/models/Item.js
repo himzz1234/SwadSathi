@@ -22,6 +22,11 @@ const ItemSchema = new Schema({
     type: Boolean,
     required: true,
   },
+  classification: {
+    type: String,
+    enum: ["Veg, Non-Veg"],
+    required: true,
+  },
 });
 
 const Item = mongoose.model("item", ItemSchema);

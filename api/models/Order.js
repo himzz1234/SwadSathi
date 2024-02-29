@@ -27,6 +27,10 @@ const OrderSchema = new Schema(
           required: true,
           ref: "item",
         },
+        orderType: {
+          type: String,
+          required: true,
+        },
       },
     ],
     totalPrice: {

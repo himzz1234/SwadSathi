@@ -16,25 +16,18 @@ const {
   updateOrderToDelivered,
   getMyOrders,
   getCanteenOrders,
-  checkout_web,
-  checkout_native,
   updateOrderDetails,
   checkout,
+  orderPayment,
 } = require("../controllers/orderController.js");
 
 router.post("/order", userAuth, createOrder);
-
 router.get("/order/:id", getOrderById);
-
 router.put("/order/:id", updateOrderDetails);
-
 router.put("/order/:id/pay", updateOrderToPaid);
-
 router.put("/order/:id/delivered", updateOrderToDelivered);
-
 router.get("/myorders", userAuth, getMyOrders);
-
 router.get("/canteenOrders/:id", getCanteenOrders);
-router.post("/checkout", userAuth, checkout);
+router.post("/payment-sheet", orderPayment);
 
 module.exports = router;

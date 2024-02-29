@@ -1,15 +1,16 @@
 const express = require("express");
-const cookieParser = require("cookie-parser");
-const connectToMongo = require("./config/database.js");
+const mongoose = require("mongoose");
 const cors = require("cors");
-const app = express();
 const port = 8800;
+const app = express();
+const Agenda = require("@hokify/agenda").Agenda;
+const dotenv = require("dotenv");
 
-connectToMongo();
+dotenv.config();
 app.use(cors());
 app.use(express.json());
-app.use(cookieParser());
 
+mongoose.connect(process.env.MONGO_URI);
 let connected = [];
 
 /// User connection

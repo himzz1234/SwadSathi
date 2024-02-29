@@ -66,7 +66,7 @@ const login = async (req, res) => {
       success = true;
       user = await user.populate({
         path: "savedCanteens",
-        select: ["name", "isOpen", "address"],
+        select: ["name", "isOpen", "address", "profilePicture", "coverPicture"],
       });
 
       console.log(user);
@@ -118,7 +118,7 @@ const getUserAuth = async (req, res) => {
       .select("-password")
       .populate({
         path: "savedCanteens",
-        select: ["name", "isOpen", "address"],
+        select: ["name", "isOpen", "address", "profilePicture", "coverPicture"],
       })
       .exec();
 

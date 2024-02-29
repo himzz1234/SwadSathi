@@ -1,11 +1,7 @@
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
 const express = require("express");
 const router = express.Router();
-const Canteen = require("../models/Canteen");
 const { body, validationResult } = require("express-validator");
 const canteenAuth = require("../middleware/canteenAuth");
-const Fooditem = require("../models/Item");
 const dotenv = require("dotenv");
 dotenv.config();
 
@@ -45,14 +41,17 @@ router.post(
 );
 
 router.get("/getDetails", canteenAuth, getCanteenAuth);
- 
-router.put("/profile", canteenAuth,
-[
-  body("name", "Enter a valid name!").isLength({min: 3}),
-  body("phoneNumber", "Not a valid phone number.").isLength({max: 10}),
-  body("address", "Enter a valid address.").isLength({max: 20})
-],
- updateCanteenProfile);
+
+router.put(
+  "/profile",
+  canteenAuth,
+  [
+    body("name", "Enter a valid name!").isLength({ min: 3 }),
+    body("phoneNumber", "Not a valid phone number.").isLength({ max: 10 }),
+    body("address", "Enter a valid address.").isLength({ max: 20 }),
+  ],
+  updateCanteenProfile
+);
 
 router.get("/canteens/:id", canteenDetails);
 
