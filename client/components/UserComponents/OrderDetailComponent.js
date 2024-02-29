@@ -7,27 +7,58 @@ import { useBottomSheetModal } from "@gorhom/bottom-sheet";
 
 export default function OrderDetailComponent({ item }) {
   const { cart, dispatch } = useContext(CartContext);
-  const [quantity, setQuantity] = useState(
-    cart.find((cartItem) => cartItem.id === item._id)
-      ? cart.find((cartItem) => cartItem.id === item._id).qty
-      : 1
+  const [pquantity, setPQuantity] = useState(
+    cart.find(
+      (cartItem) => cartItem.id === item._id && cartItem.type === "Parcel"
+    )
+      ? cart.find(
+          (cartItem) => cartItem.id === item._id && cartItem.type === "Parcel"
+        ).qty
+      : 0
   );
 
+  const [dquantity, setDQuantity] = useState(
+    cart.find(
+      (cartItem) => cartItem.id === item._id && cartItem.type === "Dine-In"
+    )
+      ? cart.find(
+          (cartItem) => cartItem.id === item._id && cartItem.type === "Dine-In"
+        ).qty
+      : 0
+  );
   const { dismissAll } = useBottomSheetModal();
 
   const addItem = () => {
-    const data = {
-      id: item._id,
-      cId: item.canteenId,
-      name: item.name,
-      price: item.price,
-      image: item.image,
-      qty: quantity,
-    };
+    const items = [];
+    if (pquantity > 0) {
+      items.push({
+        id: item._id,
+        cId: item.canteenId,
+        name: item.name,
+        price: item.price,
+        image: item.image,
+        qty: pquantity,
+        type: "Parcel",
+      });
+    }
 
-    dispatch({
-      type: "ADD_ITEM",
-      payload: data,
+    if (dquantity > 0) {
+      items.push({
+        id: item._id,
+        cId: item.canteenId,
+        name: item.name,
+        price: item.price,
+        image: item.image,
+        qty: dquantity,
+        type: "Dine-In",
+      });
+    }
+
+    items.forEach((data) => {
+      dispatch({
+        type: "ADD_ITEM",
+        payload: data,
+      });
     });
 
     dismissAll();
@@ -40,37 +71,123 @@ export default function OrderDetailComponent({ item }) {
           <Image source={{ uri: item.image }} style={styles.image} />
         </View>
         <View>
-          <Text style={styles.itemName}>{item.name}</Text>
-          <View style={styles.quantityContainer}>
-            <View style={styles.quantityButtonContainer}>
-              <TouchableOpacity
-                onPress={() => setQuantity((prev) => prev - 1)}
-                style={styles.quantityButton}
-              >
-                <Text style={styles.quantityButtonText}>-</Text>
-              </TouchableOpacity>
-              <Text style={styles.quantityText}>{quantity}</Text>
-              <TouchableOpacity
-                onPress={() => setQuantity((prev) => prev + 1)}
-                style={[styles.quantityButton, { backgroundColor: "#355e4c" }]}
-              >
-                <Text style={[styles.quantityButtonText, { color: "white" }]}>
-                  +
-                </Text>
-              </TouchableOpacity>
+          <View
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+          >
+            <Text style={styles.itemName}>{item.name}</Text>
+            <View
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                width: 20,
+                height: 20,
+                borderWidth: 2,
+                borderColor:
+                  item.classification === "Veg" ? "#088409" : "#92282a",
+                borderRadius: 2,
+                zIndex: 10,
+              }}
+            >
+              <View
+                style={{
+                  width: 10,
+                  height: 10,
+                  backgroundColor:
+                    item.classification === "Veg" ? "#088409" : "#92282a",
+                  borderRadius: 999,
+                }}
+              ></View>
             </View>
-            <Text style={styles.priceText}>₹{item.price}</Text>
+          </View>
+          <Text style={styles.priceText}>₹{item.price}</Text>
+          <View style={{ marginTop: 30, gap: 15 }}>
+            <View
+              style={{
+                display: "flex",
+                alignItems: "center",
+                flexDirection: "row",
+                gap: 10,
+              }}
+            >
+              <Text style={{ fontSize: 17, fontWeight: "500", flex: 1 }}>
+                Parcel
+              </Text>
+              <View style={styles.quantityButtonContainer}>
+                <TouchableOpacity
+                  onPress={() => {
+                    if (pquantity > 0) setPQuantity((prev) => prev - 1);
+                  }}
+                  style={styles.quantityButton}
+                >
+                  <Text style={styles.quantityButtonText}>-</Text>
+                </TouchableOpacity>
+                <Text style={styles.quantityText}>{pquantity}</Text>
+                <TouchableOpacity
+                  onPress={() => setPQuantity((prev) => prev + 1)}
+                  style={[
+                    styles.quantityButton,
+                    { backgroundColor: "#355e4c" },
+                  ]}
+                >
+                  <Text style={[styles.quantityButtonText, { color: "white" }]}>
+                    +
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+            <View
+              style={{
+                display: "flex",
+                alignItems: "center",
+                flexDirection: "row",
+                gap: 10,
+              }}
+            >
+              <Text style={{ fontSize: 17, fontWeight: "500", flex: 1 }}>
+                Dine-In
+              </Text>
+
+              <View style={styles.quantityButtonContainer}>
+                <TouchableOpacity
+                  onPress={() => {
+                    if (dquantity > 0) setDQuantity((prev) => prev - 1);
+                  }}
+                  style={styles.quantityButton}
+                >
+                  <Text style={styles.quantityButtonText}>-</Text>
+                </TouchableOpacity>
+                <Text style={styles.quantityText}>{dquantity}</Text>
+                <TouchableOpacity
+                  onPress={() => setDQuantity((prev) => prev + 1)}
+                  style={[
+                    styles.quantityButton,
+                    { backgroundColor: "#355e4c" },
+                  ]}
+                >
+                  <Text style={[styles.quantityButtonText, { color: "white" }]}>
+                    +
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
           </View>
         </View>
       </View>
 
       <LinearGradient
-        colors={["#2e7653", "#355e4c"]}
+        colors={
+          dquantity || pquantity ? ["#2e7653", "#355e4c"] : ["gray", "gray"]
+        }
         style={[styles.button, styles.saveButton]}
       >
-        <TouchableOpacity onPress={addItem}>
+        <TouchableOpacity onPress={addItem} disabled={!pquantity && !dquantity}>
           <Text style={styles.saveButtonText}>
-            Add To Cart (₹{item.price * quantity})
+            Add To Cart (₹{item.price * pquantity + item.price * dquantity})
           </Text>
         </TouchableOpacity>
       </LinearGradient>
@@ -88,7 +205,7 @@ const styles = StyleSheet.create({
   },
   imageContainer: {
     width: "100%",
-    height: 200,
+    height: 170,
   },
   image: {
     width: "100%",
@@ -98,14 +215,15 @@ const styles = StyleSheet.create({
   },
   itemName: {
     fontWeight: "600",
-    fontSize: 22,
+    fontSize: 20,
+    flex: 1,
   },
   quantityContainer: {
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
     gap: 25,
-    marginTop: 20,
+    marginTop: 15,
   },
   quantityButtonContainer: {
     display: "flex",
@@ -127,16 +245,16 @@ const styles = StyleSheet.create({
     fontSize: 13,
   },
   quantityText: {
-    fontSize: 17,
+    fontSize: 16,
     fontWeight: "600",
   },
   priceText: {
     color: "#355e4c",
     fontWeight: "600",
     fontSize: 17,
+    marginTop: 10,
   },
   button: {
-    borderWidth: 2,
     borderRadius: 7.5,
     paddingVertical: 15,
     elevation: 5,

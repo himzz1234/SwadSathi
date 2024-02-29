@@ -1,7 +1,10 @@
 {
   "expo": {
     "scheme": "acme",
-
+    "splash": {
+      "image": "./assets/images/swadsathi.png",
+      "backgroundColor": "#355e4c"
+    },
     "web": {
       "bundler": "metro"
     },
@@ -11,10 +14,13 @@
         {
           "photosPermission": "The app accesses your photos to let you share them with your friends."
         }
-      ]
+      ],
+      "expo-router"
     ],
     "android": {
-      "permissions": ["android.permission.RECORD_AUDIO"],
+      "permissions": [
+        "android.permission.RECORD_AUDIO"
+      ],
       "package": "com.himzz123.canteenproject"
     }
   }

@@ -91,7 +91,7 @@ const Layout = () => {
           headerRight: () => (
             <View style={styles.headerRightContainer}>
               <TouchableOpacity style={styles.notificationIconContainer}>
-                <Icon name="notifications-none" size={30} color="black" />
+                <Icon name="notifications-none" size={24} color="black" />
               </TouchableOpacity>
             </View>
           ),
@@ -121,7 +121,7 @@ const Layout = () => {
           headerRight: () => (
             <View style={styles.headerRightContainer}>
               <TouchableOpacity style={styles.notificationIconContainer}>
-                <Icon name="notifications-none" size={30} color="black" />
+                <Icon name="notifications-none" size={24} color="black" />
               </TouchableOpacity>
             </View>
           ),

@@ -22,7 +22,7 @@ const OrderItem = ({ item }) => {
         <View style={styles.canteenInfo}>
           <Text style={styles.canteenName}>{item.canteen?.name}</Text>
           <Text style={styles.canteenAddress}>
-            {truncate(item.canteen.address)}
+            {truncate(item.canteen.address, 20)}
           </Text>
         </View>
 
@@ -31,11 +31,11 @@ const OrderItem = ({ item }) => {
             <Text style={styles.dateTimeText}>
               {moment(item.createdAt).format("MMM Do YY, h:mm a")}
             </Text>
-            <MaterialCommunityIcon
+            {/* <MaterialCommunityIcon
               name="dots-vertical"
               size={19}
               style={styles.dotsIcon}
-            />
+            /> */}
           </View>
 
           <View style={styles.statusContainer}>
@@ -61,7 +61,7 @@ const OrderItem = ({ item }) => {
               <View style={styles.menuItemContainer} key={menuItem._id}>
                 <Text style={styles.menuItemQty}>{menuItem.qty}x</Text>
                 <Text style={styles.menuItemName}>
-                  {menuItem.product?.name}
+                  {menuItem.product?.name} ({menuItem.orderType})
                 </Text>
                 <Text style={styles.menuItemPrice}>
                   ₹{menuItem.product.price}
@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
     width: "100%",
     minHeight: 200,
     borderRadius: 5,
-    backgroundColor: "#F5F5F5",
+    backgroundColor: "white",
   },
   infoContainer: {
     padding: 10,
@@ -155,6 +155,8 @@ const styles = StyleSheet.create({
   },
   menuItemQty: {
     fontSize: 15,
+    color: "#355e4c",
+    fontWeight: "500",
   },
   menuItemName: {
     flex: 1,

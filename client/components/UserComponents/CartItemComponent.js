@@ -5,20 +5,14 @@ import { CartContext } from "../../context/CartContext";
 export default function CartItem({ item }) {
   const { cart, dispatch } = useContext(CartContext);
   const [quantity, setQuantity] = useState(
-    cart.findIndex((citem) => citem.id === item.id) > -1
-      ? cart.find((citem) => citem.id === item.id).qty
-      : 1
+    cart.find((citem) => citem.id === item.id && citem.type === item.type).qty
   );
 
   const addItem = () => {
     setQuantity((prev) => prev + 1);
     const data = {
-      id: item.id,
-      cId: item.cId,
-      name: item.name,
-      price: item.price,
-      image: item.image,
-      qty: 1,
+      ...item,
+      qty: quantity + 1,
     };
 
     dispatch({
@@ -29,7 +23,10 @@ export default function CartItem({ item }) {
 
   const removeItem = () => {
     setQuantity((prev) => prev - 1);
-    dispatch({ type: "REMOVE_ITEM", payload: item.id });
+    dispatch({
+      type: "REMOVE_ITEM",
+      payload: { id: item.id, type: item.type },
+    });
   };
 
   return (
@@ -38,7 +35,42 @@ export default function CartItem({ item }) {
         <Image source={{ uri: item.image }} style={styles.image} />
       </View>
       <View style={styles.detailsContainer}>
-        <Text style={styles.itemName}>{item.name}</Text>
+        <View
+          style={{
+            display: "flex",
+            alignItems: "center",
+            flexDirection: "row",
+          }}
+        >
+          <Text style={styles.itemName}>{item.name}</Text>
+          <View
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+
+              width: 16,
+              height: 16,
+              borderWidth: 2,
+              borderColor:
+                item.classification === "Veg" ? "#088409" : "#92282a",
+              borderRadius: 2,
+              zIndex: 10,
+            }}
+          >
+            <View
+              style={{
+                width: 8,
+                height: 8,
+                backgroundColor:
+                  item.classification === "Veg" ? "#088409" : "#92282a",
+                borderRadius: 999,
+              }}
+            ></View>
+          </View>
+        </View>
+        <Text style={{ fontWeight: "500" }}>{item.type}</Text>
+
         <View style={styles.quantityContainer}>
           <View style={styles.quantityButtons}>
             <TouchableOpacity
@@ -88,7 +120,7 @@ const styles = {
   },
   detailsContainer: {
     flex: 1,
-    rowGap: 5,
+    rowGap: 6,
   },
   itemName: {
     fontSize: 16,

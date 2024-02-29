@@ -46,6 +46,22 @@ export default function MyOrders() {
     });
   }, []);
 
+  const searchInOrders = (item) => {
+    if (!input) return true;
+    const searchByRestuarant = item.canteen.name
+      .toLowerCase()
+      .includes(input.toLowerCase());
+    const searchByDish = item.orderItems.some((orderItem) =>
+      orderItem.product.name.toLowerCase().includes(input.toLowerCase())
+    );
+
+    if (searchByRestuarant || searchByDish) {
+      return true;
+    }
+
+    return false;
+  };
+
   useEffect(() => {
     const fetchOrders = async () => {
       const obj = await AsyncStorage.getItem("auth");
@@ -65,15 +81,15 @@ export default function MyOrders() {
           display: "flex",
           alignItems: "center",
           flexDirection: "row",
-          backgroundColor: "#f6f6f6",
-          paddingHorizontal: 10,
+          backgroundColor: "white",
+          paddingHorizontal: 5,
           gap: 10,
+          borderRadius: 5,
         }}
       >
-        <Ionicon name="search-outline" size={20} color="#fe724c" />
         <TextInput
           value={input}
-          placeholder="Search by canteen"
+          placeholder="Search by restaurant or dish"
           onChangeText={(text) => setInput(text)}
           style={{
             backgroundColor: "transparent",
@@ -81,8 +97,12 @@ export default function MyOrders() {
             height: 50,
             fontSize: 16,
             flex: 1,
+            paddingHorizontal: 5,
           }}
         />
+        <View style={styles.searchIconContainer}>
+          <Ionicon name="search" size={20} color="white" />
+        </View>
       </View>
 
       <FlatList
@@ -92,7 +112,7 @@ export default function MyOrders() {
         ItemSeparatorComponent={() => <View style={styles.separator}></View>}
         keyExtractor={(item) => item._id}
         renderItem={({ item }) => {
-          if (item.canteen.name.toUpperCase().includes(input.toUpperCase())) {
+          if (searchInOrders(item)) {
             return <OrderItem _id={item._id} {...{ item }} />;
           }
         }}
@@ -104,11 +124,22 @@ export default function MyOrders() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "white",
-    padding: 20,
+    backgroundColor: "#f3f3f3",
+    paddingHorizontal: 20,
+    paddingVertical: 5,
   },
   separator: {
     height: 10,
     width: "100%",
+  },
+  searchIconContainer: {
+    backgroundColor: "#355e4c",
+    height: "80%",
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    width: 40,
+    borderRadius: 5,
   },
 });

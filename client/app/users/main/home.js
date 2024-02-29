@@ -6,12 +6,12 @@ import {
   FlatList,
   TouchableOpacity,
   TextInput,
-  Image,
 } from "react-native";
 import { AuthContext } from "../../../context/AuthContext";
 import { useRouter } from "expo-router";
 import Ionicon from "react-native-vector-icons/Ionicons";
-import TextCustom from "../../../components/TextCustomComponent";
+import { truncate } from "../../../utils/index";
+import { Image } from "expo-image";
 
 export default function Home() {
   const router = useRouter();
@@ -35,6 +35,7 @@ export default function Home() {
           backgroundColor: "white",
           paddingHorizontal: 5,
           gap: 10,
+          borderRadius: 5,
         }}
       >
         <TextInput
@@ -56,7 +57,7 @@ export default function Home() {
       </View>
 
       <Text style={{ fontSize: 18, marginTop: 20, fontWeight: 600 }}>
-        Recently Scanned ({user.savedCanteens.length})
+        Scanned Canteens ({user.savedCanteens.length})
       </Text>
 
       <FlatList
@@ -75,12 +76,12 @@ export default function Home() {
                 ]}
               >
                 <Image
-                  source={require("../../../assets/images/default-restaurant.jpg")}
+                  source={item.profilePicture}
+                  contentFit="cover"
                   style={{
                     width: 90,
                     height: "100%",
                     borderRadius: 5,
-                    resizeMode: "contain",
                   }}
                 />
                 <View style={{ gap: 4 }}>
@@ -95,7 +96,7 @@ export default function Home() {
                   >
                     <Ionicon name="location-sharp" size={15} color="#efcd6a" />
                     <Text style={{ fontSize: 13, fontWeight: "400" }}>
-                      {item.address}
+                      {truncate(item.address, 25)}
                     </Text>
                   </View>
                 </View>

@@ -12,6 +12,8 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Ionicon from "react-native-vector-icons/Ionicons";
 import { AuthContext } from "../../../context/AuthContext";
+import { LinearGradient } from "expo-linear-gradient";
+import Icon from "react-native-vector-icons/FontAwesome5";
 
 export default function Signup() {
   const [formData, setFormData] = useState({
@@ -72,7 +74,17 @@ export default function Signup() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Sign Up</Text>
+      <View style={styles.headerContainer}>
+        <TouchableOpacity
+          onPress={() => router.replace("/")}
+          style={styles.backButtonContainer}
+        >
+          <Icon name="angle-left" size={20} style={styles.backButtonIcon} />
+        </TouchableOpacity>
+      </View>
+
+      <Text style={styles.title}>Create</Text>
+      <Text style={styles.title}>Account</Text>
 
       <View style={styles.inputContainer}>
         <TextInput
@@ -111,9 +123,14 @@ export default function Signup() {
 
       <Text style={styles.errorText}>{error}</Text>
 
-      <TouchableOpacity style={styles.button} onPress={register}>
-        <Text style={styles.buttonText}>Continue</Text>
-      </TouchableOpacity>
+      <LinearGradient
+        colors={["#2e7653", "#355e4c"]}
+        style={[styles.button, styles.saveButton]}
+      >
+        <TouchableOpacity onPress={register}>
+          <Text style={styles.buttonText}>Continue</Text>
+        </TouchableOpacity>
+      </LinearGradient>
 
       <Text style={styles.loginText}>
         Already have an account?{" "}
@@ -130,10 +147,35 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     paddingHorizontal: 20,
+    backgroundColor: "#f3f3f3",
+  },
+  headerContainer: {
+    position: "absolute",
+    top: 30,
+    left: 20,
+    zIndex: 40,
+    display: "flex",
+    alignItems: "center",
+    flexDirection: "row",
+    width: "100%",
+    gap: 15,
+  },
+  backButtonContainer: {
+    width: 30,
+    height: 30,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 999,
+    borderColor: "#e3e9e7",
+    borderWidth: 2,
+  },
+  backButtonIcon: {
+    color: "black",
   },
   title: {
-    fontSize: 30,
-    fontWeight: "600",
+    fontSize: 32,
+    fontWeight: "700",
   },
   inputContainer: {
     marginTop: 32,
@@ -141,13 +183,13 @@ const styles = StyleSheet.create({
   },
   input: {
     padding: 10,
-    backgroundColor: "#efeeea",
+    backgroundColor: "white",
     borderRadius: 5,
   },
   passwordContainer: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#efeeea",
+    backgroundColor: "white",
     paddingRight: 10,
     borderRadius: 5,
   },
@@ -160,15 +202,14 @@ const styles = StyleSheet.create({
     fontWeight: "500",
   },
   button: {
-    backgroundColor: "#fe724c",
-    borderRadius: 5,
-    paddingVertical: 12.5,
-    elevation: 3,
+    borderRadius: 7.5,
+    paddingVertical: 15,
+    elevation: 5,
   },
   buttonText: {
     color: "white",
     textAlign: "center",
-    fontSize: 17,
+    fontSize: 16,
   },
   loginText: {
     textAlign: "center",
@@ -176,6 +217,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   loginLink: {
-    color: "#fe724c",
+    color: "#355e4c",
+    fontWeight: "500",
   },
 });

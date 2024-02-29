@@ -28,8 +28,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#f3f3f3",
-    padding: 20,
-    gap: 20,
+    paddingHorizontal: 20,
+    paddingTop: 5,
+    gap: 15,
   },
   option: {
     padding: 15,

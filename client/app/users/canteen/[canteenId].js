@@ -5,7 +5,6 @@ import {
   TouchableOpacity,
   FlatList,
   StyleSheet,
-  Image,
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import * as Animatable from "react-native-animatable";
@@ -14,6 +13,7 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import { CartContext } from "../../../context/CartContext";
 import MenuItem from "../../../components/UserComponents/MenuItemComponent";
 import { LinearGradient } from "expo-linear-gradient";
+import { Image } from "expo-image";
 
 const AnimatedButton = Animatable.createAnimatableComponent(LinearGradient);
 
@@ -42,14 +42,12 @@ const CanteenDetails = () => {
           <Icon name="angle-left" size={20} style={styles.backButtonIcon} />
         </TouchableOpacity>
         <View style={styles.imageContainer}>
-          <Image
-            source={require("../../../assets/images/default-restaurant.jpg")}
-            style={styles.image}
-          />
+          <Image source={canteen.coverPicture} style={styles.image} />
           <View style={styles.detailsContainer}>
             <Image
-              source={require("../../../assets/images/default-restaurant.jpg")}
+              source={{ uri: canteen.profilePicture }}
               style={styles.thumbnail}
+              contentFit="cover"
             />
             <Text style={styles.canteenName}>{canteen.name}</Text>
             <Text style={styles.canteenAddress}>{canteen.address}</Text>
@@ -117,6 +115,8 @@ const styles = StyleSheet.create({
   },
   imageContainer: {
     position: "relative",
+    display: "flex",
+    alignItems: "center",
   },
   image: {
     width: "100%",
@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
     elevation: 14,
     display: "flex",
     alignItems: "center",
-    paddingVertical: 10,
+    paddingVertical: 5,
     borderRadius: 10,
     left: -30,
     transform: [{ translateX: 50 }],
@@ -146,6 +146,7 @@ const styles = StyleSheet.create({
     borderRadius: 999,
     borderColor: "white",
     borderWidth: 3,
+    backgroundColor: "white",
   },
   canteenName: {
     fontSize: 24,

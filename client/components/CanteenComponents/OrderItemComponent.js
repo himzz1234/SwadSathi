@@ -7,28 +7,52 @@ import {
   StyleSheet,
 } from "react-native";
 import OctIcon from "react-native-vector-icons/Octicons";
-import MaterialCommunityIcon from "react-native-vector-icons/MaterialCommunityIcons";
 import axios from "../../axios";
 import { SocketContext } from "../../context/SocketContext";
 import { AuthContext } from "../../context/AuthContext";
+import moment from "moment";
+import { LinearGradient } from "expo-linear-gradient";
 
 export default function OrderItem({ item, orders, setOrders }) {
   const { socket } = useContext(SocketContext);
-  const [status, setStatus] = useState("Pending");
+  const [status, setStatus] = useState(item.status || "Pending");
   const { auth: canteen } = useContext(AuthContext);
 
+  const date1 = moment(item.createdAt);
+  const date2 = moment();
+
+  const [timer, setTimer] = useState(
+    Number(300 - date2.diff(date1, "seconds"))
+  );
+
   const statusColor = () => {
-    if (status === "Pending") {
-      return "#FAC898";
-    } else if (status == "Preparing") {
-      return "#24963f";
-    } else if (status == "Declined") {
-      return "#ff0b0b";
+    switch (status) {
+      case "Pending":
+        return "#FAC898";
+      case "Preparing":
+        return "#24963f";
+      case "Declined":
+        return "#ff0b0b";
     }
   };
 
   useEffect(() => {
-    setStatus(item.status);
+    if (item.status !== "Pending") return;
+
+    let interval = setInterval(() => {
+      setTimer((prev) => {
+        const newCount = prev - 1;
+        if (newCount == 0) {
+          clearInterval(interval);
+
+          declineOrder();
+        }
+
+        return newCount;
+      });
+    }, 1000);
+
+    return () => clearInterval(interval);
   }, []);
 
   const acceptOrder = async () => {
@@ -60,7 +84,7 @@ export default function OrderItem({ item, orders, setOrders }) {
       status: "Declined",
     });
 
-    const updatedOrders = orders.map((orderItem) => {
+    const updatedOrders = pendorders.map((orderItem) => {
       if (orderItem._id === item._id) {
         return { ...orderItem, status: "Declined" };
       }
@@ -80,7 +104,12 @@ export default function OrderItem({ item, orders, setOrders }) {
   };
 
   return (
-    <View style={styles.container}>
+    <View
+      style={[
+        styles.container,
+        timer == 0 ? { opacity: 40 } : { opacity: 100 },
+      ]}
+    >
       <View style={styles.headerContainer}>
         <View>
           {item.tokenNumber ? (
@@ -96,11 +125,6 @@ export default function OrderItem({ item, orders, setOrders }) {
             <Text style={styles.timestampText}>
               {moment(item.createdAt).format("MMM Do YY, h:mm a")}
             </Text>
-            <MaterialCommunityIcon
-              name="dots-vertical"
-              size={19}
-              style={styles.dotsIcon}
-            />
           </View>
           <View style={styles.statusContainer}>
             <OctIcon name="dot-fill" color={statusColor(status)} size={10} />
@@ -135,9 +159,21 @@ export default function OrderItem({ item, orders, setOrders }) {
         </Text>
         {status == "Pending" && (
           <View style={styles.buttonsContainer}>
-            <TouchableOpacity onPress={acceptOrder} style={styles.acceptButton}>
-              <Text style={styles.acceptButtonText}>ACCEPT</Text>
-            </TouchableOpacity>
+            <LinearGradient
+              colors={timer == 0 ? ["gray", "gray"] : ["#2e7653", "#355e4c"]}
+              style={[styles.button]}
+            >
+              <TouchableOpacity onPress={acceptOrder} style={styles.saveButton}>
+                <Text style={styles.acceptButtonText}>
+                  ACCEPT 0{Math.floor(timer / 60)}:
+                  {Math.floor(timer % 60) < 10
+                    ? `0${Math.floor(timer % 60)}`
+                    : Math.floor(timer % 60)}
+                  s
+                </Text>
+              </TouchableOpacity>
+            </LinearGradient>
+
             <TouchableOpacity
               onPress={declineOrder}
               style={styles.declineButton}
@@ -156,7 +192,7 @@ const styles = StyleSheet.create({
     width: "100%",
     minHeight: 200,
     borderRadius: 5,
-    backgroundColor: "#F5F5F5",
+    backgroundColor: "white",
   },
   headerContainer: {
     padding: 10,
@@ -198,6 +234,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderTopColor: "#E5E4E2",
     borderBottomColor: "#E5E4E2",
+    borderStyle: "dashed",
   },
   separator: {
     height: 10,
@@ -209,6 +246,8 @@ const styles = StyleSheet.create({
   },
   quantityText: {
     fontSize: 15,
+    color: "#2e7653",
+    fontWeight: "500",
   },
   menuItemText: {
     flex: 1,
@@ -232,19 +271,22 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
   },
-  acceptButton: {
-    flex: 1.5,
+  saveButtonText: {
+    color: "white",
+    fontSize: 15,
+    textAlign: "center",
+  },
+  button: {
     borderRadius: 4,
-    borderWidth: 2,
-    borderColor: "transparent",
-    paddingVertical: 7.5,
-    backgroundColor: "#006442",
+    elevation: 5,
+    flex: 0.75,
+    paddingVertical: 9.5,
   },
   declineButton: {
-    flex: 0.5,
+    flex: 0.25,
     borderRadius: 4,
     borderWidth: 2,
-    borderColor: "red",
+    borderColor: "#c50009",
     paddingVertical: 7.5,
   },
   acceptButtonText: {
@@ -254,7 +296,7 @@ const styles = StyleSheet.create({
   },
   declineButtonText: {
     textAlign: "center",
-    color: "red",
+    color: "#c50009",
     fontSize: 15,
   },
 });

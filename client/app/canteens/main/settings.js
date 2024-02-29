@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#f3f3f3",
     padding: 20,
-    gap: 20,
+    gap: 15,
   },
   option: {
     padding: 15,

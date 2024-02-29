@@ -178,7 +178,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginTop: 20,
-    gap: 20,
+    gap: 30,
   },
   imageContainer: {
     width: 100,
@@ -241,7 +241,7 @@ const styles = StyleSheet.create({
   },
   button: {
     borderWidth: 2,
-    borderRadius: 10,
+    borderRadius: 7.5,
     paddingVertical: 15,
     elevation: 5,
   },

@@ -11,13 +11,14 @@ import {
   ActivityIndicator,
 } from "react-native";
 import MaterialIcon from "react-native-vector-icons/MaterialIcons";
-import FontAwesome5Icon from "react-native-vector-icons/FontAwesome5";
+import Icon from "react-native-vector-icons/FontAwesome5";
 import * as ImagePicker from "expo-image-picker";
 import { AuthContext } from "../../../context/AuthContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "../../../axios";
 import useUpload from "../../../hooks/useUpload";
 import { useRouter } from "expo-router";
+import { LinearGradient } from "expo-linear-gradient";
 
 export default function ProfileUpdate() {
   const router = useRouter();
@@ -62,13 +63,12 @@ export default function ProfileUpdate() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
+      <View style={styles.headerContainer}>
         <TouchableOpacity
-          onPress={() => {
-            router.back();
-          }}
+          onPress={() => router.replace("/")}
+          style={styles.backButtonContainer}
         >
-          <FontAwesome5Icon name="arrow-left" size={15} color="black" />
+          <Icon name="angle-left" size={20} style={styles.backButtonIcon} />
         </TouchableOpacity>
       </View>
 
@@ -85,7 +85,7 @@ export default function ProfileUpdate() {
               borderRadius={999}
             ></Image>
             <Pressable onPress={pickImage} style={styles.editIconContainer}>
-              <MaterialIcon name="edit" color="white" size={14} />
+              <MaterialIcon name="edit" color="white" size={12} />
             </Pressable>
           </View>
         </View>
@@ -107,17 +107,14 @@ export default function ProfileUpdate() {
               onChangeText={(text) => setEmail(text)}
             />
           </View>
-          <TouchableOpacity
-            disabled={isLoading}
-            onPress={updateProfile}
-            style={styles.saveButton}
+          <LinearGradient
+            colors={["#2e7653", "#355e4c"]}
+            style={[styles.button]}
           >
-            {isLoading ? (
-              <ActivityIndicator size="small" />
-            ) : (
-              <Text style={styles.saveButtonText}>Save</Text>
-            )}
-          </TouchableOpacity>
+            <TouchableOpacity onPress={updateProfile} style={styles.saveButton}>
+              <Text style={styles.saveButtonText}>Save Changes</Text>
+            </TouchableOpacity>
+          </LinearGradient>
         </View>
       </View>
     </View>
@@ -130,10 +127,29 @@ const styles = StyleSheet.create({
     paddingTop: 40,
     backgroundColor: "white",
   },
-  header: {
-    flexDirection: "row",
-    paddingHorizontal: 20,
+  headerContainer: {
+    position: "absolute",
+    top: 30,
+    left: 20,
+    zIndex: 40,
+    display: "flex",
     alignItems: "center",
+    flexDirection: "row",
+    width: "100%",
+    gap: 15,
+  },
+  backButtonContainer: {
+    width: 30,
+    height: 30,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 999,
+    borderColor: "#e3e9e7",
+    borderWidth: 2,
+  },
+  backButtonIcon: {
+    color: "black",
   },
   content: {
     marginTop: 40,
@@ -159,7 +175,7 @@ const styles = StyleSheet.create({
     height: 25,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#FF4136",
+    backgroundColor: "#355e4c",
     borderRadius: 999,
     borderWidth: 2,
     borderColor: "white",
@@ -183,16 +199,17 @@ const styles = StyleSheet.create({
     width: Dimensions.get("screen").width - 40,
   },
   saveButton: {
-    height: 45,
-    borderRadius: 5,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#fe724c",
     width: Dimensions.get("screen").width - 40,
-    elevation: 3,
   },
   saveButtonText: {
     color: "white",
     fontSize: 16,
+  },
+  button: {
+    borderRadius: 5,
+    paddingVertical: 15,
+    elevation: 5,
   },
 });

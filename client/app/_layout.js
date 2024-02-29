@@ -13,10 +13,7 @@ export default function Root() {
       <CartProvider>
         <SocketProvider>
           <View style={styles.container}>
-            <StripeProvider
-              urlScheme="/checkout"
-              publishableKey="pk_test_51NtbHCSBOdrddaflpOZuSvJt0q5KZ77dKK4bMUwZfpXhGlzga4MBQUdrrCsJ59ozDAWVBUeT9APWsq9AK7EAMKXW00q6nGrm2M"
-            >
+            <StripeProvider publishableKey="pk_test_51JbPb8SAyLsJj9bXrCy3HH8cN0qzzTn8hDDW8K6EsEGyCmtglDYWN1On9xzzTOuFycduXa94tqD04uUPSxMfBnKr00Y1ytrGuX">
               <StatusBar style="light" backgroundColor="#355e4c" />
 
               <BottomSheetModalProvider>

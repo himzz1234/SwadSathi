@@ -38,6 +38,8 @@ export default function Scanner() {
         userId: user._id,
       });
 
+      console.log(canteenId, secret);
+
       if (secret == "my-canteen") {
         router.push({
           pathname: `/users/canteen/${canteenId}`,

@@ -5,7 +5,6 @@ import {
   FlatList,
   StyleSheet,
   TouchableOpacity,
-  Pressable,
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import { useRouter } from "expo-router";
@@ -15,15 +14,78 @@ import CheckoutModal from "../../components/UserComponents/CheckoutModalComponen
 import axios from "../../axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { SocketContext } from "../../context/SocketContext";
+import { useStripe } from "@stripe/stripe-react-native";
 import { LinearGradient } from "expo-linear-gradient";
+import { AuthContext } from "../../context/AuthContext";
 
 export default function Checkout() {
   const router = useRouter();
   const { cart } = useContext(CartContext);
   const [openModal, setOpenModal] = useState(false);
   const { socket } = useContext(SocketContext);
+  const { initPaymentSheet, presentPaymentSheet } = useStripe();
+  const { auth: user } = useContext(AuthContext);
+
+  const createPaymentIntent = async () => {
+    const res = await axios.post(
+      `/orders/payment-sheet`,
+      {
+        total: cart.reduce(
+          (total, cartItem) => total + cartItem.qty * cartItem.price,
+          0
+        ),
+        id: user._id,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    return res;
+  };
 
   const onCheckout = async () => {
+    const res = await createPaymentIntent();
+    if (res.error) {
+      return;
+    }
+
+    const initResponse = await initPaymentSheet({
+      merchantDisplayName: "SwadSathi",
+      paymentIntentClientSecret: res.data.paymentIntent,
+      appearance: {
+        colors: {
+          primary: "#2e7653",
+          background: "#FFFFFF",
+          componentBackground: "#FFFFFF",
+          componentBorder: "#E4E4E4",
+          componentDivider: "#E4E4E4",
+          primaryText: "#000000",
+          secondaryText: "#000000",
+          componentText: "#000000",
+          placeholderText: "#C7C7C7",
+          icon: "#73757b",
+          error: "#FF0000",
+        },
+      },
+    });
+
+    if (initResponse.error) {
+      return;
+    }
+
+    const paymentResponse = await presentPaymentSheet();
+    if (paymentResponse.error) {
+      console.log(paymentResponse.error);
+      return;
+    }
+
+    createOrder();
+  };
+
+  const createOrder = async () => {
     const obj = await AsyncStorage.getItem("auth");
     const { token } = JSON.parse(obj);
 
@@ -34,6 +96,7 @@ export default function Checkout() {
         orderItems: cart.map((cartItem) => ({
           qty: cartItem.qty,
           product: cartItem.id,
+          orderType: cartItem.type,
         })),
         totalPrice: cart.reduce(
           (total, cartItem) => total + cartItem.qty * cartItem.price,
@@ -73,8 +136,11 @@ export default function Checkout() {
           ItemSeparatorComponent={() => (
             <View style={styles.itemSeparator}></View>
           )}
-          renderItem={({ item }) => <CartItem id={item.id} {...{ item }} />}
-          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => {
+            console.log(`${item.id}_${item.type}`);
+            return <CartItem id={`${item.id}_${item.type}`} {...{ item }} />;
+          }}
+          keyExtractor={(item) => `${item.id}_${item.type}`}
         />
 
         <View style={styles.summaryContainer}>
@@ -88,13 +154,14 @@ export default function Checkout() {
               )}
             </Text>
           </View>
+
           <LinearGradient
-            colors={cart.length ? ["#2e7653", "#355e4c"] : ["gray", "gray"]}
+            colors={["#2e7653", "#355e4c"]}
             style={[styles.button, styles.checkoutButton]}
           >
-            <Pressable disabled={!cart.length} onPress={onCheckout}>
+            <TouchableOpacity onPress={onCheckout}>
               <Text style={styles.checkoutButtonText}>Checkout</Text>
-            </Pressable>
+            </TouchableOpacity>
           </LinearGradient>
         </View>
       </View>

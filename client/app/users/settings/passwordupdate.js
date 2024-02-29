@@ -7,10 +7,11 @@ import {
   Dimensions,
   TouchableOpacity,
 } from "react-native";
-import FontAwesome5Icon from "react-native-vector-icons/FontAwesome5";
+import Icon from "react-native-vector-icons/FontAwesome5";
 import axios from "../../../axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
+import { LinearGradient } from "expo-linear-gradient";
 
 export default function PasswordUpdate() {
   const router = useRouter();
@@ -37,13 +38,12 @@ export default function PasswordUpdate() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
+      <View style={styles.headerContainer}>
         <TouchableOpacity
-          onPress={() => {
-            router.back();
-          }}
+          onPress={() => router.replace("/")}
+          style={styles.backButtonContainer}
         >
-          <FontAwesome5Icon name="arrow-left" size={15} color="black" />
+          <Icon name="angle-left" size={20} style={styles.backButtonIcon} />
         </TouchableOpacity>
       </View>
       <View style={styles.content}>
@@ -66,9 +66,17 @@ export default function PasswordUpdate() {
               onChangeText={(text) => setNewPassword(text)}
             />
           </View>
-          <TouchableOpacity onPress={changePassword} style={styles.saveButton}>
-            <Text style={styles.saveButtonText}>Save</Text>
-          </TouchableOpacity>
+          <LinearGradient
+            colors={["#2e7653", "#355e4c"]}
+            style={[styles.button]}
+          >
+            <TouchableOpacity
+              onPress={changePassword}
+              style={styles.saveButton}
+            >
+              <Text style={styles.saveButtonText}>Save</Text>
+            </TouchableOpacity>
+          </LinearGradient>
         </View>
       </View>
     </View>
@@ -79,12 +87,31 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: 40,
-    backgroundColor: "white",
+    backgroundColor: "#f3f3f3",
   },
-  header: {
-    flexDirection: "row",
-    paddingHorizontal: 20,
+  headerContainer: {
+    position: "absolute",
+    top: 30,
+    left: 20,
+    zIndex: 40,
+    display: "flex",
     alignItems: "center",
+    flexDirection: "row",
+    width: "100%",
+    gap: 15,
+  },
+  backButtonContainer: {
+    width: 30,
+    height: 30,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 999,
+    borderColor: "#e3e9e7",
+    borderWidth: 2,
+  },
+  backButtonIcon: {
+    color: "black",
   },
   content: {
     marginTop: 40,
@@ -98,27 +125,24 @@ const styles = StyleSheet.create({
     gap: 5,
   },
   label: {
-    fontSize: 16,
+    fontSize: 15,
+    fontWeight: "500",
   },
   input: {
     height: 50,
     borderRadius: 5,
     paddingHorizontal: 15,
-    backgroundColor: "#f6f6f6",
-    fontWeight: "600",
+    backgroundColor: "white",
     width: Dimensions.get("screen").width - 40,
-  },
-  saveButton: {
-    height: 45,
-    borderRadius: 5,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#fe724c",
-    width: Dimensions.get("screen").width - 40,
-    elevation: 3,
   },
   saveButtonText: {
     color: "white",
     fontSize: 16,
+    textAlign: "center",
+  },
+  button: {
+    borderRadius: 7.5,
+    paddingVertical: 15,
+    elevation: 5,
   },
 });

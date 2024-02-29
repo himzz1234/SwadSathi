@@ -21,6 +21,32 @@ const MenuItem = ({ item }) => {
   return (
     <>
       <Pressable onPress={handlePresentModalPress} style={styles.container}>
+        <View
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: 20,
+            height: 20,
+            borderWidth: 2,
+            borderColor: item.classification === "Veg" ? "#088409" : "#92282a",
+            borderRadius: 2,
+            zIndex: 10,
+          }}
+        >
+          <View
+            style={{
+              width: 10,
+              height: 10,
+              backgroundColor:
+                item.classification === "Veg" ? "#088409" : "#92282a",
+              borderRadius: 999,
+            }}
+          ></View>
+        </View>
         <View style={styles.imageContainer}>
           <Image source={{ uri: item.image }} style={styles.image} />
         </View>

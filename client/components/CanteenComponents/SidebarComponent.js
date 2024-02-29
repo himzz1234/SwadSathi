@@ -33,7 +33,7 @@ export default function Sidebar(props) {
         <View style={styles.userInfoContainer}>
           <Image
             style={styles.profileImage}
-            source={require("../../assets/images/canteen.jpg")}
+            source={{ uri: canteen?.profilePicture }}
             borderRadius={999}
           />
           <Text style={styles.userName}>{canteen?.name}</Text>

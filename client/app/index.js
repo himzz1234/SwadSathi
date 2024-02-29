@@ -12,6 +12,8 @@ import {
 } from "react-native";
 import * as Animatable from "react-native-animatable";
 import { LinearGradient } from "expo-linear-gradient";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import SwiperComponent from "../components/SwiperComponent";
 
 export default function Page() {
   const router = useRouter();
@@ -105,45 +107,13 @@ export default function Page() {
   return (
     <View style={styles.container}>
       {loading ? (
-        <ActivityIndicator size="large" />
-      ) : (
-        <View style={styles.containerContent}>
-          <Animatable.Image
-            duration={2000}
-            source={require("../assets/images/logo2.png")}
-            animation={logoanimation}
-            style={{ alignSelf: "center", width: 240, height: 50 }}
-          />
-          <View style={{ flex: 1 }}></View>
-          <Animatable.View
-            delay={1000}
-            animation={btnanimation}
-            style={{
-              gap: 10,
-              marginTop: 40,
-            }}
-          >
-            <LinearGradient
-              colors={["#2e7653", "#355e4c"]}
-              style={styles.buttonPrimary}
-            >
-              <TouchableOpacity
-                onPress={() => router.push("/users/auth/signup")}
-                style={[styles.button]}
-              >
-                <Text style={[styles.buttonText, { color: "white" }]}>
-                  Sign up as a user
-                </Text>
-              </TouchableOpacity>
-            </LinearGradient>
-            <TouchableOpacity
-              onPress={() => router.push("/canteens/auth/signup")}
-              style={[styles.button, styles.buttonSecondary]}
-            >
-              <Text style={styles.buttonText}>Sign up as a canteen</Text>
-            </TouchableOpacity>
-          </Animatable.View>
+        <View style={styles.loaderContainer}>
+          <ActivityIndicator size="large" color="#2e7455" />
         </View>
+      ) : (
+        <GestureHandlerRootView style={{ flex: 1 }}>
+          <SwiperComponent />
+        </GestureHandlerRootView>
       )}
     </View>
   );
@@ -152,30 +122,11 @@ export default function Page() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  loaderContainer: {
+    flex: 1,
     display: "flex",
-    paddingVertical: 40,
-    paddingHorizontal: 30,
+    alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#f3f3f3",
-  },
-  containerContent: {
-    display: "flex",
-    gap: 10,
-  },
-  button: {
-    paddingVertical: 15,
-    borderRadius: 5,
-  },
-  buttonPrimary: {
-    borderRadius: 7.5,
-    borderWidth: 0,
-  },
-  buttonSecondary: {
-    backgroundColor: "#e3e9e7",
-  },
-  buttonText: {
-    color: "#355e4c",
-    fontSize: 18,
-    textAlign: "center",
   },
 });

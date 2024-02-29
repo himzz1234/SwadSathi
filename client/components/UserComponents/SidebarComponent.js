@@ -2,7 +2,6 @@ import React, { useContext } from "react";
 import {
   SafeAreaView,
   View,
-  Image,
   Text,
   TouchableOpacity,
   StyleSheet,
@@ -15,6 +14,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 import { AuthContext } from "../../context/AuthContext";
 import Icon from "react-native-vector-icons/MaterialIcons";
+import { Image } from "expo-image";
 
 export default function Sidebar(props) {
   const { auth: user, dispatch } = useContext(AuthContext);
@@ -32,9 +32,9 @@ export default function Sidebar(props) {
       <DrawerContentScrollView style={styles.scrollView}>
         <View style={styles.userInfoContainer}>
           <Image
+            source={user.profilePicture}
             style={styles.profileImage}
-            source={{ uri: user.profilePicture }}
-            borderRadius={999}
+            contentFit="cover"
           />
           <View>
             <Text style={styles.userName}>{user.name}</Text>
@@ -75,6 +75,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: "white",
     resizeMode: "contain",
+    borderRadius: 999,
   },
   userName: {
     fontSize: 18,

@@ -25,12 +25,9 @@ export default function CheckoutModal({ openModal }) {
         <View style={styles.iconContainer}>
           <MaterialIcon name="done" size={50} color="white" />
         </View>
-        <View style={styles.textContainer}>
+        <View>
           <Text style={styles.title}>Order Placed Successful!</Text>
           <Text style={styles.message}>Your payment has been processed!</Text>
-          <Text style={styles.message}>
-            You will be now redirected to your orders page
-          </Text>
         </View>
       </View>
     </CustomModal>
@@ -47,7 +44,8 @@ const styles = {
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "white",
-    width: Dimensions.get("screen").width - 40,
+    width: Dimensions.get("screen").width - 60,
+    position: "relative",
   },
   iconContainer: {
     width: 100,
@@ -58,21 +56,18 @@ const styles = {
     alignItems: "center",
     borderColor: "#e9f9f2",
     justifyContent: "center",
-    backgroundColor: "#20be79",
-  },
-  textContainer: {
-    marginTop: 20,
+    backgroundColor: "#355e4c",
   },
   title: {
     fontSize: 20,
-    color: "#20be79",
+    color: "#355e4c",
     fontWeight: "500",
     textAlign: "center",
   },
   message: {
     textAlign: "center",
     marginTop: 5,
-    fontSize: 13.5,
+    fontSize: 14.5,
     color: "#9e9ea0",
   },
 };

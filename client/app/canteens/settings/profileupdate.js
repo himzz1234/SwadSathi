@@ -81,13 +81,13 @@ export default function PasswordUpdate() {
               style={styles.image}
               source={
                 !uploadedImage
-                  ? require("../../../assets/images/default-restaurant.jpg")
+                  ? { uri: canteen.profilePicture }
                   : { uri: uploadedImage }
               }
               borderRadius={999}
             ></Image>
             <Pressable onPress={pickImage} style={styles.editIconContainer}>
-              <MaterialIcon name="edit" color="white" size={14} />
+              <MaterialIcon name="edit" color="white" size={12} />
             </Pressable>
           </View>
         </View>
@@ -200,8 +200,9 @@ const styles = StyleSheet.create({
     width: 25,
     height: 25,
     alignItems: "center",
+    display: "flex",
     justifyContent: "center",
-    backgroundColor: "#FF4136",
+    backgroundColor: "#355e4c",
     borderRadius: 999,
     borderWidth: 2,
     borderColor: "white",
