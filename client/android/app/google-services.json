@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "555557414859",
+    "project_id": "swadsathinotifications-c14fd",
+    "storage_bucket": "swadsathinotifications-c14fd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:555557414859:android:9ffc0926d4d542cc76b84e",
+        "android_client_info": {
+          "package_name": "com.swadsathi.pushnotifications"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA7h_6ceqZJ9O4N0grrt3sNa78DElktBZA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
